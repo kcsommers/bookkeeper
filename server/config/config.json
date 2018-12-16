@@ -1,0 +1,19 @@
+{
+  "development": {
+    "database": "bookkeeper",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "database": "bookkeeper",
+    "host": "127.0.0.1",
+    "dialect": "postres"
+  },
+  "production": {
+    "username": "kcsommers",
+    "password": "Dracarys3",
+    "database": "bookkeeper",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}

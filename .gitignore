@@ -1,3 +1,6 @@
+node_modules
+.eslintrc.json
+
 client/node_modules/**/*
 client/.expo/*
 client/npm-debug.*
@@ -5,3 +8,7 @@ client/*.jks
 client/*.p12
 client/*.key
 client/*.mobileprovision
+client/environment.js
+
+server/node_modules
+server/.env
