@@ -3,23 +3,7 @@ import {
   StyleSheet,
   View,
   Text
-} from 'react-native'
-
-class IntroScreen extends React.Component {
-  componentDidMount() {
-    setTimeout(() => {
-      this.props.navigation.navigate('Login');
-    }, 2000)
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Bookkeeper</Text>
-      </View>
-    )
-  }
-}
+} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,5 +18,21 @@ const styles = StyleSheet.create({
     fontSize: 40
   }
 });
+
+class IntroScreen extends React.Component {
+  componentDidMount() {
+    setTimeout(() => {
+      this.props.navigation.navigate('Login');
+    }, 2000);
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Bookkeeper</Text>
+      </View>
+    );
+  }
+}
 
 export default IntroScreen;

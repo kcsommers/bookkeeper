@@ -24,7 +24,7 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button title="Login" onPress={() => { this.props.navigation.navigate('Home'); }} />
+        <Button title="Login" onPress={() => { this.props.navigation.navigate('CurrentReads'); }} />
 
         <Button title="Search" onPress={() => { this.handleSubmit(); }} />
       </View>

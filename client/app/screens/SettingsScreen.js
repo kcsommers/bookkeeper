@@ -3,17 +3,7 @@ import {
   StyleSheet,
   View,
   Text
-} from 'react-native'
-
-class SettingsScreen extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Settings Screen</Text>
-      </View>
-    )
-  }
-}
+} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,5 +12,15 @@ const styles = StyleSheet.create({
     flex: 1
   }
 });
+
+class SettingsScreen extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>Settings Screen</Text>
+      </View>
+    );
+  }
+}
 
 export default SettingsScreen;
