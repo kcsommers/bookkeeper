@@ -1,14 +1,15 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
-  Text
+  ScrollView,
+  // View,
+  Text,
 } from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import AddForm from '../components/forms/AddForm';
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
     flex: 1
   }
 });
@@ -16,9 +17,19 @@ const styles = StyleSheet.create({
 class ProfileScreen extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+      >
         <Text>Profile Screen</Text>
-      </View>
+        <AddForm
+          model="lists"
+          modelData={{ userId: 1 }}
+          submitTitle="Create List"
+        />
+        <KeyboardSpacer />
+      </ScrollView>
     );
   }
 }

@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text
-} from 'react-native';
-import BookImage from '../widgets/BookImage';
+import { StyleSheet, Text, View } from 'react-native';
 import AppStyles from '../../assets/styles/appStyles';
+import BookImage from '../widgets/BookImage';
 // import Button from '../widgets/Button';
 
 const styles = StyleSheet.create({

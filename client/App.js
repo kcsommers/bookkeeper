@@ -46,7 +46,7 @@ class App extends React.Component {
       return (
         <AppLoading
           startAsync={this.cacheResourcesAsync}
-          onFinish={() => this.setState({ isReady: true })}
+          onFinish={() => { console.log('FINISHED'); this.setState({ isReady: true }); }}
           onError={console.warn}
         />
       );
