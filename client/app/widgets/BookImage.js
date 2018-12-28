@@ -21,7 +21,7 @@ class BookImage extends React.Component {
       <View>
         <Image
           style={styles.image}
-          source={{ uri: this.props.source }}
+          source={{ uri: this.props.source, cache: 'force-cache' }}
           resizeMode="cover"
         />
       </View>

@@ -10,7 +10,7 @@ const EditProfileStack = createStackNavigator(
   {
     defaultNavigationOptions: ({ navigation }) => ({
       headerRight: (
-        <Button title="Done" onPress={() => { navigation.navigate('Home'); }} />
+        <Button title="Done" onPress={() => { navigation.navigate('HomeStack'); }} />
       )
     })
   }

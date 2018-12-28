@@ -6,7 +6,7 @@ import {
   Text,
 } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import AddForm from '../components/forms/AddForm';
+import ModelForm from '../components/forms/ModelForm';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,7 +23,7 @@ class ProfileScreen extends React.Component {
         keyboardShouldPersistTaps="handled"
       >
         <Text>Profile Screen</Text>
-        <AddForm
+        <ModelForm
           model="lists"
           modelData={{ userId: 1 }}
           submitTitle="Create List"
