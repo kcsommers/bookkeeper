@@ -2,30 +2,35 @@ import React from 'react';
 import {
   TextInput,
   View,
-  StyleSheet
+  StyleSheet,
+  Dimensions
 } from 'react-native';
-import AppStyles from '../../assets/styles/appStyles';
+import AppStyling from '../../assets/styles/appStyles';
 
-const appStyles = StyleSheet.create(AppStyles);
+const { height } = Dimensions.get('window');
+const AppStyles = new AppStyling();
+const globalStyles = StyleSheet.create(AppStyles.getAppStyles().AppStyles);
 
 const styles = StyleSheet.create({
   container: {
     borderBottomColor: '#fefefe',
     borderBottomWidth: 2,
     padding: 5,
-    marginTop: 10,
-    marginBottom: 10,
     alignSelf: 'stretch'
   },
   input: {
-    fontSize: 20,
+    fontSize: AppStyles.normalizeFont(15),
     color: '#fefefe'
   }
 });
 
 const Input = (props) => {
   return (
-    <View style={[styles.container, appStyles.boxShadow]}>
+    <View style={[styles.container, globalStyles.boxShadow, {
+      marginTop: height * 0.005,
+      marginBottom: height * 0.015,
+    }]}
+    >
       <TextInput
         keyboardType={props.keyboardType}
         placeholder={props.placeholder}
@@ -41,7 +46,7 @@ const Input = (props) => {
         onFocus={() => { }}
         onBlur={() => { }}
         onSubmitEditing={() => { }}
-        style={styles.input}
+        style={[styles.input]}
       />
     </View>
   );

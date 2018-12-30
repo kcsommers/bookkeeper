@@ -1,8 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import AppStyles from '../../assets/styles/appStyles';
+import AppStyling from '../../assets/styles/appStyles';
 import BookImage from '../widgets/BookImage';
 // import Button from '../widgets/Button';
+
+const AppStyles = new AppStyling();
+const globalStyles = StyleSheet.create(AppStyles.getAppStyles().AppStyles);
 
 const styles = StyleSheet.create({
   container: {
@@ -12,8 +15,8 @@ const styles = StyleSheet.create({
     padding: 20
   },
   title: {
-    fontFamily: AppStyles.h3.fontFamily,
-    fontSize: AppStyles.h3.size,
+    fontFamily: globalStyles.h3.fontFamily,
+    fontSize: globalStyles.h3.size,
     paddingTop: 10,
     paddingBottom: 10
   }

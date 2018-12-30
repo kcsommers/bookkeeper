@@ -76,6 +76,7 @@ class App extends React.Component {
   async loadResourcesAsync() {
     return Promise.all([
       cacheImages([
+        require('./assets/images/logo.png'),
         require('./assets/images/page_backgrounds/searchBooks.jpg'),
         require('./assets/images/page_backgrounds/searchClubs.jpg'),
         require('./assets/images/page_backgrounds/searchUsers.jpg'),
