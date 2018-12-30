@@ -1,8 +1,16 @@
 import axios from 'axios';
 import React from 'react';
-import { Button, View } from 'react-native';
+import {
+  TouchableOpacity, Text, View, StyleSheet
+} from 'react-native';
 import Input from '../../widgets/Input';
 import FormTypes from './formData';
+
+const styles = StyleSheet.create({
+  container: {
+    alignSelf: 'stretch'
+  }
+});
 
 class BasicForm extends React.Component {
   constructor(props) {
@@ -68,10 +76,9 @@ class BasicForm extends React.Component {
     });
 
     return (
-      <View>
+      <View style={styles.container}>
         {inputsMapped}
-        <Button
-          title={this.props.submitTitle}
+        <TouchableOpacity
           onPress={() => {
             this._handleSubmit().then((data) => {
               this.props.onSubmit(data);
@@ -79,7 +86,10 @@ class BasicForm extends React.Component {
               console.error('In submit button, error handling submit', error);
             });
           }}
-        />
+        >
+          <Text>{this.props.submitTitle}</Text>
+
+        </TouchableOpacity>
       </View>
     );
   }

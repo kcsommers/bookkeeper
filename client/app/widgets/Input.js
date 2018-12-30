@@ -13,10 +13,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#fefefe',
     borderBottomWidth: 2,
     padding: 5,
-    marginBottom: 5
+    marginTop: 10,
+    marginBottom: 10,
+    alignSelf: 'stretch'
   },
   input: {
     fontSize: 20,
+    color: '#fefefe'
   }
 });
 

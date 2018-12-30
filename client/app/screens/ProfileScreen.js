@@ -5,7 +5,6 @@ import {
   // View,
   Text,
 } from 'react-native';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
 import ModelForm from '../components/forms/ModelForm';
 
 const styles = StyleSheet.create({
@@ -28,7 +27,6 @@ class ProfileScreen extends React.Component {
           modelData={{ userId: 1 }}
           submitTitle="Create List"
         />
-        <KeyboardSpacer />
       </ScrollView>
     );
   }

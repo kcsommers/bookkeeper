@@ -1,6 +1,6 @@
 import { SecureStore } from 'expo';
 import React from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import ModelForm from '../components/forms/ModelForm';
 
 const styles = StyleSheet.create({
@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+    backgroundColor: '#71a7a9'
   },
 });
 
@@ -45,14 +46,6 @@ class SignupScreen extends React.Component {
           submitTitle="Sign up"
           modelData={{ userId: 1 }}
           onSubmit={this._handleSubmit}
-        />
-        <Button
-          title="GET TOKEN"
-          onPress={() => {
-            SecureStore.getItemAsync('token').then((token) => {
-              console.log('GOT TOKEN', token);
-            });
-          }}
         />
       </View>
     );
