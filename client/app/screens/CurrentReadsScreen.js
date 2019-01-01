@@ -24,10 +24,6 @@ const styles = StyleSheet.create({
 });
 
 class CurrentReadsScreen extends React.Component {
-  componentDidMount() {
-
-  }
-
   render() {
     return (
       <ScrollView contentContainerStyle={styles.container}>
