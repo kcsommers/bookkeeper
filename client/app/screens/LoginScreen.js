@@ -44,7 +44,7 @@ class LoginScreen extends React.Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
     };
     this.formPadding = new Animated.Value(SCREEN_HEIGHT * 0.06);
     this.logoHeight = new Animated.Value(SCREEN_HEIGHT * 0.5);
@@ -63,7 +63,7 @@ class LoginScreen extends React.Component {
   //   }
   // }
 
-  componentWillMount() {
+  componentDidMount() {
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
 
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
@@ -116,8 +116,7 @@ class LoginScreen extends React.Component {
         this._setToken(token).then(() => {
           console.log('TOKEN SET');
           if (user) {
-            this.props.setUser(user);
-            this.props.navigation.navigate('HomeStack');
+            this.props.screenProps.logUserIn(user);
           } else {
             console.log('NO USER SENT WITH TOKEN');
             this.props.navigation.navigate('Login');

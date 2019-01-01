@@ -10,9 +10,7 @@ import {
   SecureStore
 } from 'expo';
 import { Image, YellowBox } from 'react-native';
-import axios from 'axios';
 import App from './App';
-import Environment from '../environment';
 import userReducer from './redux/reducers/userReducer';
 
 
@@ -43,47 +41,16 @@ class AppInit extends React.Component {
     super(props);
     this.state = {
       isReady: false,
-      initialRoute: ''
     };
     this.handleFinishLoading = this.handleFinishLoading.bind(this);
   }
 
   componentDidMount() {
     this.loadResourcesAsync().then(() => {
-      SecureStore.getItemAsync('token').then((token) => {
-        if (token) {
-          this.verifyToken(token).then((result) => {
-            if (result.isVerified) {
-              this.setState({ isReady: true, initialRoute: 'App' });
-            } else {
-              this.setState({ isReady: true, initialRoute: 'Auth' });
-            }
-          });
-        } else {
-          this.setState({ isReady: true, initialRoute: 'Auth' });
-        }
-      }).catch((error) => {
-        console.log('ERROR GETTING TOKEN', error);
-      });
+      this.setState({ isReady: true });
     }).catch((error) => {
       console.warn('ERROR LOADING SHIT', error);
     });
-  }
-
-  async verifyToken(token) {
-    console.log('VERIFYING TOKEN', token);
-    const url = `${Environment.BASE_URL}/users/verify`;
-    const verify = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    if (verify.data.verified) {
-      return { isVerified: true, user: verify.data.user };
-    } else {
-      return { isVerified: false, error: verify.data.error };
-    }
   }
 
   async loadResourcesAsync() {
@@ -119,7 +86,7 @@ class AppInit extends React.Component {
 
     return (
       <Provider store={store}>
-        <App initialRoute={this.state.initialRoute} />
+        <App />
       </Provider>
     );
   }
