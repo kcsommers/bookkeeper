@@ -2,10 +2,12 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  Dimensions
+  Dimensions,
 } from 'react-native';
-import SearchInput from '../widgets/SearchInput';
+import axios from 'axios';
+import Input from '../widgets/Input';
 import BackgroundImageFull from '../widgets/BackgroundImageFull';
+import TouchButton from '../widgets/TouchButton';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -19,10 +21,44 @@ const styles = StyleSheet.create({
 });
 
 class SearchPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchTerm: ''
+    };
+
+    this._handleChange = this._handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async handleSubmit() {
+    const { searchTerm } = this.state;
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}`;
+    try {
+      const results = await axios.get(url);
+      this.props.navigation.navigate('SearchResults', { results: results.data.items, searchType: 'books' });
+    } catch (err) {
+      console.error('ERROR FINDING SEARCHRESULTS', err);
+    }
+  }
+
+  _handleChange(value, field) {
+    this.setState({ searchTerm: value });
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <SearchInput placeholder="Search Books By Title, Author or ISBN" />
+        <Input
+          field="search"
+          placeholder="Username"
+          handleChange={($value, field) => { this._handleChange($value, field); }}
+          isPassword={false}
+          isEmail={false}
+          keyboardType="default"
+          textContentType="username"
+        />
+        <TouchButton text="Search" handlePress={this.handleSubmit} />
         <BackgroundImageFull image={this.props.background} />
       </View>
     );

@@ -26,9 +26,11 @@ const styles = StyleSheet.create({
 class TouchButton extends React.Component {
   render() {
     return (
-      <TouchableOpacity style={[styles.button, {
-        backgroundColor: colors[this.props.type]
-      }]}
+      <TouchableOpacity
+        style={[styles.button, {
+          backgroundColor: colors[this.props.type]
+        }]}
+        onPress={this.props.handlePress}
       >
         <Text style={[styles.text]}>{this.props.text}</Text>
       </TouchableOpacity>

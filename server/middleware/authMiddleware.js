@@ -68,7 +68,10 @@ const verifyToken = (req, res, next) => {
     jwt.verify(token, process.env.AUTH_SECRET, (error, authData) => {
       if (!error) {
         db.user.find({
-          where: { username: authData.user }
+          where: { username: authData.user },
+          include: [{
+            model: db.list
+          }]
         }).then((authUser) => {
           const user = authUser.dataValues;
           delete user.password;

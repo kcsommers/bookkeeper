@@ -53,16 +53,6 @@ class LoginScreen extends React.Component {
     this._keyboardWillHide = this._keyboardWillHide.bind(this);
   }
 
-  // async handleSubmit() {
-  //   const url = 'https://www.googleapis.com/books/v1/volumes?q=Moby Dick';
-  //   try {
-  //     const results = await axios.get(url);
-  //     console.log('SEARCH RESULTS', results);
-  //   } catch (err) {
-  //     console.error('ERROR FINDING SEARCHRESULTS', err);
-  //   }
-  // }
-
   componentDidMount() {
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
 
@@ -133,6 +123,7 @@ class LoginScreen extends React.Component {
   }
 
   _handleChange(value, field) {
+    console.log('CHANGING');
     this.setState({ [field]: value });
   }
 

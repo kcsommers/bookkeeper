@@ -24,9 +24,9 @@ class SearchScreen extends React.Component {
           pagingEnabled={true}
           horizontal={true}
         >
-          <SearchPage background={searchBooks} />
-          <SearchPage background={searchClubs} />
-          <SearchPage background={searchUsers} />
+          <SearchPage background={searchBooks} navigation={this.props.navigation} />
+          <SearchPage background={searchClubs} navigation={this.props.navigation} />
+          <SearchPage background={searchUsers} navigation={this.props.navigation} />
         </ScrollView>
       </View>
     );
