@@ -46,9 +46,9 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
 router.get('/verify', verifyToken, (req, res) => {
   console.log('HIT VERIFY USER ROUTE');
   if (!req.error) {
-    res.json({ verified: true });
+    res.json({ verified: true, user: req.user, error: null });
   } else {
-    res.json({ verified: false, error: req.error });
+    res.json({ verified: false, user: null, error: req.error });
   }
 });
 

@@ -1,26 +1,17 @@
-import React from 'react';
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
-import AuthStack from './AuthStackNavigator';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import AppStack from './AppStackNavigator';
+import AuthStack from './AuthStackNavigator';
 
-class AppSwitchNavigator extends React.Component {
-  render() {
-    const switchNavigator = createSwitchNavigator(
-      {
-        Auth: { screen: AuthStack },
-        App: { screen: AppStack }
-      },
-      {
-        initialRouteName: this.props.initialRoute
-      }
-    );
+const createRootNavigator = (isLoggedIn = false) => {
+  return createAppContainer(createSwitchNavigator(
+    {
+      Auth: { screen: AuthStack },
+      App: { screen: AppStack }
+    },
+    {
+      initialRouteName: (isLoggedIn) ? 'App' : 'Auth'
+    }
+  ));
+};
 
-    const AppContainer = createAppContainer(switchNavigator);
-
-    return (
-      <AppContainer />
-    );
-  }
-}
-
-export default AppSwitchNavigator;
+export default createRootNavigator;

@@ -5,22 +5,27 @@ import {
   Image
 } from 'react-native';
 
-const styles = StyleSheet.create({
-  image: {
-    width: 300,
-    height: 462,
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderRadius: 5
-  }
-});
+import { SCREEN_HEIGHT } from '../../assets/styles/appStyles';
+
+const styles = {
+  large: StyleSheet.create({
+    image: {
+      width: (SCREEN_HEIGHT * 0.5) * 0.649,
+      height: (SCREEN_HEIGHT * 0.5),
+    }
+  })
+};
 
 class BookImage extends React.Component {
   render() {
     return (
       <View>
         <Image
-          style={styles.image}
+          style={[styles[this.props.size].image, {
+            borderWidth: 2,
+            borderColor: '#fff',
+            borderRadius: 5
+          }]}
           source={{ uri: this.props.source, cache: 'force-cache' }}
           resizeMode="cover"
         />

@@ -68,9 +68,11 @@ const verifyToken = (req, res, next) => {
     jwt.verify(token, process.env.AUTH_SECRET, (error, authData) => {
       if (!error) {
         db.user.find({
-          where: { username: authData.user.username }
+          where: { username: authData.user }
         }).then((authUser) => {
-          req.user = authUser;
+          const user = authUser.dataValues;
+          delete user.password;
+          req.user = user;
           next();
         }).catch((err) => {
           console.log('ERROR FINDING USER', err);

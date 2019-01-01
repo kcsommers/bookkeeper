@@ -1,13 +1,13 @@
 import { Dimensions, PixelRatio, Platform } from 'react-native';
 
-const {
+export const {
   width: SCREEN_WIDTH,
   height: SCREEN_HEIGHT
 } = Dimensions.get('window');
 
 const scale = SCREEN_WIDTH / 320;
 
-export default class AppStyling {
+export class AppStyling {
   getAppStyles() {
     return {
       AppStyles: {
@@ -30,7 +30,6 @@ export default class AppStyling {
   }
 
   normalizeFont(size) {
-    console.log('NORMALIZING############################################');
     const newSize = size * scale;
     console.log('NEW SIZE', newSize);
     if (Platform.OS === 'ios') {

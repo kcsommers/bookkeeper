@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Dimensions
 } from 'react-native';
-import AppStyling from '../../assets/styles/appStyles';
+import { AppStyling } from '../../assets/styles/appStyles';
 
 const { height } = Dimensions.get('window');
 const AppStyles = new AppStyling();

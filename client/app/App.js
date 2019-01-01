@@ -1,21 +1,33 @@
 /* eslint-disable global-require */
 /* eslint-disable no-else-return */
 import React from 'react';
-// import { Provider } from 'react-redux';
+import { Provider } from 'react-redux';
+import { createStore, combineReducers } from 'redux';
 import {
   Font,
   Asset,
   AppLoading,
   SecureStore
 } from 'expo';
-import { Image } from 'react-native';
+import { Image, YellowBox } from 'react-native';
 import axios from 'axios';
-import AppSwitchNavigator from './app/navigators/AppSwitchNavigator';
-import Environment from './environment';
+import createRootNavigator from './navigators/AppSwitchNavigator';
+import Environment from '../environment';
+import userReducer from './redux/reducers/userReducer';
 
-const Merriweather = require('./assets/fonts/Merriweather-Regular.ttf');
-const MerrItalic = require('./assets/fonts/Merriweather-Italic.ttf');
-const Pacifico = require('./assets/fonts/Pacifico-Regular.ttf');
+
+YellowBox.ignoreWarnings(['Require cycle:']);
+
+const Merriweather = require('../assets/fonts/Merriweather-Regular.ttf');
+const MerrItalic = require('../assets/fonts/Merriweather-Italic.ttf');
+const Pacifico = require('../assets/fonts/Pacifico-Regular.ttf');
+
+
+const allReducers = combineReducers({
+  user: userReducer,
+  loggedIn: false
+});
+const store = createStore(allReducers);
 
 const cacheImages = (images) => {
   return images.map((image) => {
@@ -32,7 +44,6 @@ class App extends React.Component {
     super(props);
     this.state = {
       isReady: false,
-      initialRoute: ''
     };
     this.handleFinishLoading = this.handleFinishLoading.bind(this);
   }
@@ -43,11 +54,13 @@ class App extends React.Component {
         if (token) {
           this.verifyToken(token).then((result) => {
             if (result.isVerified) {
-              this.setState({ isReady: true, initialRoute: 'App' });
+              this.setState({ isReady: true, loggedIn: true });
+            } else {
+              this.setState({ isReady: true });
             }
           });
         } else {
-          this.setState({ isReady: true, initialRoute: 'Auth' });
+          this.setState({ isReady: true });
         }
       }).catch((error) => {
         console.log('ERROR GETTING TOKEN', error);
@@ -67,7 +80,7 @@ class App extends React.Component {
     });
 
     if (verify.data.verified) {
-      return { isVerified: true };
+      return { isVerified: true, user: verify.data.user };
     } else {
       return { isVerified: false, error: verify.data.error };
     }
@@ -76,10 +89,10 @@ class App extends React.Component {
   async loadResourcesAsync() {
     return Promise.all([
       cacheImages([
-        require('./assets/images/logo.png'),
-        require('./assets/images/page_backgrounds/searchBooks.jpg'),
-        require('./assets/images/page_backgrounds/searchClubs.jpg'),
-        require('./assets/images/page_backgrounds/searchUsers.jpg'),
+        require('../assets/images/logo.png'),
+        require('../assets/images/page_backgrounds/searchBooks.jpg'),
+        require('../assets/images/page_backgrounds/searchClubs.jpg'),
+        require('../assets/images/page_backgrounds/searchUsers.jpg'),
         'http://books.google.com/books/content?id=XV8XAAAAYAAJ&printsec=frontcover&img=1&zoom=0&edge=curl&source=gbs_api'
       ]),
       Font.loadAsync({
@@ -97,14 +110,20 @@ class App extends React.Component {
   }
 
   render() {
-    SecureStore.deleteItemAsync('token');
+    // SecureStore.deleteItemAsync('token');
+    const RootNavigator = createRootNavigator(this.state.loggedIn);
+
     if (!this.state.isReady) {
       return (
         <AppLoading />
       );
     }
 
-    return <AppSwitchNavigator initialRoute={this.state.initialRoute} />;
+    return (
+      <Provider store={store}>
+        <RootNavigator />
+      </Provider>
+    );
   }
 }
 

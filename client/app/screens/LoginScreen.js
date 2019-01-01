@@ -1,18 +1,17 @@
 import axios from 'axios';
-import React from 'react';
 import { SecureStore } from 'expo';
+import React from 'react';
 import {
-  TouchableOpacity, Button, StyleSheet, View, Text, Keyboard,
-  Animated, TouchableWithoutFeedback, Dimensions
+  Animated, Button, Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View
 } from 'react-native';
-import Input from '../widgets/Input';
-import Environment from '../../environment';
+import { connect } from 'react-redux';
 import logo from '../../assets/images/logo.png';
-import AppStyling from '../../assets/styles/appStyles';
+import { AppStyling, SCREEN_HEIGHT } from '../../assets/styles/appStyles';
+import Environment from '../../environment';
+import { setUser } from '../redux/actions/userActions';
+import Input from '../widgets/Input';
 
 const AppStyles = new AppStyling();
-
-const { height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -22,16 +21,16 @@ const styles = StyleSheet.create({
   },
   loginForm: {
     alignSelf: 'stretch',
-    paddingLeft: height * 0.025,
-    paddingRight: height * 0.025
+    paddingLeft: SCREEN_HEIGHT * 0.025,
+    paddingRight: SCREEN_HEIGHT * 0.025
   },
   submitBtn: {
     backgroundColor: '#a9c5e8',
     alignSelf: 'stretch',
-    paddingTop: height * 0.018,
-    paddingBottom: height * 0.018,
+    paddingTop: SCREEN_HEIGHT * 0.018,
+    paddingBottom: SCREEN_HEIGHT * 0.018,
     alignItems: 'center',
-    marginTop: height * 0.04,
+    marginTop: SCREEN_HEIGHT * 0.04,
     borderRadius: 100
   },
   submitBtnText: {
@@ -47,8 +46,8 @@ class LoginScreen extends React.Component {
       username: '',
       password: ''
     };
-    this.formPadding = new Animated.Value(height * 0.06);
-    this.logoHeight = new Animated.Value(height * 0.5);
+    this.formPadding = new Animated.Value(SCREEN_HEIGHT * 0.06);
+    this.logoHeight = new Animated.Value(SCREEN_HEIGHT * 0.5);
     this._handleSubmit = this._handleSubmit.bind(this);
     this._keyboardWillShow = this._keyboardWillShow.bind(this);
     this._keyboardWillHide = this._keyboardWillHide.bind(this);
@@ -65,7 +64,6 @@ class LoginScreen extends React.Component {
   // }
 
   componentWillMount() {
-    console.log('HEIGHT', height);
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
 
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
@@ -84,7 +82,7 @@ class LoginScreen extends React.Component {
       }),
       Animated.timing(this.logoHeight, {
         duration: event.duration,
-        toValue: height * 0.3
+        toValue: SCREEN_HEIGHT * 0.3
       })
     ]).start();
   }
@@ -97,7 +95,7 @@ class LoginScreen extends React.Component {
       }),
       Animated.timing(this.logoHeight, {
         duration: event.duration,
-        toValue: height * 0.5
+        toValue: SCREEN_HEIGHT * 0.5
       })
     ]).start();
   }
@@ -113,18 +111,25 @@ class LoginScreen extends React.Component {
     const { username, password } = this.state;
     try {
       const loginResults = await axios.post(url, { username, password });
-      if (loginResults.data.token) {
-        this._setToken(loginResults.data.token).then(() => {
+      const { token, user, error } = loginResults.data;
+      if (!error && token) {
+        this._setToken(token).then(() => {
           console.log('TOKEN SET');
-          this.props.navigation.navigate('HomeStack');
-        }).catch((error) => {
-          console.log('ERROR SETTING TOKEN', error);
+          if (user) {
+            this.props.setUser(user);
+            this.props.navigation.navigate('HomeStack');
+          } else {
+            console.log('NO USER SENT WITH TOKEN');
+            this.props.navigation.navigate('Login');
+          }
+        }).catch((setTokenError) => {
+          console.log('ERROR SETTING TOKEN', setTokenError);
         });
       } else {
-        console.log('ERROR LOGGING IN', loginResults.data.error);
+        console.log('ERROR LOGGING IN', error);
       }
     } catch (error) {
-      console.warn('ERROR LOGGING IN');
+      console.warn('ERROR LOGGING IN', error);
     }
   }
 
@@ -201,4 +206,7 @@ class LoginScreen extends React.Component {
   }
 }
 
-export default LoginScreen;
+const mapStateToProps = state => state;
+const mapActionsToProps = { setUser };
+
+export default connect(mapStateToProps, mapActionsToProps)(LoginScreen);

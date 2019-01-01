@@ -1,36 +1,62 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import AppStyling from '../../assets/styles/appStyles';
+import { StyleSheet, View, ScrollView } from 'react-native';
+import { connect } from 'react-redux';
+import { AppStyling, SCREEN_HEIGHT, SCREEN_WIDTH } from '../../assets/styles/appStyles';
 import BookImage from '../widgets/BookImage';
-// import Button from '../widgets/Button';
+import TouchButton from '../widgets/TouchButton';
 
 const AppStyles = new AppStyling();
 const globalStyles = StyleSheet.create(AppStyles.getAppStyles().AppStyles);
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    padding: 20
+    flex: 1
   },
-  title: {
-    fontFamily: globalStyles.h3.fontFamily,
-    fontSize: globalStyles.h3.size,
-    paddingTop: 10,
-    paddingBottom: 10
+  carouselContainer: {
+
+  },
+  buttonsContainer: {
+    padding: SCREEN_WIDTH * 0.1
+  },
+  buttonView: {
+    padding: SCREEN_HEIGHT * 0.004
   }
 });
 
 class CurrentReadsScreen extends React.Component {
+  componentDidMount() {
+
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <BookImage source="http://books.google.com/books/content?id=XV8XAAAAYAAJ&printsec=frontcover&img=1&zoom=0&edge=curl&source=gbs_api" />
-        <Text style={styles.title}>Moby Dick</Text>
-      </View>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={StyleSheet.carouselContainer}>
+          <BookImage
+            size="large"
+            source="http://books.google.com/books/content?id=XV8XAAAAYAAJ&printsec=frontcover&img=1&zoom=0&edge=curl&source=gbs_api"
+          />
+        </View>
+
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonView}>
+            <TouchButton
+              text="New Note"
+              type="primary"
+            />
+          </View>
+          <View style={styles.buttonView}>
+            <TouchButton
+              text="New Search"
+              type="primary"
+            />
+          </View>
+        </View>
+      </ScrollView>
     );
   }
 }
 
-export default CurrentReadsScreen;
+const mapStateToProps = (state) => ({ user: state.user });
+
+export default connect(mapStateToProps)(CurrentReadsScreen);
