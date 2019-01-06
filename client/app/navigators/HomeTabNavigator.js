@@ -1,5 +1,6 @@
 import React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createBottomTabNavigator } from 'react-navigation';
 import ListScreen from '../screens/ListScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -11,28 +12,28 @@ const HomeTabNavigator = createBottomTabNavigator({
     screen: CurrentReadsScreen,
     navigationOptions: {
       tabBarLabel: 'Current Reads',
-      tabBarIcon: () => <Ionicons name="md-book" size={30} />
+      tabBarIcon: () => <Icon name="book-open-page-variant" size={30} />
     }
   },
   List: {
     screen: ListScreen,
     navigationOptions: {
       tabBarLabel: 'Lists',
-      tabBarIcon: () => <Ionicons name="md-bookmarks" size={30} />
+      tabBarIcon: () => <Icon name="library-books" size={30} />
     }
   },
   Profile: {
     screen: ProfileScreen,
     navigationOptions: {
       tabBarLabel: 'Profile',
-      tabBarIcon: () => <Ionicons name="md-person" size={30} />
+      tabBarIcon: () => <Ionicon name="md-person" size={30} />
     }
   },
   SearchStack: {
     screen: SearchStack,
     navigationOptions: {
       tabBarLabel: 'Search',
-      tabBarIcon: () => <Ionicons name="md-search" size={30} />
+      tabBarIcon: () => <Ionicon name="md-search" size={30} />
     }
   }
 });

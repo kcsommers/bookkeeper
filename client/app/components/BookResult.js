@@ -7,7 +7,7 @@ import { Dropdown } from 'react-native-material-dropdown';
 import axios from 'axios';
 import BookImage from '../widgets/BookImage';
 import TouchButton from '../widgets/TouchButton';
-import missingBookCover from '../../assets/images/missingBookCover.jpg';
+import Environment from '../../environment';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,8 +27,13 @@ class BookResult extends React.Component {
     this.setState({ selectedList });
   }
 
-  _addBook() {
-
+  async _addBook(bookData) {
+    const url = `${Environment.BASE_URL}/books`;
+    const listId = this.props.user.lists.find((list) => (
+      list.name === this.state.selectedList
+    )).id;
+    const returnedData = await axios.post(url, { bookData, listId });
+    return returnedData.data;
   }
 
   render() {
@@ -36,8 +41,8 @@ class BookResult extends React.Component {
     const {
       title, authors, description, imageLinks
     } = book;
-    let { thumbnail } = (imageLinks) || null;
-    thumbnail = (thumbnail) ? thumbnail.replace(/zoom=1/gi, 'zoom=0') : missingBookCover;
+    let thumbnail = (imageLinks) ? imageLinks.thumbnail : null;
+    thumbnail = (thumbnail) ? thumbnail.replace(/zoom=1/gi, 'zoom=0') : 'https://res.cloudinary.com/kcsommers/image/upload/v1546384882/missingBookCover.jpg';
 
     const userLists = [];
     user.lists.forEach((list) => { userLists.push({ value: list.name }); });
@@ -58,7 +63,13 @@ class BookResult extends React.Component {
         <TouchButton
           text="Add Book"
           type="primary"
-          handlePress={this._addBook}
+          handlePress={() => {
+            this._addBook({
+              title, authors: authors.join(', '), description, thumbnail
+            }).then((bookData) => {
+              console.log('BOOOK ADDED DATA', bookData);
+            });
+          }}
         />
       </View>
     );

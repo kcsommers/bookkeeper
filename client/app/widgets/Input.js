@@ -9,7 +9,7 @@ import { AppStyling } from '../../assets/styles/appStyles';
 
 const { height } = Dimensions.get('window');
 const AppStyles = new AppStyling();
-const globalStyles = StyleSheet.create(AppStyles.getAppStyles().AppStyles);
+const globalStyles = StyleSheet.create(AppStyles.getAppStyles());
 
 const styles = StyleSheet.create({
   container: {
@@ -34,7 +34,7 @@ const Input = (props) => {
       <TextInput
         keyboardType={props.keyboardType}
         placeholder={props.placeholder}
-        placeholderTextColor="#fefefe"
+        placeholderTextColor="#efefef"
         secureTextEntry={props.isPassword}
         textContentType={props.textContentType}
         returnKeyLabel="Submit"

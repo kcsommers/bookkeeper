@@ -14,7 +14,13 @@ passport.deserializeUser((id, cb) => {
 const localOptions = { usernameField: 'username', passwordField: 'password' };
 
 const localCallback = (username, password, done) => {
-  db.user.findOne({ where: { username } }).then((user) => {
+  db.user.findOne({
+    where: { username },
+    include: [{
+      model: db.list,
+      include: [db.book]
+    }]
+  }).then((user) => {
     if (!user) {
       console.log('NO USER OR BAD PASSWORD');
       done(null, false);

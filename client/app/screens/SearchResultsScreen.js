@@ -13,10 +13,6 @@ const styles = StyleSheet.create({
 });
 
 class SearchScreen extends React.Component {
-  componentDidMount() {
-
-  }
-
   render() {
     const results = this.props.navigation.getParam('results');
     const searchType = this.props.navigation.getParam('searchType');

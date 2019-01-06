@@ -1,22 +1,22 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   imageStyles: {
-    position: 'absolute',
-    zIndex: -1000
+    width: '100%',
+    height: '100%'
   }
 });
 
 class BackgroundImageFull extends React.Component {
   render() {
     return (
-      <Image
+      <ImageBackground
         source={this.props.image}
         style={styles.imageStyles}
-        height="100%"
-        width="100%"
-      />
+      >
+        {this.props.children}
+      </ImageBackground>
     );
   }
 }

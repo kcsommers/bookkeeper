@@ -70,7 +70,8 @@ const verifyToken = (req, res, next) => {
         db.user.find({
           where: { username: authData.user },
           include: [{
-            model: db.list
+            model: db.list,
+            include: [db.book]
           }]
         }).then((authUser) => {
           const user = authUser.dataValues;
