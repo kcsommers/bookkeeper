@@ -1,14 +1,16 @@
 import React from 'react';
 import {
-  StyleSheet, View, ScrollView, TextInput
+  StyleSheet, View, ScrollView, TextInput, TouchableOpacity, Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
+import axios from 'axios';
 import Carousel from '../components/Carousel';
 import TextCard from '../components/TextCard';
-import { SCREEN_WIDTH, SCREEN_HEIGHT, AppStyling } from '../../assets/styles/appStyles';
+import { SCREEN_HEIGHT, AppStyling } from '../../assets/styles/appStyles';
 import BackgroundImageFull from '../widgets/BackgroundImageFull';
 import tealWhiteGradient from '../../assets/images/page_backgrounds/tealWhiteGradient.png';
+import Environment from '../../environment';
 
 const AppStyles = new AppStyling();
 const globalStyles = AppStyles.getAppStyles();
@@ -40,49 +42,59 @@ const styles = StyleSheet.create({
 });
 
 class CurrentReadsScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newNote: '',
+      currentBook: null
+    };
+  }
+
+  async _handleAddItem(content, endpoint, bookId) {
+    const userId = this.props.user.id;
+    const url = `${Environment.BASE_URL}/${endpoint}`;
+    const modelData = { content, bookId, userId };
+    const addItemResults = await axios.post(url, modelData);
+    console.log('ADD ITEM RESULTS', addItemResults.data);
+  }
+
+  updateCurrentBook(book) {
+    this.setState({ currentBook: book });
+  }
+
   render() {
     const { user } = this.props;
     const { lists } = user;
     const books = [];
-    const bookThumbs = [];
     lists.forEach((list) => {
       list.books.forEach((book) => {
         if (book.current) {
           books.push(book);
-          bookThumbs.push(book.thumbnail);
         }
       });
     });
-    const noteCards = (
-      <View style={{
-        paddingTop: SCREEN_HEIGHT * 0.007,
-        paddingBottom: SCREEN_HEIGHT * 0.007
-      }}
-      >
-        <View style={styles.noteCardWrapper}>
-          <TextCard />
+    const noteCards = (this.state.currentBook) ? (
+      this.state.currentBook.notes.map((note) => (
+        <View key={note.id} style={styles.noteCardWrapper}>
+          <TextCard item={note} />
         </View>
-        <View style={styles.noteCardWrapper}>
-          <TextCard />
-        </View>
-        <View style={styles.noteCardWrapper}>
-          <TextCard />
-        </View>
-        <View style={styles.noteCardWrapper}>
-          <TextCard />
-        </View>
-      </View>
-    );
+      ))
+    ) : null;
 
     return (
       <BackgroundImageFull image={tealWhiteGradient}>
         <ScrollView>
           <View style={styles.carouselContainer}>
-            <Carousel images={bookThumbs} />
+            <Carousel
+              items={books}
+              updateCurrent={(book) => {
+                this.updateCurrentBook(book);
+              }}
+            />
           </View>
 
           <View style={[{
-            backgroundColor: 'rgba(239, 239, 239, 0.8)',
+            backgroundColor: 'rgba(239, 239, 239, 0.4)',
             width: '90%',
             marginLeft: 'auto',
             marginRight: 'auto',
@@ -95,17 +107,22 @@ class CurrentReadsScreen extends React.Component {
               justifyContent: 'space-between'
             }}
             >
-              <View style={[styles.menuBtn, globalStyles.boxShadow]}>
+              <TouchableOpacity style={[styles.menuBtn, globalStyles.boxShadow, {
+                borderTopLeftRadius: 3
+              }]}
+              >
                 <Icon name="pencil" size={22} color="#444" />
                 <TextInput
                   style={[styles.input, globalStyles.boxShadow]}
                   placeholder="New Note"
                   placeholderTextColor="#444"
                   multiline={true}
+                  onChangeText={(text) => { this.setState({ newNote: text }); }}
+                  onSubmitEditing={() => { this.handleAddItem(this.state.newNote); }}
                 />
-              </View>
+              </TouchableOpacity>
 
-              <View style={[styles.menuBtn, globalStyles.boxShadow]}>
+              <TouchableOpacity style={[styles.menuBtn, globalStyles.boxShadow]}>
                 <Icon name="quote" size={22} color="#444" />
                 <TextInput
                   style={styles.input}
@@ -113,9 +130,12 @@ class CurrentReadsScreen extends React.Component {
                   placeholderTextColor="#444"
                   multiline={true}
                 />
-              </View>
+              </TouchableOpacity>
 
-              <View style={[styles.menuBtn, globalStyles.boxShadow]}>
+              <TouchableOpacity style={[styles.menuBtn, globalStyles.boxShadow, {
+                borderTopRightRadius: 3
+              }]}
+              >
                 <Icon name="check" size={22} color="#444" />
                 <TextInput
                   style={styles.input}
@@ -123,10 +143,16 @@ class CurrentReadsScreen extends React.Component {
                   placeholderTextColor="#444"
                   multiline={true}
                 />
-              </View>
+              </TouchableOpacity>
             </View>
 
-            {noteCards}
+            <View style={{
+              paddingTop: SCREEN_HEIGHT * 0.007,
+              paddingBottom: SCREEN_HEIGHT * 0.007
+            }}
+            >
+              {noteCards}
+            </View>
           </View>
         </ScrollView>
       </BackgroundImageFull>

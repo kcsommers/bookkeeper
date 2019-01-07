@@ -6,8 +6,7 @@ import { createStore, combineReducers } from 'redux';
 import {
   Font,
   Asset,
-  AppLoading,
-  SecureStore
+  AppLoading
 } from 'expo';
 import { Image, YellowBox } from 'react-native';
 import App from './App';

@@ -6,7 +6,7 @@ const db = require('../models');
 passport.serializeUser((user, cb) => { cb(null, user.id); });
 
 passport.deserializeUser((id, cb) => {
-  db.user.findById(id).then((user) => {
+  db.user.findByPk(id).then((user) => {
     cb(null, user);
   }).catch(cb);
 });
@@ -18,7 +18,10 @@ const localCallback = (username, password, done) => {
     where: { username },
     include: [{
       model: db.list,
-      include: [db.book]
+      include: [{
+        model: db.book,
+        include: [db.note, db.quote]
+      }]
     }]
   }).then((user) => {
     if (!user) {
@@ -26,7 +29,7 @@ const localCallback = (username, password, done) => {
       done(null, false);
     } else {
       bcrypt.compare(password, user.password).then((passwordValid) => {
-        console.log('PSWORD ALID', passwordValid);
+        console.log('PASSWORD VALID', passwordValid);
         return (passwordValid) ? done(null, user) : done(null, false);
       }).catch((error) => {
         console.log('ERROR WITH BCRYPT COMPARE', error);

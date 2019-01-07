@@ -28,6 +28,8 @@ module.exports = (sequelize, DataTypes) => {
   user.associate = (models) => {
     // associations can be defined here
     models.user.hasMany(models.list);
+    models.user.hasMany(models.note);
+    models.user.hasMany(models.quote);
     models.user.belongsToMany(models.book, { through: 'usersBooks' });
   };
   return user;

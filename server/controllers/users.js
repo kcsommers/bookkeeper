@@ -24,7 +24,7 @@ router.post('/', hashPassword, (req, res) => {
   } else {
     res.json({ error: res.locals.error });
   }
-});
+}); // TODO: send user (with empty lists, books, notes and quote arrays) on signup
 
 router.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
   console.log('HIT LOGIN ROUTE');
