@@ -9,7 +9,7 @@ import { AppStyling } from '../../assets/styles/appStyles';
 
 const { height } = Dimensions.get('window');
 const AppStyles = new AppStyling();
-const globalStyles = StyleSheet.create(AppStyles.getAppStyles());
+const globalStyles = AppStyles.getAppStyles();
 
 const styles = StyleSheet.create({
   container: {

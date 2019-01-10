@@ -46,11 +46,11 @@ class LoginScreen extends React.Component {
       username: '',
       password: '',
     };
-    this.formPadding = new Animated.Value(SCREEN_HEIGHT * 0.06);
-    this.logoHeight = new Animated.Value(SCREEN_HEIGHT * 0.5);
     this._handleSubmit = this._handleSubmit.bind(this);
     this._keyboardWillShow = this._keyboardWillShow.bind(this);
     this._keyboardWillHide = this._keyboardWillHide.bind(this);
+    this.formPadding = new Animated.Value(SCREEN_HEIGHT * 0.06);
+    this.logoHeight = new Animated.Value(SCREEN_HEIGHT * 0.5);
   }
 
   componentDidMount() {
@@ -170,7 +170,11 @@ class LoginScreen extends React.Component {
                 textContentType="password"
               />
 
-              <Text style={{ textAlign: 'right', color: '#fefefe' }}>Forgot your Password?</Text>
+              <Text
+                style={{ textAlign: 'right', color: '#fefefe' }}
+              >
+                Forgot your Password?
+              </Text>
 
               <TouchableOpacity
                 style={styles.submitBtn}

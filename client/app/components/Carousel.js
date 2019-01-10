@@ -1,21 +1,12 @@
 import React from 'react';
 import {
-  View,
   ScrollView,
-  StyleSheet,
-  Text
+  Text,
+  Animated
 } from 'react-native';
-import BookImage from '../widgets/BookImage';
 import { SCREEN_WIDTH, SCREEN_HEIGHT, AppStyling } from '../../assets/styles/appStyles';
 
 const appStyles = new AppStyling().getAppStyles();
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: SCREEN_HEIGHT * 0.02,
-    paddingBottom: SCREEN_HEIGHT * 0.02
-  }
-});
 
 class Carousel extends React.Component {
   constructor(props) {
@@ -25,6 +16,7 @@ class Carousel extends React.Component {
       currentItemIndex: 0,
       currentOffset: 0
     };
+    this.carouselAnim = new Animated.Value(0);
     this._handleScrollEnd = this._handleScrollEnd.bind(this);
   }
 
@@ -56,27 +48,60 @@ class Carousel extends React.Component {
     }
   }
 
+  animateBookThumb(shouldGrow) {
+    if (shouldGrow) {
+      Animated.timing(this.carouselAnim, {
+        duration: 500,
+        toValue: 1
+      }).start();
+    } else {
+      Animated.timing(this.carouselAnim, {
+        duration: 500,
+        toValue: 0
+      }).start();
+    }
+  }
+
   render() {
     const { items } = this.state;
     const itemsMapped = (items) ? items.map((item) => (
-      <View key={item.id} style={[appStyles.boxShadow, { width: SCREEN_WIDTH }]}>
-        <View style={[styles.container, {
+      <Animated.View
+        key={item.id}
+        style={[{
           alignSelf: 'stretch',
-          alignItems: 'center'
+          alignItems: 'center',
+          width: SCREEN_WIDTH,
+          paddingTop: this.carouselAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [appStyles.paddingLg.y, 0]
+          }),
+          paddingBottom: this.carouselAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [appStyles.paddingLg.y, 0]
+          })
         }]}
-        >
-          <BookImage
-            key={item.id}
-            source={item.thumbnail}
-            size="large"
-          />
-        </View>
-      </View>
+      >
+        <Animated.Image
+          key={item.id}
+          style={[appStyles.boxShadow,
+            {
+              borderWidth: 2,
+              borderColor: '#fff',
+              borderRadius: 5,
+              width: this.carouselAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [(SCREEN_HEIGHT * 0.45) * 0.649, SCREEN_WIDTH]
+              }),
+              height: SCREEN_HEIGHT * 0.45
+            }]}
+          source={{ uri: item.thumbnail, cache: 'force-cache' }}
+          resizeMode="cover"
+        />
+      </Animated.View>
     )) : <Text>No Items</Text>;
 
     return (
       <ScrollView
-        contentContainerStyle={styles.container}
         horizontal={true}
         pagingEnabled={true}
         showsHorizontalScrollIndicator={false}

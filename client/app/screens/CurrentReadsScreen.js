@@ -1,16 +1,17 @@
+import axios from 'axios';
 import React from 'react';
 import {
-  StyleSheet, View, ScrollView, TextInput, TouchableOpacity, Text
+  Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View
 } from 'react-native';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/Entypo';
-import axios from 'axios';
-import Carousel from '../components/Carousel';
-import TextCard from '../components/TextCard';
-import { SCREEN_HEIGHT, AppStyling } from '../../assets/styles/appStyles';
-import BackgroundImageFull from '../widgets/BackgroundImageFull';
 import tealWhiteGradient from '../../assets/images/page_backgrounds/tealWhiteGradient.png';
+import { AppStyling } from '../../assets/styles/appStyles';
 import Environment from '../../environment';
+import Carousel from '../components/Carousel';
+import ClickMenu from '../components/ClickMenu';
+import NoteInput from '../components/NoteInput';
+import TextCard from '../components/TextCard';
+import BackgroundImageFull from '../widgets/BackgroundImageFull';
 
 const AppStyles = new AppStyling();
 const globalStyles = AppStyles.getAppStyles();
@@ -21,20 +22,19 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   noteCardWrapper: {
-    paddingTop: SCREEN_HEIGHT * 0.007,
-    paddingBottom: SCREEN_HEIGHT * 0.007,
-    marginBottom: SCREEN_HEIGHT * 0.007,
-    marginTop: SCREEN_HEIGHT * 0.007,
+    paddingTop: globalStyles.paddingSm.y,
+    paddingBottom: globalStyles.paddingSm.y,
+    marginBottom: globalStyles.paddingSm.y,
+    marginTop: globalStyles.paddingSm.y,
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '90%'
   },
   menuBtn: {
     alignItems: 'center',
-    flex: 1,
-    paddingTop: SCREEN_HEIGHT * 0.02,
-    paddingBottom: SCREEN_HEIGHT * 0.02,
-    backgroundColor: '#fff',
+    paddingTop: globalStyles.paddingMd.y,
+    paddingBottom: globalStyles.paddingMd.y,
+    backgroundColor: '#fff'
   },
   input: {
     fontFamily: 'Merriweather'
@@ -45,10 +45,31 @@ class CurrentReadsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      newNote: '',
       currentBook: null
     };
+    this._keyboardWillShow = this._keyboardWillShow.bind(this);
+    this._keyboardWillHide = this._keyboardWillHide.bind(this);
   }
+
+  componentDidMount() {
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowListener.remove();
+    this.keyboardWillHideListener.remove();
+  }
+
+  _keyboardWillShow() {
+
+  }
+
+  _keyboardWillHide() {
+    this.carousel.animateBookThumb(false);
+  }
+
 
   async _handleAddItem(content, endpoint, bookId) {
     const userId = this.props.user.id;
@@ -60,6 +81,12 @@ class CurrentReadsScreen extends React.Component {
 
   updateCurrentBook(book) {
     this.setState({ currentBook: book });
+  }
+
+  _handleMenuClick(btn) {
+    console.log('HANDLING Note INPUT FOCUS', btn);
+    this.carousel.animateBookThumb(true);
+    this.noteInput.input.focus();
   }
 
   render() {
@@ -82,80 +109,50 @@ class CurrentReadsScreen extends React.Component {
     ) : null;
 
     return (
-      <BackgroundImageFull image={tealWhiteGradient}>
-        <ScrollView>
-          <View style={styles.carouselContainer}>
-            <Carousel
-              items={books}
-              updateCurrent={(book) => {
-                this.updateCurrentBook(book);
-              }}
-            />
-          </View>
+      <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
+        <BackgroundImageFull image={tealWhiteGradient}>
+          <ScrollView>
+            <View style={styles.carouselContainer}>
+              <Carousel
+                items={books}
+                size="large"
+                updateCurrent={(book) => {
+                  this.updateCurrentBook(book);
+                }}
+                ref={(e) => { this.carousel = e; }}
+              />
+            </View>
 
-          <View style={[{
-            backgroundColor: 'rgba(239, 239, 239, 0.4)',
-            width: '90%',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            paddingBottom: SCREEN_HEIGHT * 0.007,
-            borderRadius: '5px',
-          }, globalStyles.boxShadow]}
-          >
-            <View style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between'
-            }}
+            <View style={[{
+              backgroundColor: 'rgba(239, 239, 239, 0.4)',
+              width: '90%',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              paddingBottom: globalStyles.paddingSm.y,
+              borderRadius: '5px',
+            }, globalStyles.boxShadow]}
             >
-              <TouchableOpacity style={[styles.menuBtn, globalStyles.boxShadow, {
-                borderTopLeftRadius: 3
-              }]}
-              >
-                <Icon name="pencil" size={22} color="#444" />
-                <TextInput
-                  style={[styles.input, globalStyles.boxShadow]}
+
+              <View>
+                <ClickMenu onClick={(btn) => { this._handleMenuClick(btn); }} />
+                <NoteInput
                   placeholder="New Note"
-                  placeholderTextColor="#444"
-                  multiline={true}
-                  onChangeText={(text) => { this.setState({ newNote: text }); }}
-                  onSubmitEditing={() => { this.handleAddItem(this.state.newNote); }}
+                  returnKey="Add Note"
+                  ref={(e) => { this.noteInput = e; }}
                 />
-              </TouchableOpacity>
+              </View>
 
-              <TouchableOpacity style={[styles.menuBtn, globalStyles.boxShadow]}>
-                <Icon name="quote" size={22} color="#444" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="New Quote"
-                  placeholderTextColor="#444"
-                  multiline={true}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={[styles.menuBtn, globalStyles.boxShadow, {
-                borderTopRightRadius: 3
-              }]}
+              <View style={{
+                paddingTop: globalStyles.paddingSm.y,
+                paddingBottom: globalStyles.paddingSm.y
+              }}
               >
-                <Icon name="check" size={22} color="#444" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Finished!"
-                  placeholderTextColor="#444"
-                  multiline={true}
-                />
-              </TouchableOpacity>
+                {noteCards}
+              </View>
             </View>
-
-            <View style={{
-              paddingTop: SCREEN_HEIGHT * 0.007,
-              paddingBottom: SCREEN_HEIGHT * 0.007
-            }}
-            >
-              {noteCards}
-            </View>
-          </View>
-        </ScrollView>
-      </BackgroundImageFull>
+          </ScrollView>
+        </BackgroundImageFull>
+      </TouchableWithoutFeedback>
     );
   }
 }

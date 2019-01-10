@@ -25,14 +25,13 @@ export class AppStyling {
         shadowRadius: 2,
       },
       paddingSm: {
-        paddingTop: SCREEN_HEIGHT * 0.007,
-        paddingBottom: SCREEN_HEIGHT * 0.007
+        y: SCREEN_HEIGHT * 0.007,
       },
       paddingMd: {
-
+        y: SCREEN_HEIGHT * 0.02
       },
       paddingLg: {
-
+        y: SCREEN_HEIGHT * 0.04
       }
     };
   }
