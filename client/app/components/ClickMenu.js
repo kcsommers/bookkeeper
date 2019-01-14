@@ -26,63 +26,57 @@ const styles = StyleSheet.create({
 class ClickMenu extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      display: 'flex'
+    };
     this.menuAnim = new Animated.Value(0);
-    this.newNoteAnim = new Animated.Value(0);
-    this.newQuoteAnim = new Animated.Value(0);
-    this.finishedBtnAnim = new Animated.Value(0);
-    this._animateMenu = this._animateMenu.bind(this);
+    this._showMenu = this._showMenu.bind(this);
+    this._hideMenu = this._hideMenu.bind(this);
   }
 
-  _animateMenu() {
-    Animated.parallel([
-      Animated.timing(this.newNoteAnim, {
-        duration: 250,
-        toValue: 1
-      }),
-      Animated.timing(this.newQuoteAnim, {
-        duration: 250,
-        toValue: 1
-      }),
-      Animated.timing(this.finishedBtnAnim, {
-        duration: 250,
-        toValue: 1
-      }),
-      Animated.timing(this.menuAnim, {
-        duration: 250,
-        toValue: 1
-      })
-    ]).start();
+  _showMenu() {
+    this.setState({ display: 'flex' });
+    Animated.timing(this.menuAnim, {
+      duration: 250,
+      toValue: 0
+    }).start();
+  }
+
+  _hideMenu() {
+    Animated.timing(this.menuAnim, {
+      duration: 250,
+      toValue: 1
+    }).start(() => {
+      this.setState({ display: 'none' });
+    });
   }
 
   render() {
     return (
       <Animated.View style={{
+        display: this.state.display,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        backgroundColor: this.menuAnim.interpolate({
+        opacity: this.menuAnim.interpolate({
           inputRange: [0, 1],
-          outputRange: ['#fff', '#ddd']
+          outputRange: [1, 0]
         })
       }}
       >
-        <Animated.View style={{
-          flexGrow: 1,
-          opacity: this.newNoteAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 0]
-          })
-        }}
-        >
+        <Animated.View style={{ flexGrow: 1 }}>
           <TouchableOpacity
             style={[
               styles.menuBtn,
               globalStyles.boxShadow,
               {
-                borderTopLeftRadius: 3,
+                borderTopLeftRadius: 3
               }
             ]}
-            onPress={() => { this.props.onClick('newNote'); }}
+            onPress={() => {
+              this._hideMenu();
+              this.props.onClick('newNote');
+            }}
           >
             <Icon name="pencil" size={22} color="#444" />
             <Text style={[styles.text]}>
@@ -91,43 +85,29 @@ class ClickMenu extends React.Component {
           </TouchableOpacity>
         </Animated.View>
 
-        <Animated.View style={{
-          flexGrow: 1,
-          opacity: this.newQuoteAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 0]
-          })
-        }}
-        >
+        <Animated.View style={{ flexGrow: 1 }}>
           <TouchableOpacity
             style={[
               styles.menuBtn,
               globalStyles.boxShadow,
-              {
-                borderTopLeftRadius: 3,
-              }
             ]}
-            onPress={() => { this.props.onClick('newQuote'); }}
+            onPress={() => {
+              this._hideMenu();
+              this.props.onClick('newQuote');
+            }}
           >
             <Icon name="quote" size={22} color="#444" />
             <Text style={styles.text}>New Quote</Text>
           </TouchableOpacity>
         </Animated.View>
 
-        <Animated.View style={{
-          flexGrow: 1,
-          opacity: this.finishedBtnAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 0]
-          })
-        }}
-        >
+        <Animated.View style={{ flexGrow: 1 }}>
           <TouchableOpacity
             style={[
               styles.menuBtn,
               globalStyles.boxShadow,
               {
-                borderTopLeftRadius: 3,
+                borderTopRightRadius: 3
               }
             ]}
             onPress={this._animateMenu}

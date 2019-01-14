@@ -1,12 +1,10 @@
-import axios from 'axios';
 import React from 'react';
 import {
-  Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View
+  Animated, Keyboard, StyleSheet, View
 } from 'react-native';
 import { connect } from 'react-redux';
 import tealWhiteGradient from '../../assets/images/page_backgrounds/tealWhiteGradient.png';
 import { AppStyling } from '../../assets/styles/appStyles';
-import Environment from '../../environment';
 import Carousel from '../components/Carousel';
 import ClickMenu from '../components/ClickMenu';
 import NoteInput from '../components/NoteInput';
@@ -45,10 +43,13 @@ class CurrentReadsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentBook: null
+      currentBook: null,
+      keyboardVisible: false
     };
+    this.scrollViewAnim = new Animated.Value(0);
     this._keyboardWillShow = this._keyboardWillShow.bind(this);
     this._keyboardWillHide = this._keyboardWillHide.bind(this);
+    this._handleMenuClick = this._handleMenuClick.bind(this);
   }
 
   componentDidMount() {
@@ -62,21 +63,24 @@ class CurrentReadsScreen extends React.Component {
     this.keyboardWillHideListener.remove();
   }
 
-  _keyboardWillShow() {
-
+  _keyboardWillShow(e) {
+    const { height } = e.endCoordinates;
+    this.setState({ keyboardVisible: true });
+    this.carousel.animateBookThumb(true, height);
+    Animated.timing(this.scrollViewAnim, {
+      duration: 500,
+      toValue: 1
+    }).start();
   }
 
   _keyboardWillHide() {
     this.carousel.animateBookThumb(false);
-  }
-
-
-  async _handleAddItem(content, endpoint, bookId) {
-    const userId = this.props.user.id;
-    const url = `${Environment.BASE_URL}/${endpoint}`;
-    const modelData = { content, bookId, userId };
-    const addItemResults = await axios.post(url, modelData);
-    console.log('ADD ITEM RESULTS', addItemResults.data);
+    this.setState({ keyboardVisible: false });
+    this.clickMenu._showMenu();
+    Animated.timing(this.scrollViewAnim, {
+      duration: 500,
+      toValue: 0
+    }).start();
   }
 
   updateCurrentBook(book) {
@@ -84,9 +88,7 @@ class CurrentReadsScreen extends React.Component {
   }
 
   _handleMenuClick(btn) {
-    console.log('HANDLING Note INPUT FOCUS', btn);
-    this.carousel.animateBookThumb(true);
-    this.noteInput.input.focus();
+    this.noteInput.focusInput(btn);
   }
 
   render() {
@@ -108,51 +110,62 @@ class CurrentReadsScreen extends React.Component {
       ))
     ) : null;
 
+
     return (
-      <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
-        <BackgroundImageFull image={tealWhiteGradient}>
-          <ScrollView>
-            <View style={styles.carouselContainer}>
-              <Carousel
-                items={books}
-                size="large"
-                updateCurrent={(book) => {
-                  this.updateCurrentBook(book);
-                }}
-                ref={(e) => { this.carousel = e; }}
+      <BackgroundImageFull image={tealWhiteGradient}>
+        <Animated.ScrollView
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={!this.state.keyboardVisible}
+          style={{
+            backgroundColor: this.scrollViewAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.8)']
+            })
+          }}
+        >
+          <View style={styles.carouselContainer}>
+            <Carousel
+              items={books}
+              size="large"
+              updateCurrent={(book) => {
+                this.updateCurrentBook(book);
+              }}
+              ref={(e) => { this.carousel = e; }}
+            />
+          </View>
+
+          <View style={[{
+            width: '90%',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            paddingBottom: globalStyles.paddingSm.y,
+            borderRadius: '5px',
+          }, globalStyles.boxShadow]}
+          >
+
+            <View>
+              <NoteInput
+                ref={(e) => { this.noteInput = e; }}
+                book={this.state.currentBook}
+                user={this.props.user}
+              />
+              <ClickMenu
+                onClick={(btn) => { this._handleMenuClick(btn); }}
+                ref={(e) => { this.clickMenu = e; }}
               />
             </View>
 
-            <View style={[{
+            <View style={{
               backgroundColor: 'rgba(239, 239, 239, 0.4)',
-              width: '90%',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              paddingBottom: globalStyles.paddingSm.y,
-              borderRadius: '5px',
-            }, globalStyles.boxShadow]}
+              paddingTop: globalStyles.paddingSm.y,
+              paddingBottom: globalStyles.paddingSm.y
+            }}
             >
-
-              <View>
-                <ClickMenu onClick={(btn) => { this._handleMenuClick(btn); }} />
-                <NoteInput
-                  placeholder="New Note"
-                  returnKey="Add Note"
-                  ref={(e) => { this.noteInput = e; }}
-                />
-              </View>
-
-              <View style={{
-                paddingTop: globalStyles.paddingSm.y,
-                paddingBottom: globalStyles.paddingSm.y
-              }}
-              >
-                {noteCards}
-              </View>
+              {noteCards}
             </View>
-          </ScrollView>
-        </BackgroundImageFull>
-      </TouchableWithoutFeedback>
+          </View>
+        </Animated.ScrollView>
+      </BackgroundImageFull>
     );
   }
 }

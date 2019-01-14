@@ -7,14 +7,14 @@ import {
 import { SCREEN_WIDTH, SCREEN_HEIGHT, AppStyling } from '../../assets/styles/appStyles';
 
 const appStyles = new AppStyling().getAppStyles();
-
 class Carousel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       items: [],
       currentItemIndex: 0,
-      currentOffset: 0
+      currentOffset: 0,
+      keyboardHeight: 0
     };
     this.carouselAnim = new Animated.Value(0);
     this._handleScrollEnd = this._handleScrollEnd.bind(this);
@@ -48,8 +48,9 @@ class Carousel extends React.Component {
     }
   }
 
-  animateBookThumb(shouldGrow) {
+  animateBookThumb(shouldGrow, keyboardHeight) {
     if (shouldGrow) {
+      this.setState({ keyboardHeight });
       Animated.timing(this.carouselAnim, {
         duration: 500,
         toValue: 1
@@ -63,7 +64,7 @@ class Carousel extends React.Component {
   }
 
   render() {
-    const { items } = this.state;
+    const { items, keyboardHeight } = this.state;
     const itemsMapped = (items) ? items.map((item) => (
       <Animated.View
         key={item.id}
@@ -88,18 +89,24 @@ class Carousel extends React.Component {
               borderWidth: 2,
               borderColor: '#fff',
               borderRadius: 5,
+              height: this.carouselAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [SCREEN_HEIGHT * 0.45, SCREEN_HEIGHT - keyboardHeight]
+              }),
               width: this.carouselAnim.interpolate({
                 inputRange: [0, 1],
                 outputRange: [(SCREEN_HEIGHT * 0.45) * 0.649, SCREEN_WIDTH]
               }),
-              height: SCREEN_HEIGHT * 0.45
+              opacity: this.carouselAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0.2]
+              })
             }]}
           source={{ uri: item.thumbnail, cache: 'force-cache' }}
           resizeMode="cover"
         />
       </Animated.View>
     )) : <Text>No Items</Text>;
-
     return (
       <ScrollView
         horizontal={true}
