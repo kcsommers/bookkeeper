@@ -5,10 +5,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import Environment from '../../environment';
-import { AppStyling, SCREEN_HEIGHT } from '../../assets/styles/appStyles';
+import { appStyles, SCREEN_HEIGHT, normalizeFont } from '../../assets/styles/appStyles';
 
-const AppStyles = new AppStyling();
-const globalStyles = AppStyles.getAppStyles();
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
@@ -21,7 +19,7 @@ const styles = StyleSheet.create({
     color: '#444',
     borderRadius: 3,
     height: '100%',
-    fontSize: AppStyles.normalizeFont(16)
+    fontSize: normalizeFont(16)
   }
 });
 
@@ -29,7 +27,6 @@ class NoteInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputType: '',
       value: ''
     };
     this.inputAnim = new Animated.Value(0);
@@ -40,7 +37,7 @@ class NoteInput extends React.Component {
 
   getInputInfo() {
     return (
-      (this.state.inputType === 'newNote')
+      (this.props.type === 'New Note')
         ? {
           placeholder: 'New Note', iconName: 'pencil', buttonText: 'Add Note', endpoint: 'notes'
         }
@@ -50,8 +47,7 @@ class NoteInput extends React.Component {
     );
   }
 
-  focusInput(inputType) {
-    this.setState({ inputType });
+  focusInput() {
     this.input.focus();
   }
 
@@ -75,6 +71,7 @@ class NoteInput extends React.Component {
 
   async _addNote(endpoint) {
     if (this.state.value) {
+      this.input.blur();
       const bookId = this.props.book.id;
       const content = this.state.value;
       const userId = this.props.user.id;
@@ -82,10 +79,9 @@ class NoteInput extends React.Component {
       const modelData = { content, bookId, userId };
       const addNoteResults = await axios.post(url, modelData);
       if (!addNoteResults.data.error) {
-        console.log('ADD NOTE RESULTS', addNoteResults.data);
-        this.input.blur();
+        this.props.onSubmit({ data: addNoteResults.data, error: null });
       } else {
-        console.log('ERROR CREATING NOTE', addNoteResults.data.error);
+        this.props.onSubmit({ data: null, error: addNoteResults.data.error });
       }
     } else {
       console.log('NO NOTE VALUE');
@@ -98,7 +94,7 @@ class NoteInput extends React.Component {
     } = this.getInputInfo();
 
     return (
-      <Animated.View style={[styles.container, globalStyles.boxShadow, {
+      <Animated.View style={[styles.container, appStyles.boxShadow, {
         height: this.inputAnim.interpolate({
           inputRange: [0, 1],
           outputRange: [0, SCREEN_HEIGHT * 0.3]
@@ -116,19 +112,19 @@ class NoteInput extends React.Component {
         <Animated.View style={[{
           paddingTop: this.inputAnim.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, globalStyles.paddingMd.y]
+            outputRange: [0, appStyles.paddingMd.y]
           }),
           paddingBottom: this.inputAnim.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, globalStyles.paddingMd.y]
+            outputRange: [0, appStyles.paddingMd.y]
           }),
           paddingLeft: this.inputAnim.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, globalStyles.paddingMd.x]
+            outputRange: [0, appStyles.paddingMd.x]
           }),
           paddingRight: this.inputAnim.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, globalStyles.paddingMd.x]
+            outputRange: [0, appStyles.paddingMd.x]
           }),
         }]}
         >
@@ -162,17 +158,17 @@ class NoteInput extends React.Component {
         </Animated.View>
         <TouchableOpacity
           onPress={() => { this._addNote(endpoint); }}
-          style={[globalStyles.boxShadow, {
+          style={[appStyles.boxShadow, {
             backgroundColor: '#fff',
             alignItems: 'center',
-            paddingTop: globalStyles.paddingMd.y,
-            paddingBottom: globalStyles.paddingMd.y,
+            paddingTop: appStyles.paddingMd.y,
+            paddingBottom: appStyles.paddingMd.y,
             borderRadius: 3
           }]}
         >
           <Text style={{
             fontFamily: 'Merriweather',
-            fontSize: AppStyles.normalizeFont(16),
+            fontSize: normalizeFont(16),
             color: '#444'
           }}
           >

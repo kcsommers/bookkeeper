@@ -3,10 +3,10 @@ import Moment from 'react-moment';
 import {
   View, Text, StyleSheet, TouchableOpacity, Animated
 } from 'react-native';
-import { AppStyling, SCREEN_HEIGHT, SCREEN_WIDTH } from '../../assets/styles/appStyles';
+import {
+  appStyles, normalizeFont, SCREEN_HEIGHT, SCREEN_WIDTH
+} from '../../assets/styles/appStyles';
 
-const AppStyles = new AppStyling();
-const globalStyles = AppStyles.getAppStyles();
 const styles = StyleSheet.create({
   container: {
     borderWidth: 2,
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     borderRadius: 3
   },
   text: {
-    fontSize: AppStyles.normalizeFont(14),
+    fontSize: normalizeFont(14),
     fontFamily: 'Merriweather'
   }
 });
@@ -44,7 +44,7 @@ class TextCard extends React.Component {
 
   render() {
     return (
-      <Animated.View style={[styles.container, globalStyles.boxShadow, {
+      <Animated.View style={[styles.container, appStyles.boxShadow, {
         opacity: this.cardAnim.interpolate({
           inputRange: [0, 1],
           outputRange: [0, 1]
@@ -60,7 +60,7 @@ class TextCard extends React.Component {
           }}
           >
             <Text style={{
-              fontSize: AppStyles.normalizeFont(12)
+              fontSize: normalizeFont(12)
             }}
             >
               added
@@ -69,7 +69,7 @@ class TextCard extends React.Component {
                 element={Text}
                 fromNowDuring={2.628e+9}
                 style={{
-                  fontSize: AppStyles.normalizeFont(12)
+                  fontSize: normalizeFont(12)
                 }}
               >
                 {this.props.item.createdAt}

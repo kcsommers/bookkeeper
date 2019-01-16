@@ -6,12 +6,10 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import logo from '../../assets/images/logo.png';
-import { AppStyling, SCREEN_HEIGHT } from '../../assets/styles/appStyles';
+import { normalizeFont, SCREEN_HEIGHT } from '../../assets/styles/appStyles';
 import Environment from '../../environment';
 import { setUser } from '../redux/actions/userActions';
 import Input from '../widgets/Input';
-
-const AppStyles = new AppStyling();
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -35,7 +33,7 @@ const styles = StyleSheet.create({
   },
   submitBtnText: {
     color: '#fefefe',
-    fontSize: AppStyles.normalizeFont(22)
+    fontSize: normalizeFont(22)
   },
 });
 

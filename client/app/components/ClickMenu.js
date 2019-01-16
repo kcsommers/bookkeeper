@@ -6,16 +6,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import { AppStyling } from '../../assets/styles/appStyles';
-
-const AppStyles = new AppStyling();
-const globalStyles = AppStyles.getAppStyles();
+import { appStyles } from '../../assets/styles/appStyles';
 
 const styles = StyleSheet.create({
   menuBtn: {
     alignItems: 'center',
-    paddingTop: globalStyles.paddingMd.y,
-    paddingBottom: globalStyles.paddingMd.y,
+    paddingTop: appStyles.paddingMd.y,
+    paddingBottom: appStyles.paddingMd.y,
     backgroundColor: '#fff'
   },
   text: {
@@ -68,14 +65,14 @@ class ClickMenu extends React.Component {
           <TouchableOpacity
             style={[
               styles.menuBtn,
-              globalStyles.boxShadow,
+              appStyles.boxShadow,
               {
                 borderTopLeftRadius: 3
               }
             ]}
             onPress={() => {
               this._hideMenu();
-              this.props.onClick('newNote');
+              this.props.onClick('New Note');
             }}
           >
             <Icon name="pencil" size={22} color="#444" />
@@ -89,11 +86,11 @@ class ClickMenu extends React.Component {
           <TouchableOpacity
             style={[
               styles.menuBtn,
-              globalStyles.boxShadow,
+              appStyles.boxShadow,
             ]}
             onPress={() => {
               this._hideMenu();
-              this.props.onClick('newQuote');
+              this.props.onClick('New Quote');
             }}
           >
             <Icon name="quote" size={22} color="#444" />
@@ -105,7 +102,7 @@ class ClickMenu extends React.Component {
           <TouchableOpacity
             style={[
               styles.menuBtn,
-              globalStyles.boxShadow,
+              appStyles.boxShadow,
               {
                 borderTopRightRadius: 3
               }

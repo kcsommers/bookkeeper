@@ -4,9 +4,8 @@ import {
   Text,
   Animated
 } from 'react-native';
-import { SCREEN_WIDTH, SCREEN_HEIGHT, AppStyling } from '../../assets/styles/appStyles';
+import { SCREEN_WIDTH, SCREEN_HEIGHT, appStyles } from '../../assets/styles/appStyles';
 
-const appStyles = new AppStyling().getAppStyles();
 class Carousel extends React.Component {
   constructor(props) {
     super(props);
@@ -46,6 +45,10 @@ class Carousel extends React.Component {
         currentOffset: newOffset
       });
     }
+  }
+
+  _animateGrow(keyboardHeight) {
+
   }
 
   animateBookThumb(shouldGrow, keyboardHeight) {

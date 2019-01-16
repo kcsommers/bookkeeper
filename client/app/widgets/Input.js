@@ -2,14 +2,9 @@ import React from 'react';
 import {
   TextInput,
   View,
-  StyleSheet,
-  Dimensions
+  StyleSheet
 } from 'react-native';
-import { AppStyling } from '../../assets/styles/appStyles';
-
-const { height } = Dimensions.get('window');
-const AppStyles = new AppStyling();
-const globalStyles = AppStyles.getAppStyles();
+import { appStyles, SCREEN_HEIGHT, normalizeFont } from '../../assets/styles/appStyles';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,16 +14,16 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch'
   },
   input: {
-    fontSize: AppStyles.normalizeFont(15),
+    fontSize: normalizeFont(15),
     color: '#fefefe'
   }
 });
 
 const Input = (props) => {
   return (
-    <View style={[styles.container, globalStyles.boxShadow, {
-      marginTop: height * 0.005,
-      marginBottom: height * 0.015,
+    <View style={[styles.container, appStyles.boxShadow, {
+      marginTop: SCREEN_HEIGHT * 0.005,
+      marginBottom: SCREEN_HEIGHT * 0.015,
     }]}
     >
       <TextInput

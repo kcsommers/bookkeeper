@@ -1,9 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { AppStyling, SCREEN_HEIGHT } from '../../assets/styles/appStyles';
-
-const AppStyles = new AppStyling();
-const globalStyles = AppStyles.getAppStyles();
+import { appStyles, SCREEN_HEIGHT, normalizeFont } from '../../assets/styles/appStyles';
 
 const colors = {
   primary: '#fff',
@@ -19,7 +16,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#444',
     textAlign: 'center',
-    fontSize: AppStyles.normalizeFont(15),
+    fontSize: normalizeFont(15),
     fontFamily: 'Merriweather'
   }
 });
@@ -28,7 +25,7 @@ class TouchButton extends React.Component {
   render() {
     return (
       <TouchableOpacity
-        style={[styles.button, globalStyles.boxShadow, {
+        style={[styles.button, appStyles.boxShadow, {
           backgroundColor: colors[this.props.type]
         }]}
         onPress={this.props.handlePress}

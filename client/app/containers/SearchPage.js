@@ -1,21 +1,20 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
-  Dimensions,
+  View
 } from 'react-native';
 import axios from 'axios';
 import Input from '../widgets/Input';
 import BackgroundImageFull from '../widgets/BackgroundImageFull';
 import TouchButton from '../widgets/TouchButton';
 
-const screenWidth = Dimensions.get('window').width;
+import { SCREEN_WIDTH } from '../../assets/styles/appStyles';
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flex: 1,
-    width: screenWidth,
+    width: SCREEN_WIDTH,
     position: 'relative'
   }
 });
@@ -42,7 +41,7 @@ class SearchPage extends React.Component {
     }
   }
 
-  _handleChange(value, field) {
+  _handleChange(value) {
     this.setState({ searchTerm: value });
   }
 

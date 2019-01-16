@@ -4,34 +4,46 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import tealWhiteGradient from '../../assets/images/page_backgrounds/tealWhiteGradient.png';
-import { AppStyling } from '../../assets/styles/appStyles';
+import { appStyles } from '../../assets/styles/appStyles';
 import Carousel from '../components/Carousel';
 import ClickMenu from '../components/ClickMenu';
 import NoteInput from '../components/NoteInput';
 import TextCard from '../components/TextCard';
+import Alert from '../components/Alert';
 import BackgroundImageFull from '../widgets/BackgroundImageFull';
-
-const AppStyles = new AppStyling();
-const globalStyles = AppStyles.getAppStyles();
 
 const styles = StyleSheet.create({
   carouselContainer: {
     alignSelf: 'stretch',
     alignItems: 'center'
   },
+  menuContainer: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '90%',
+  },
+  noteCardsContainer: {
+    backgroundColor: 'rgba(239, 239, 239, 0.4)',
+    paddingTop: appStyles.paddingSm.y,
+    paddingBottom: appStyles.paddingSm.y,
+    width: '90%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: appStyles.paddingMd.y
+  },
   noteCardWrapper: {
-    paddingTop: globalStyles.paddingSm.y,
-    paddingBottom: globalStyles.paddingSm.y,
-    marginBottom: globalStyles.paddingSm.y,
-    marginTop: globalStyles.paddingSm.y,
+    paddingTop: appStyles.paddingSm.y,
+    paddingBottom: appStyles.paddingSm.y,
+    marginBottom: appStyles.paddingSm.y,
+    marginTop: appStyles.paddingSm.y,
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '90%'
   },
   menuBtn: {
     alignItems: 'center',
-    paddingTop: globalStyles.paddingMd.y,
-    paddingBottom: globalStyles.paddingMd.y,
+    paddingTop: appStyles.paddingMd.y,
+    paddingBottom: appStyles.paddingMd.y,
     backgroundColor: '#fff'
   },
   input: {
@@ -44,12 +56,18 @@ class CurrentReadsScreen extends React.Component {
     super(props);
     this.state = {
       currentBook: null,
-      keyboardVisible: false
+      clickedMenuBtn: '',
+      keyboardVisible: false,
+      showAlert: false,
+      alertContent: null
     };
-    this.scrollViewAnim = new Animated.Value(0);
+    this.screenAnim = new Animated.Value(0);
     this._keyboardWillShow = this._keyboardWillShow.bind(this);
     this._keyboardWillHide = this._keyboardWillHide.bind(this);
     this._handleMenuClick = this._handleMenuClick.bind(this);
+    this._handleAddNote = this._handleAddNote.bind(this);
+    this._removeAlert = this._removeAlert.bind(this);
+    this._getAlertContent = this._getAlertContent.bind(this);
   }
 
   componentDidMount() {
@@ -67,7 +85,7 @@ class CurrentReadsScreen extends React.Component {
     const { height } = e.endCoordinates;
     this.setState({ keyboardVisible: true });
     this.carousel.animateBookThumb(true, height);
-    Animated.timing(this.scrollViewAnim, {
+    Animated.timing(this.screenAnim, {
       duration: 500,
       toValue: 1
     }).start();
@@ -77,7 +95,7 @@ class CurrentReadsScreen extends React.Component {
     this.carousel.animateBookThumb(false);
     this.setState({ keyboardVisible: false });
     this.clickMenu._showMenu();
-    Animated.timing(this.scrollViewAnim, {
+    Animated.timing(this.screenAnim, {
       duration: 500,
       toValue: 0
     }).start();
@@ -88,7 +106,32 @@ class CurrentReadsScreen extends React.Component {
   }
 
   _handleMenuClick(btn) {
+    this.setState({ clickedMenuBtn: btn });
+    if (this.scrollView) {
+      this.scrollView.getNode().scrollTo({ x: 0, y: 0, animated: true });
+    }
     this.noteInput.focusInput(btn);
+  }
+
+  _removeAlert() {
+    this.setState({ showAlert: false });
+  }
+
+  _getAlertContent() {
+    const { clickedMenuBtn } = this.state;
+    if (clickedMenuBtn === 'New Note') {
+      return { message: 'Note Added', icon: 'check' };
+    } if (clickedMenuBtn === 'New Quote') {
+      return { message: 'Quote Added', icon: 'check' };
+    }
+    return { message: 'What the hell did you just add?', icon: 'bug' };
+  }
+
+  _handleAddNote(results) {
+    if (results.data) {
+      const alertContent = this._getAlertContent();
+      this.setState({ showAlert: true, alertContent });
+    }
   }
 
   render() {
@@ -110,19 +153,23 @@ class CurrentReadsScreen extends React.Component {
       ))
     ) : null;
 
+    const alert = (this.state.showAlert)
+      ? <Alert onFinish={this._removeAlert} content={this.state.alertContent} /> : null;
 
     return (
       <BackgroundImageFull image={tealWhiteGradient}>
         <Animated.ScrollView
+          ref={(e) => { this.scrollView = e; }}
           keyboardShouldPersistTaps="handled"
           scrollEnabled={!this.state.keyboardVisible}
           style={{
-            backgroundColor: this.scrollViewAnim.interpolate({
+            backgroundColor: this.screenAnim.interpolate({
               inputRange: [0, 1],
               outputRange: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.8)']
             })
           }}
         >
+
           <View style={styles.carouselContainer}>
             <Carousel
               items={books}
@@ -134,37 +181,31 @@ class CurrentReadsScreen extends React.Component {
             />
           </View>
 
-          <View style={[{
-            width: '90%',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            paddingBottom: globalStyles.paddingSm.y,
-            borderRadius: '5px',
-          }, globalStyles.boxShadow]}
-          >
-
-            <View>
-              <NoteInput
-                ref={(e) => { this.noteInput = e; }}
-                book={this.state.currentBook}
-                user={this.props.user}
-              />
-              <ClickMenu
-                onClick={(btn) => { this._handleMenuClick(btn); }}
-                ref={(e) => { this.clickMenu = e; }}
-              />
-            </View>
-
-            <View style={{
-              backgroundColor: 'rgba(239, 239, 239, 0.4)',
-              paddingTop: globalStyles.paddingSm.y,
-              paddingBottom: globalStyles.paddingSm.y
-            }}
-            >
-              {noteCards}
-            </View>
+          <View style={styles.menuContainer}>
+            <NoteInput
+              ref={(e) => { this.noteInput = e; }}
+              book={this.state.currentBook}
+              user={this.props.user}
+              type={this.state.clickedMenuBtn}
+              onSubmit={(results) => this._handleAddNote(results)}
+            />
+            <ClickMenu
+              onClick={(btn) => { this._handleMenuClick(btn); }}
+              ref={(e) => { this.clickMenu = e; }}
+            />
           </View>
+
+          <Animated.View style={[styles.noteCardsContainer, {
+            opacity: this.screenAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [1, 0]
+            })
+          }]}
+          >
+            {noteCards}
+          </Animated.View>
         </Animated.ScrollView>
+        {alert}
       </BackgroundImageFull>
     );
   }

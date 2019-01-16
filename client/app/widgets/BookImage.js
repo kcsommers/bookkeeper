@@ -3,9 +3,7 @@ import {
   Image
 } from 'react-native';
 
-import { AppStyling } from '../../assets/styles/appStyles';
-
-const appStyles = new AppStyling().getAppStyles();
+import { appStyles } from '../../assets/styles/appStyles';
 
 class BookImage extends React.Component {
   render() {
