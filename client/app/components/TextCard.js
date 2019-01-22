@@ -12,10 +12,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'rgba(0, 0, 0, 0)',
     backgroundColor: '#fff',
-    paddingLeft: SCREEN_WIDTH * 0.03,
-    paddingRight: SCREEN_WIDTH * 0.03,
-    paddingTop: SCREEN_HEIGHT * 0.02,
-    paddingBottom: SCREEN_HEIGHT * 0.02,
+    paddingLeft: appStyles.paddingMd.x,
+    paddingRight: appStyles.paddingMd.x,
+    paddingTop: appStyles.paddingMd.y,
+    paddingBottom: appStyles.paddingMd.y,
     alignSelf: 'stretch',
     borderRadius: 3
   },
@@ -29,6 +29,7 @@ class TextCard extends React.Component {
   constructor(props) {
     super(props);
     this.cardAnim = new Animated.Value(0);
+    this._handlePress = this._handlePress.bind(this);
   }
 
   componentDidMount() {
@@ -38,20 +39,29 @@ class TextCard extends React.Component {
     }).start();
   }
 
-  componentWillUnmount() {
-
+  _handlePress() {
+    this.container.getNode().measure((a, b, width, height, px, py) => {
+      console.log('MEASURE?', a, b, width, height, px, py);
+    });
+    this.props.handlePress();
   }
 
   render() {
     return (
-      <Animated.View style={[styles.container, appStyles.boxShadow, {
-        opacity: this.cardAnim.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1]
-        })
-      }]}
+      <Animated.View
+        style={[
+          styles.container,
+          appStyles.boxShadow,
+          {
+            opacity: this.cardAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 1]
+            }),
+          }
+        ]}
+        ref={(e) => { this.container = e; }}
       >
-        <TouchableOpacity>
+        <TouchableOpacity onPress={this._handlePress}>
           <View style={{
             borderBottomWidth: 1,
             borderBottomColor: '#444',

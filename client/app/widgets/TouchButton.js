@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: 'stretch',
     borderRadius: 3,
-    padding: SCREEN_HEIGHT * 0.03
+    padding: appStyles.paddingMd.y,
   },
   text: {
     color: '#444',

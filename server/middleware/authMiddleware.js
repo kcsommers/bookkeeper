@@ -75,7 +75,11 @@ const verifyToken = (req, res, next) => {
               model: db.book,
               include: [db.note, db.quote]
             }]
-          }]
+          }],
+          order: [
+            [db.list, db.book, db.note, 'createdAt', 'DESC'],
+            [db.list, db.book, db.quote, 'createdAt', 'DESC']
+          ]
         }).then((authUser) => {
           const user = authUser.dataValues;
           delete user.password;

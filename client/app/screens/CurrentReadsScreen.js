@@ -8,8 +8,9 @@ import { appStyles } from '../../assets/styles/appStyles';
 import Carousel from '../components/Carousel';
 import ClickMenu from '../components/ClickMenu';
 import NoteInput from '../components/NoteInput';
-import TextCard from '../components/TextCard';
 import Alert from '../components/Alert';
+import NoteCardsContainer from '../containers/NoteCardsContainer';
+import Overlay from '../widgets/Overlay';
 import BackgroundImageFull from '../widgets/BackgroundImageFull';
 
 const styles = StyleSheet.create({
@@ -21,24 +22,6 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '90%',
-  },
-  noteCardsContainer: {
-    backgroundColor: 'rgba(239, 239, 239, 0.4)',
-    paddingTop: appStyles.paddingSm.y,
-    paddingBottom: appStyles.paddingSm.y,
-    width: '90%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginBottom: appStyles.paddingMd.y
-  },
-  noteCardWrapper: {
-    paddingTop: appStyles.paddingSm.y,
-    paddingBottom: appStyles.paddingSm.y,
-    marginBottom: appStyles.paddingSm.y,
-    marginTop: appStyles.paddingSm.y,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    width: '90%'
   },
   menuBtn: {
     alignItems: 'center',
@@ -68,6 +51,8 @@ class CurrentReadsScreen extends React.Component {
     this._handleAddNote = this._handleAddNote.bind(this);
     this._removeAlert = this._removeAlert.bind(this);
     this._getAlertContent = this._getAlertContent.bind(this);
+    this._triggerOverlay = this._triggerOverlay.bind(this);
+    this._hideOverlay = this._hideOverlay.bind(this);
   }
 
   componentDidMount() {
@@ -127,6 +112,14 @@ class CurrentReadsScreen extends React.Component {
     return { message: 'What the hell did you just add?', icon: 'bug' };
   }
 
+  _triggerOverlay() {
+    this.setState({ overlayVisible: true });
+  }
+
+  _hideOverlay() {
+    this.setState({ overlayVisible: false });
+  }
+
   _handleAddNote(results) {
     if (results.data) {
       const alertContent = this._getAlertContent();
@@ -145,20 +138,25 @@ class CurrentReadsScreen extends React.Component {
         }
       });
     });
-    const noteCards = (this.state.currentBook) ? (
-      this.state.currentBook.notes.map((note) => (
-        <View key={note.id} style={styles.noteCardWrapper}>
-          <TextCard item={note} />
-        </View>
-      ))
-    ) : null;
 
     const alert = (this.state.showAlert)
       ? <Alert onFinish={this._removeAlert} content={this.state.alertContent} /> : null;
 
+    const overlay = (this.state.overlayVisible)
+      ? (
+        <Overlay
+          isVisible={this.state.overlayVisible}
+          handleFadeFinish={this._hideOverlay}
+        />
+      ) : null;
+
     return (
       <BackgroundImageFull image={tealWhiteGradient}>
         <Animated.ScrollView
+          contentContainerStyle={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
           ref={(e) => { this.scrollView = e; }}
           keyboardShouldPersistTaps="handled"
           scrollEnabled={!this.state.keyboardVisible}
@@ -194,16 +192,12 @@ class CurrentReadsScreen extends React.Component {
               ref={(e) => { this.clickMenu = e; }}
             />
           </View>
-
-          <Animated.View style={[styles.noteCardsContainer, {
-            opacity: this.screenAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 0]
-            })
-          }]}
-          >
-            {noteCards}
-          </Animated.View>
+          <NoteCardsContainer
+            currentBook={this.state.currentBook}
+            showAsFullScreen={this.state.overlayVisible}
+            handleCardPress={this._triggerOverlay}
+          />
+          {overlay}
         </Animated.ScrollView>
         {alert}
       </BackgroundImageFull>

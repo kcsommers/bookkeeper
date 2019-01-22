@@ -40,5 +40,18 @@ export const appStyles = {
   paddingLg: {
     x: SCREEN_WIDTH * 0.06,
     y: SCREEN_HEIGHT * 0.04
+  },
+  buttonOutline: {
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 1, height: 2 },
+    shadowRadius: 2,
+    paddingTop: SCREEN_HEIGHT * 0.007,
+    paddingBottom: SCREEN_HEIGHT * 0.007
   }
 };

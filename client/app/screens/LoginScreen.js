@@ -121,7 +121,6 @@ class LoginScreen extends React.Component {
   }
 
   _handleChange(value, field) {
-    console.log('CHANGING');
     this.setState({ [field]: value });
   }
 

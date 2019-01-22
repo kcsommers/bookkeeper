@@ -22,7 +22,11 @@ const localCallback = (username, password, done) => {
         model: db.book,
         include: [db.note, db.quote]
       }]
-    }]
+    }],
+    order: [
+      [db.list, db.book, db.note, 'createdAt', 'DESC'],
+      [db.list, db.book, db.quote, 'createdAt', 'DESC']
+    ]
   }).then((user) => {
     if (!user) {
       console.log('NO USER OR BAD PASSWORD');
