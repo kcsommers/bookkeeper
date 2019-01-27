@@ -8,13 +8,13 @@ import Input from '../widgets/Input';
 import BackgroundImageFull from '../widgets/BackgroundImageFull';
 import TouchButton from '../widgets/TouchButton';
 
-import { SCREEN_WIDTH } from '../../assets/styles/appStyles';
+import { appStyles } from '../../assets/styles/appStyles';
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flex: 1,
-    width: SCREEN_WIDTH,
+    width: appStyles.widthPcts.full,
     position: 'relative'
   }
 });

@@ -10,8 +10,8 @@ import ClickMenu from '../components/ClickMenu';
 import NoteInput from '../components/NoteInput';
 import Alert from '../components/Alert';
 import NoteCardsContainer from '../containers/NoteCardsContainer';
-import Overlay from '../widgets/Overlay';
 import BackgroundImageFull from '../widgets/BackgroundImageFull';
+import Overlay from '../widgets/Overlay';
 
 const styles = StyleSheet.create({
   carouselContainer: {
@@ -42,7 +42,9 @@ class CurrentReadsScreen extends React.Component {
       clickedMenuBtn: '',
       keyboardVisible: false,
       showAlert: false,
-      alertContent: null
+      alertContent: null,
+      overlayVisible: false,
+      overlayContent: null
     };
     this.screenAnim = new Animated.Value(0);
     this._keyboardWillShow = this._keyboardWillShow.bind(this);
@@ -51,7 +53,7 @@ class CurrentReadsScreen extends React.Component {
     this._handleAddNote = this._handleAddNote.bind(this);
     this._removeAlert = this._removeAlert.bind(this);
     this._getAlertContent = this._getAlertContent.bind(this);
-    this._triggerOverlay = this._triggerOverlay.bind(this);
+    this._handleCardPress = this._handleCardPress.bind(this);
     this._hideOverlay = this._hideOverlay.bind(this);
   }
 
@@ -112,14 +114,6 @@ class CurrentReadsScreen extends React.Component {
     return { message: 'What the hell did you just add?', icon: 'bug' };
   }
 
-  _triggerOverlay() {
-    this.setState({ overlayVisible: true });
-  }
-
-  _hideOverlay() {
-    this.setState({ overlayVisible: false });
-  }
-
   _handleAddNote(results) {
     if (results.data) {
       const alertContent = this._getAlertContent();
@@ -127,10 +121,43 @@ class CurrentReadsScreen extends React.Component {
     }
   }
 
+  _hideOverlay() {
+    this.setState({
+      overlayVisible: false,
+      overlayContent: null
+    });
+  }
+
+  _handleCardPress(cardData) {
+    this.setState({
+      overlayVisible: true,
+      overlayContent: {
+        type: 'noteCard',
+        data: cardData
+      }
+    });
+  }
+
   render() {
     const { user } = this.props;
     const { lists } = user;
     const books = [];
+    const overlay = (this.state.overlayVisible)
+      ? (
+        <Overlay
+          content={this.state.overlayContent}
+          onFadeFinish={this._hideOverlay}
+        />
+      ) : null;
+
+    const alert = (this.state.showAlert)
+      ? (
+        <Alert
+          onFinish={this._removeAlert}
+          content={this.state.alertContent}
+        />
+      ) : null;
+
     lists.forEach((list) => {
       list.books.forEach((book) => {
         if (book.current) {
@@ -138,17 +165,6 @@ class CurrentReadsScreen extends React.Component {
         }
       });
     });
-
-    const alert = (this.state.showAlert)
-      ? <Alert onFinish={this._removeAlert} content={this.state.alertContent} /> : null;
-
-    const overlay = (this.state.overlayVisible)
-      ? (
-        <Overlay
-          isVisible={this.state.overlayVisible}
-          handleFadeFinish={this._hideOverlay}
-        />
-      ) : null;
 
     return (
       <BackgroundImageFull image={tealWhiteGradient}>
@@ -194,12 +210,11 @@ class CurrentReadsScreen extends React.Component {
           </View>
           <NoteCardsContainer
             currentBook={this.state.currentBook}
-            showAsFullScreen={this.state.overlayVisible}
-            handleCardPress={this._triggerOverlay}
+            onCardPress={this._handleCardPress}
           />
-          {overlay}
         </Animated.ScrollView>
         {alert}
+        {overlay}
       </BackgroundImageFull>
     );
   }

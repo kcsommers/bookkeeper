@@ -4,7 +4,7 @@ import {
   Text,
   Animated
 } from 'react-native';
-import { SCREEN_WIDTH, SCREEN_HEIGHT, appStyles } from '../../assets/styles/appStyles';
+import { SCREEN_HEIGHT, appStyles } from '../../assets/styles/appStyles';
 
 class Carousel extends React.Component {
   constructor(props) {
@@ -47,10 +47,6 @@ class Carousel extends React.Component {
     }
   }
 
-  _animateGrow(keyboardHeight) {
-
-  }
-
   animateBookThumb(shouldGrow, keyboardHeight) {
     if (shouldGrow) {
       this.setState({ keyboardHeight });
@@ -74,7 +70,7 @@ class Carousel extends React.Component {
         style={[{
           alignSelf: 'stretch',
           alignItems: 'center',
-          width: SCREEN_WIDTH,
+          width: appStyles.widthPcts.full,
           paddingTop: this.carouselAnim.interpolate({
             inputRange: [0, 1],
             outputRange: [appStyles.paddingLg.y, 0]
@@ -98,7 +94,7 @@ class Carousel extends React.Component {
               }),
               width: this.carouselAnim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [(SCREEN_HEIGHT * 0.45) * 0.649, SCREEN_WIDTH]
+                outputRange: [(SCREEN_HEIGHT * 0.45) * 0.649, appStyles.widthPcts.full]
               }),
               opacity: this.carouselAnim.interpolate({
                 inputRange: [0, 1],

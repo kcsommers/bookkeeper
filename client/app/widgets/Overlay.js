@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Animated, TouchableWithoutFeedback
 } from 'react-native';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../assets/styles/appStyles';
+import { appStyles } from '../../assets/styles/appStyles';
+import TextCard from '../components/TextCard';
 
 class Overlay extends React.Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class Overlay extends React.Component {
       duration: 500,
       toValue: 0
     }).start(() => {
-      this.props.handleFadeFinish();
+      this.props.onFadeFinish();
     });
   }
 
@@ -32,8 +33,8 @@ class Overlay extends React.Component {
       <TouchableWithoutFeedback onPress={this._fadeOut}>
         <Animated.View style={[{
           position: 'absolute',
-          width: SCREEN_WIDTH,
-          height: SCREEN_HEIGHT,
+          width: appStyles.widthPcts.full,
+          height: appStyles.heightPcts.full,
           backgroundColor: '#222',
           zIndex: 900,
           opacity: this.overlayAnim.interpolate({
@@ -41,7 +42,9 @@ class Overlay extends React.Component {
             outputRange: [0, 0.9]
           })
         }]}
-        />
+        >
+          <TextCard item={this.props.content.data} />
+        </Animated.View>
       </TouchableWithoutFeedback>
     );
   }

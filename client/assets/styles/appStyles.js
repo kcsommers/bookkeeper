@@ -29,6 +29,17 @@ export const appStyles = {
     shadowOffset: { width: 1, height: 2 },
     shadowRadius: 2,
   },
+  widthPcts: {
+    full: SCREEN_WIDTH,
+    ninety: SCREEN_WIDTH * 0.9,
+    eightyFive: SCREEN_WIDTH * 0.85,
+    eighty: SCREEN_WIDTH * 0.8,
+    seventyFive: SCREEN_WIDTH * 0.75
+  },
+  heightPcts: {
+    full: SCREEN_HEIGHT,
+    thirtyFive: SCREEN_HEIGHT * 0.35
+  },
   paddingSm: {
     x: SCREEN_WIDTH * 0.02,
     y: SCREEN_HEIGHT * 0.007,

@@ -4,7 +4,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity, Animated
 } from 'react-native';
 import {
-  appStyles, normalizeFont, SCREEN_HEIGHT, SCREEN_WIDTH
+  appStyles, normalizeFont, SCREEN_HEIGHT
 } from '../../assets/styles/appStyles';
 
 const styles = StyleSheet.create({
@@ -28,8 +28,13 @@ const styles = StyleSheet.create({
 class TextCard extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      cardStyle: {
+        position: 'static',
+        width: '100%'
+      }
+    };
     this.cardAnim = new Animated.Value(0);
-    this._handlePress = this._handlePress.bind(this);
   }
 
   componentDidMount() {
@@ -39,55 +44,54 @@ class TextCard extends React.Component {
     }).start();
   }
 
-  _handlePress() {
-    this.container.getNode().measure((a, b, width, height, px, py) => {
-      console.log('MEASURE?', a, b, width, height, px, py);
-    });
-    this.props.handlePress();
+  fadeOut() {
+    Animated.timing(this.cardAnim, {
+      duration: 700,
+      toValue: 0
+    }).start();
   }
 
   render() {
+    const { cardStyle } = this.state;
+    const { createdAt, content } = this.props.item;
     return (
       <Animated.View
+        ref={(e) => { this.container = e; }}
         style={[
           styles.container,
           appStyles.boxShadow,
+          cardStyle,
           {
             opacity: this.cardAnim.interpolate({
               inputRange: [0, 1],
               outputRange: [0, 1]
-            }),
+            })
           }
         ]}
-        ref={(e) => { this.container = e; }}
       >
-        <TouchableOpacity onPress={this._handlePress}>
-          <View style={{
-            borderBottomWidth: 1,
-            borderBottomColor: '#444',
-            marginBottom: SCREEN_HEIGHT * 0.02,
-            paddingBottom: SCREEN_HEIGHT * 0.007
-          }}
-          >
-            <Text style={{
-              fontSize: normalizeFont(12)
+        <TouchableOpacity onPress={() => { this.props.onPress(this.props.item); }}>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: '#444',
+              marginBottom: SCREEN_HEIGHT * 0.02,
+              paddingBottom: SCREEN_HEIGHT * 0.007
             }}
-            >
+          >
+            <Text style={{ fontSize: normalizeFont(12) }}>
               added
               {' '}
               <Moment
                 element={Text}
                 fromNowDuring={2.628e+9}
-                style={{
-                  fontSize: normalizeFont(12)
-                }}
+                style={{ fontSize: normalizeFont(12) }}
               >
-                {this.props.item.createdAt}
+                {createdAt}
               </Moment>
             </Text>
           </View>
           <Text style={styles.text}>
-            {this.props.item.content}
+            {content}
           </Text>
         </TouchableOpacity>
       </Animated.View>

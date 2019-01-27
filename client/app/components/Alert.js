@@ -3,7 +3,7 @@ import {
   StyleSheet, View, Text, Animated
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import { SCREEN_WIDTH, SCREEN_HEIGHT, normalizeFont } from '../../assets/styles/appStyles';
+import { appStyles, normalizeFont } from '../../assets/styles/appStyles';
 
 const styles = StyleSheet.create({
   container: {
@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    width: SCREEN_WIDTH * 0.85,
-    height: SCREEN_HEIGHT * 0.35
+    width: appStyles.heightPcts.eightyFive,
+    height: appStyles.heightPcts.thirtyFive
   },
   text: {
     fontFamily: 'Merriweather',
