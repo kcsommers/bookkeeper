@@ -72,7 +72,7 @@ class ClickMenu extends React.Component {
             ]}
             onPress={() => {
               this._hideMenu();
-              this.props.onClick('New Note');
+              this.props.onClick('addNote');
             }}
           >
             <Icon name="pencil" size={22} color="#444" />
@@ -90,7 +90,7 @@ class ClickMenu extends React.Component {
             ]}
             onPress={() => {
               this._hideMenu();
-              this.props.onClick('New Quote');
+              this.props.onClick('addQuote');
             }}
           >
             <Icon name="quote" size={22} color="#444" />

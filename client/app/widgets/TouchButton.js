@@ -1,13 +1,32 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { appStyles, SCREEN_HEIGHT, normalizeFont } from '../../assets/styles/appStyles';
+import { appStyles, normalizeFont } from '../../assets/styles/appStyles';
 
-const colors = {
-  primary: '#fff',
-  danger: '#c13149'
+
+const styles = {
+  flat: {
+    backgroundColor: 'rgba(0, 0, 0, 0)'
+  },
+  primary: {
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 1, height: 2 },
+    shadowRadius: 2,
+    backgroundColor: '#fff'
+  },
+  danger: {
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 1, height: 2 },
+    shadowRadius: 2,
+    backgroundColor: '#c13149'
+  },
+  disabledStyle: {
+    opacity: 0.2
+  }
 };
 
-const styles = StyleSheet.create({
+const commonStyles = StyleSheet.create({
   button: {
     alignSelf: 'stretch',
     borderRadius: 3,
@@ -16,21 +35,21 @@ const styles = StyleSheet.create({
   text: {
     color: '#444',
     textAlign: 'center',
-    fontSize: normalizeFont(15),
+    fontSize: normalizeFont(16),
     fontFamily: 'Merriweather'
   }
 });
 
 class TouchButton extends React.Component {
   render() {
+    const { isDisabled, type, text } = this.props;
+    const opacity = isDisabled ? 0.4 : 1;
     return (
       <TouchableOpacity
-        style={[styles.button, appStyles.boxShadow, {
-          backgroundColor: colors[this.props.type]
-        }]}
-        onPress={this.props.handlePress}
+        style={[commonStyles.button, styles[type]]}
+        onPress={this.props.onPress}
       >
-        <Text style={[styles.text]}>{this.props.text}</Text>
+        <Text style={[commonStyles.text, { opacity }]}>{text}</Text>
       </TouchableOpacity>
     );
   }

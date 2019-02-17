@@ -9,21 +9,13 @@ const styles = StyleSheet.create({
   noteCardsContainer: {
     paddingTop: appStyles.paddingSm.y,
     paddingBottom: appStyles.paddingLg.y,
-    marginBottom: appStyles.paddingMd.y,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    zIndex: 901,
-    flex: 1,
-    top: 0,
+    paddingLeft: appStyles.paddingMd.x,
+    paddingRight: appStyles.paddingMd.x
   },
   noteCardOuter: {
-    paddingTop: appStyles.paddingSm.y,
-    paddingBottom: appStyles.paddingSm.y,
-    marginBottom: appStyles.paddingSm.y,
-    marginTop: appStyles.paddingSm.y,
-    marginLeft: appStyles.paddingMd.x,
-    marginRight: appStyles.paddingMd.x,
     flex: 1,
+    marginTop: appStyles.paddingSm.y,
+    marginBottom: appStyles.paddingSm.y
   }
 });
 
@@ -55,20 +47,17 @@ class NoteCardsContainer extends React.Component {
     const noteCards = this._getNoteCards();
 
     return (
-      <Animated.ScrollView
+      <Animated.View
         style={[styles.noteCardsContainer, {
-          width: this.containerAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [appStyles.widthPcts.ninety, appStyles.widthPcts.full]
-          }),
-          backgroundColor: this.containerAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['rgba(239, 239, 239, 0.4)', 'rgba(0, 0, 0, 0)']
-          })
+          width: appStyles.widthPcts.ninety,
+          backgroundColor: 'rgba(239, 239, 239, 0.4)'
         }]}
       >
         {noteCards}
-        <View style={[styles.showMoreButtonContainer]}>
+        <View style={[{
+          marginTop: appStyles.paddingMd.y
+        }]}
+        >
           <TouchableOpacity
             onPress={this.showMoreNotes}
             style={[appStyles.buttonOutline, {
@@ -85,7 +74,7 @@ class NoteCardsContainer extends React.Component {
             </Text>
           </TouchableOpacity>
         </View>
-      </Animated.ScrollView>
+      </Animated.View>
     );
   }
 }

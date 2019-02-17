@@ -34,11 +34,17 @@ export const appStyles = {
     ninety: SCREEN_WIDTH * 0.9,
     eightyFive: SCREEN_WIDTH * 0.85,
     eighty: SCREEN_WIDTH * 0.8,
-    seventyFive: SCREEN_WIDTH * 0.75
+    seventyFive: SCREEN_WIDTH * 0.75,
+    fifty: SCREEN_WIDTH * 0.5
   },
   heightPcts: {
     full: SCREEN_HEIGHT,
-    thirtyFive: SCREEN_HEIGHT * 0.35
+    five: SCREEN_HEIGHT * 0.05,
+    seven: SCREEN_HEIGHT * 0.07,
+    ten: SCREEN_HEIGHT * 0.1,
+    thirtyFive: SCREEN_HEIGHT * 0.35,
+    fifty: SCREEN_HEIGHT * 0.5,
+    eightyFive: SCREEN_HEIGHT * 0.85
   },
   paddingSm: {
     x: SCREEN_WIDTH * 0.02,

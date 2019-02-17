@@ -33,11 +33,12 @@ class NoteInput extends React.Component {
     this.showInput = this.showInput.bind(this);
     this.hideInput = this.hideInput.bind(this);
     this.getInputInfo = this.getInputInfo.bind(this);
+    this._handleChange = this._handleChange.bind(this);
   }
 
   getInputInfo() {
     return (
-      (this.props.type === 'New Note')
+      (this.props.type === 'addNote')
         ? {
           placeholder: 'New Note', iconName: 'pencil', buttonText: 'Add Note', endpoint: 'notes'
         }
@@ -70,6 +71,8 @@ class NoteInput extends React.Component {
   }
 
   async _addNote(endpoint) {
+    const { eventEmitter, type } = this.props;
+    const noteType = (type === 'addNote') ? 'note' : 'quote';
     if (this.state.value) {
       this.input.blur();
       const bookId = this.props.book.id;
@@ -79,9 +82,9 @@ class NoteInput extends React.Component {
       const modelData = { content, bookId, userId };
       const addNoteResults = await axios.post(url, modelData);
       if (!addNoteResults.data.error) {
-        this.props.onSubmit({ data: addNoteResults.data, error: null });
+        eventEmitter.emit('noteAdded', { eventType: `${noteType} added` });
       } else {
-        this.props.onSubmit({ data: null, error: addNoteResults.data.error });
+        eventEmitter.emit('noteAdded', { eventType: `${noteType} add error` });
       }
     } else {
       console.log('NO NOTE VALUE');

@@ -12,7 +12,7 @@ import {
 import { Image, YellowBox } from 'react-native';
 import App from './App';
 import userReducer from './redux/reducers/userReducer';
-
+import deviceInfoReducer from './redux/reducers/deviceInfoReducer';
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 
@@ -22,7 +22,8 @@ const Pacifico = require('../assets/fonts/Pacifico-Regular.ttf');
 
 
 const allReducers = combineReducers({
-  user: userReducer
+  user: userReducer,
+  deviceInfo: deviceInfoReducer
 });
 const store = createStore(allReducers);
 

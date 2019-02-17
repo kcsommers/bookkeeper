@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Merriweather',
     fontSize: normalizeFont(25),
-    color: '#444'
+    color: '#444',
+    textAlign: 'center'
   }
 });
 
@@ -63,6 +64,9 @@ class Alert extends React.Component {
         <Animated.View
           onLoad={this._animateIn}
           style={[styles.container, {
+            width: appStyles.widthPcts.eightyFive,
+            marginLeft: 'auto',
+            marginRight: 'auto',
             opacity: this.alertAnim.interpolate({
               inputRange: [0, 1],
               outputRange: [0, 1]

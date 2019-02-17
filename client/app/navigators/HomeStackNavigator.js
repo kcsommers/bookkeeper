@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createStackNavigator } from 'react-navigation';
 import HomeTabNavigator from './HomeTabNavigator';
 
+
 const HomeStack = createStackNavigator(
   {
     HomeTab: { screen: HomeTabNavigator }
@@ -17,10 +18,16 @@ const HomeStack = createStackNavigator(
           <Ionicons
             name="md-menu"
             size={30}
+            color="#f1f3ee"
             onPress={() => { navigation.toggleDrawer(); }}
           />
         </View>
-      )
+      ),
+      headerStyle: {
+        backgroundColor: '#1c4b44',
+        height: 50
+      },
+      headerTransparent: true
     })
   }
 );
