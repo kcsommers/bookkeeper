@@ -1,7 +1,6 @@
 import { SecureStore } from 'expo';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import ModelForm from '../components/forms/ModelForm';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,14 +39,7 @@ class SignupScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <ModelForm
-          model="user"
-          submitTitle="Sign up"
-          modelData={{ userId: 1 }}
-          onSubmit={this._handleSubmit}
-        />
-      </View>
+      <View style={styles.container} />
     );
   }
 }

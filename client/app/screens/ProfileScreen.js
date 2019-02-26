@@ -5,7 +5,6 @@ import {
   // View,
   Text,
 } from 'react-native';
-import ModelForm from '../components/forms/ModelForm';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,11 +21,6 @@ class ProfileScreen extends React.Component {
         keyboardShouldPersistTaps="handled"
       >
         <Text>Profile Screen</Text>
-        <ModelForm
-          model="lists"
-          modelData={{ userId: 1 }}
-          submitTitle="Create List"
-        />
       </ScrollView>
     );
   }

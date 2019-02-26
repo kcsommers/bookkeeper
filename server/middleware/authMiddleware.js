@@ -67,8 +67,19 @@ const verifyToken = (req, res, next) => {
     const token = bearerHeader.split(' ')[1];
     jwt.verify(token, process.env.AUTH_SECRET, (error, authData) => {
       if (!error) {
-        db.user.find({
-          where: { username: authData.user }
+        db.user.findOne({
+          where: { username: authData.user },
+          include: [{
+            model: db.list,
+            include: [{
+              model: db.book,
+              include: [db.note, db.quote]
+            }]
+          }],
+          order: [
+            [db.list, db.book, db.note, 'createdAt', 'DESC'],
+            [db.list, db.book, db.quote, 'createdAt', 'DESC']
+          ]
         }).then((authUser) => {
           const user = authUser.dataValues;
           delete user.password;

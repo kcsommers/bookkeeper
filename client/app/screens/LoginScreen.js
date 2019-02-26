@@ -2,41 +2,41 @@ import axios from 'axios';
 import { SecureStore } from 'expo';
 import React from 'react';
 import {
-  Animated, Button, Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View
+  Animated, Button, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import logo from '../../assets/images/logo.png';
-import { AppStyling, SCREEN_HEIGHT } from '../../assets/styles/appStyles';
 import Environment from '../../environment';
 import { setUser } from '../redux/actions/userActions';
-import Input from '../widgets/Input';
+import {
+  appHeights, appStyles, normalizeFont, appSpacing, appColors
+} from '../../assets/styles/appStyles';
 
-const AppStyles = new AppStyling();
-
+const mapStateToProps = state => state;
+const mapActionsToProps = { setUser };
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: '#71a7a9',
+    backgroundColor: appColors.aqua,
     alignItems: 'center',
     flex: 1
   },
-  loginForm: {
-    alignSelf: 'stretch',
-    paddingLeft: SCREEN_HEIGHT * 0.025,
-    paddingRight: SCREEN_HEIGHT * 0.025
+  loginFormContainer: {
+    alignSelf: 'stretch'
   },
-  submitBtn: {
-    backgroundColor: '#a9c5e8',
-    alignSelf: 'stretch',
-    paddingTop: SCREEN_HEIGHT * 0.018,
-    paddingBottom: SCREEN_HEIGHT * 0.018,
-    alignItems: 'center',
-    marginTop: SCREEN_HEIGHT * 0.04,
-    borderRadius: 100
+  inputWrapper: {
+    borderBottomColor: appColors.offWhite,
+    borderBottomWidth: 2,
+    marginTop: appSpacing.sm.y,
+    marginBottom: appSpacing.sm.y
   },
-  submitBtnText: {
-    color: '#fefefe',
-    fontSize: AppStyles.normalizeFont(22)
+  input: {
+    fontSize: normalizeFont(18),
+    color: appColors.offWhite
   },
+  signupContainer: {
+    justifyContent: 'center',
+    flex: 1
+  }
 });
 
 class LoginScreen extends React.Component {
@@ -46,22 +46,12 @@ class LoginScreen extends React.Component {
       username: '',
       password: '',
     };
-    this.formPadding = new Animated.Value(SCREEN_HEIGHT * 0.06);
-    this.logoHeight = new Animated.Value(SCREEN_HEIGHT * 0.5);
+    this.loginAnim = new Animated.Value(0);
     this._handleSubmit = this._handleSubmit.bind(this);
+    this._handleChange = this._handleChange.bind(this);
     this._keyboardWillShow = this._keyboardWillShow.bind(this);
     this._keyboardWillHide = this._keyboardWillHide.bind(this);
   }
-
-  // async handleSubmit() {
-  //   const url = 'https://www.googleapis.com/books/v1/volumes?q=Moby Dick';
-  //   try {
-  //     const results = await axios.get(url);
-  //     console.log('SEARCH RESULTS', results);
-  //   } catch (err) {
-  //     console.error('ERROR FINDING SEARCHRESULTS', err);
-  //   }
-  // }
 
   componentDidMount() {
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
@@ -76,26 +66,18 @@ class LoginScreen extends React.Component {
 
   _keyboardWillShow(event) {
     Animated.parallel([
-      Animated.timing(this.formPadding, {
+      Animated.timing(this.loginAnim, {
         duration: event.duration,
-        toValue: event.endCoordinates.height
-      }),
-      Animated.timing(this.logoHeight, {
-        duration: event.duration,
-        toValue: SCREEN_HEIGHT * 0.3
+        toValue: 1
       })
     ]).start();
   }
 
   _keyboardWillHide(event) {
     Animated.parallel([
-      Animated.timing(this.formPadding, {
+      Animated.timing(this.loginAnim, {
         duration: event.duration,
-        toValue: 50
-      }),
-      Animated.timing(this.logoHeight, {
-        duration: event.duration,
-        toValue: SCREEN_HEIGHT * 0.5
+        toValue: 0
       })
     ]).start();
   }
@@ -140,72 +122,100 @@ class LoginScreen extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
         <View style={[styles.mainContainer]}>
-          <View>
-            <Animated.View style={{
-              display: 'flex',
-              justifyContent: 'center',
-              height: this.logoHeight
-            }}
-            >
-              <Animated.Image
-                source={logo}
-                resizeMode="contain"
-                style={[{ height: '70%' }]}
-              />
-            </Animated.View>
-          </View>
-
-          <View style={[styles.loginForm]}>
-            <Animated.View
-              style={{ paddingBottom: this.formPadding }}
-            >
-              <Input
-                field="username"
+          <Animated.View style={[{
+            height: this.loginAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [appHeights.fifty, appHeights.thirtyFive]
+            }),
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }, appStyles.paddingLg]}
+          >
+            <Image
+              source={logo}
+              resizeMode="contain"
+              style={{ height: '85%' }}
+            />
+          </Animated.View>
+          <View style={[styles.loginFormContainer, appStyles.paddingMd]}>
+            <View style={[styles.inputWrapper, appStyles.paddingSm]}>
+              <TextInput
                 placeholder="Username"
-                handleChange={($value, field) => { this._handleChange($value, field); }}
-                isPassword={false}
-                isEmail={false}
-                keyboardType="default"
+                placeholderTextColor={appColors.offWhite}
                 textContentType="username"
+                returnKeyLabel="Submit"
+                clearButtonMode="while-editing"
+                blurOnSubmit={true}
+                enablesReturnKeyAutomatically={true}
+                selectTextOnFocus={true}
+                onChangeText={(value) => { this._handleChange(value, 'username'); }}
+                style={styles.input}
               />
-
-              <Input
-                field="password"
+            </View>
+            <View style={[styles.inputWrapper, appStyles.paddingSm]}>
+              <TextInput
                 placeholder="Password"
-                handleChange={($value, field) => { this._handleChange($value, field); }}
-                isPassword={true}
-                isEmail={false}
-                keyboardType="default"
+                placeholderTextColor={appColors.offWhite}
                 textContentType="password"
-              />
-
-              <Text style={{ textAlign: 'right', color: '#fefefe' }}>Forgot your Password?</Text>
-
-              <TouchableOpacity
-                style={styles.submitBtn}
-                onPress={this._handleSubmit}
-              >
-                <Text style={styles.submitBtnText}>Login</Text>
-              </TouchableOpacity>
-            </Animated.View>
-
-            <View>
-              <Text style={{ color: '#fefefe', textAlign: 'center' }}>{'Don\'t have an account?'}</Text>
-              <Button
-                color="#fefefe"
-                title="Sign up"
-                onPress={() => { this.props.navigation.navigate('Signup'); }}
+                secureTextEntry={true}
+                returnKeyLabel="Submit"
+                clearButtonMode="while-editing"
+                blurOnSubmit={true}
+                enablesReturnKeyAutomatically={true}
+                selectTextOnFocus={true}
+                onChangeText={(value) => { this._handleChange(value, 'password'); }}
+                style={styles.input}
               />
             </View>
           </View>
 
+          <View style={[{ marginLeft: 'auto', paddingRight: appSpacing.md.x }]}>
+            <TouchableOpacity>
+              <Text style={{
+                textAlign: 'right',
+                color: appColors.offWhite,
+              }}
+              >
+                Forgot your Password?
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={[appStyles.paddingMd, { alignSelf: 'stretch' }]}>
+            <TouchableOpacity
+              onPress={this._handleSubmit}
+              style={[
+                appStyles.paddingMd,
+                { backgroundColor: appColors.blue, borderRadius: 100 }
+              ]}
+            >
+              <Text style={[
+                {
+                  color: appColors.offWhite,
+                  fontSize: normalizeFont(16),
+                  textAlign: 'center'
+                }
+              ]}
+              >
+                Login
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={[styles.signupContainer]}>
+            <Text style={{ color: appColors.offWhite, textAlign: 'center' }}>
+              {'Don\'t have an account?'}
+            </Text>
+            <Button
+              color={appColors.offWhite}
+              title="Sign up"
+              onPress={() => { this.props.navigation.navigate('Signup'); }}
+            />
+          </View>
         </View>
       </TouchableWithoutFeedback>
     );
   }
 }
-
-const mapStateToProps = state => state;
-const mapActionsToProps = { setUser };
 
 export default connect(mapStateToProps, mapActionsToProps)(LoginScreen);

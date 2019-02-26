@@ -4,10 +4,6 @@ import {
   ScrollView,
   View
 } from 'react-native';
-import SearchPage from '../containers/SearchPage';
-import searchBooks from '../../assets/images/page_backgrounds/searchBooks.jpg';
-import searchClubs from '../../assets/images/page_backgrounds/searchClubs.jpg';
-import searchUsers from '../../assets/images/page_backgrounds/searchUsers.jpg';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,11 +19,7 @@ class SearchScreen extends React.Component {
         <ScrollView
           pagingEnabled={true}
           horizontal={true}
-        >
-          <SearchPage background={searchBooks} />
-          <SearchPage background={searchClubs} />
-          <SearchPage background={searchUsers} />
-        </ScrollView>
+        />
       </View>
     );
   }

@@ -3,11 +3,16 @@
 import axios from 'axios';
 import { SecureStore } from 'expo';
 import React from 'react';
+import { NativeModules } from 'react-native';
 import { connect } from 'react-redux';
 import Environment from '../environment';
 import createRootNavigator from './navigators/AppSwitchNavigator';
 import { setUser } from './redux/actions/userActions';
+import { setStatusBarHeight } from './redux/actions/deviceInfoActions';
 
+const { StatusBarManager } = NativeModules;
+const mapStateToProps = (state) => state;
+const mapActionsToProps = { setUser, setStatusBarHeight };
 
 class App extends React.Component {
   constructor(props) {
@@ -29,6 +34,10 @@ class App extends React.Component {
       }
     }).catch((error) => {
       console.log('ERROR GETTING TOKEN', error);
+    });
+
+    StatusBarManager.getHeight((statusBarHeight) => {
+      this.props.setStatusBarHeight(statusBarHeight.height);
     });
   }
 
@@ -62,8 +71,5 @@ class App extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (state) => state;
-const mapActionsToProps = { setUser };
 
 export default connect(mapStateToProps, mapActionsToProps)(App);
