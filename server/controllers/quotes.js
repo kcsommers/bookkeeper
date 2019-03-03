@@ -6,12 +6,12 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
   console.log('HIT CREATE QUOTE ROUTE');
-  const quoteData = req.body;
+  const quoteData = req.body.itemData;
   db.quote.create(quoteData).then((newQuote) => {
-    res.json({ newQuote: newQuote.dataValues });
+    res.json({ createdItem: newQuote.dataValues, error: null });
   }).catch((error) => {
     console.log('ERROR CREATING QUOTE', error);
-    res.json({ error });
+    res.json({ createdItem: null, error });
   });
 });
 

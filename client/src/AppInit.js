@@ -7,18 +7,18 @@ import {
   Font,
   Asset,
   AppLoading,
-  SecureStore
+  // SecureStore
 } from 'expo';
 import { Image, YellowBox } from 'react-native';
+import userReducer from './core/redux/reducers/userReducer';
+import deviceInfoReducer from './core/redux/reducers/deviceInfoReducer';
 import App from './App';
-import userReducer from './redux/reducers/userReducer';
-import deviceInfoReducer from './redux/reducers/deviceInfoReducer';
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 
-const Merriweather = require('../assets/fonts/Merriweather-Regular.ttf');
-const MerrItalic = require('../assets/fonts/Merriweather-Italic.ttf');
-const Pacifico = require('../assets/fonts/Pacifico-Regular.ttf');
+const Merriweather = require('./assets/fonts/Merriweather-Regular.ttf');
+const MerrItalic = require('./assets/fonts/Merriweather-Italic.ttf');
+const Pacifico = require('./assets/fonts/Pacifico-Regular.ttf');
 
 
 const allReducers = combineReducers({
@@ -57,10 +57,10 @@ class AppInit extends React.Component {
   async loadResourcesAsync() {
     return Promise.all([
       cacheImages([
-        require('../assets/images/logo.png'),
-        require('../assets/images/page_backgrounds/searchBooks.jpg'),
-        require('../assets/images/page_backgrounds/searchClubs.jpg'),
-        require('../assets/images/page_backgrounds/searchUsers.jpg'),
+        require('./assets/images/logo.png'),
+        require('./assets/images/page_backgrounds/searchBooks.jpg'),
+        require('./assets/images/page_backgrounds/searchClubs.jpg'),
+        require('./assets/images/page_backgrounds/searchUsers.jpg'),
         'http://books.google.com/books/content?id=XV8XAAAAYAAJ&printsec=frontcover&img=1&zoom=0&edge=curl&source=gbs_api'
       ]),
       Font.loadAsync({

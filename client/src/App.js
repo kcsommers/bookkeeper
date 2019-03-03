@@ -6,9 +6,9 @@ import React from 'react';
 import { NativeModules } from 'react-native';
 import { connect } from 'react-redux';
 import Environment from '../environment';
-import createRootNavigator from './navigators/AppSwitchNavigator';
-import { setUser } from './redux/actions/userActions';
-import { setStatusBarHeight } from './redux/actions/deviceInfoActions';
+import createRootNavigator from './app/navigators/AppSwitchNavigator';
+import { setUser } from './core/redux/actions/userActions';
+import { setStatusBarHeight } from './core/redux/actions/deviceInfoActions';
 
 const { StatusBarManager } = NativeModules;
 const mapStateToProps = (state) => state;
@@ -23,7 +23,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    SecureStore.getItemAsync('token').then((token) => {
+    SecureStore.getItemAsync('bookkeeper_token').then((token) => {
       if (token) {
         this.verifyToken(token).then((result) => {
           if (result.isVerified) {

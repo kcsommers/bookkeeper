@@ -1,17 +1,18 @@
-import axios from 'axios';
 import { SecureStore } from 'expo';
 import React from 'react';
 import {
-  Animated, Button, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Image
+  Animated, Button, Keyboard, StyleSheet, Text, TextInput,
+  TouchableOpacity, TouchableWithoutFeedback, View, Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import logo from '../../assets/images/logo.png';
-import Environment from '../../environment';
-import { setUser } from '../redux/actions/userActions';
+import { setUser } from '../../core/redux/actions/userActions';
 import {
   appHeights, appStyles, normalizeFont, appSpacing, appColors
 } from '../../assets/styles/appStyles';
+import AuthService from '../../core/services/AuthService';
 
+const auth = new AuthService();
 const mapStateToProps = state => state;
 const mapActionsToProps = { setUser };
 const styles = StyleSheet.create({
@@ -55,7 +56,6 @@ class LoginScreen extends React.Component {
 
   componentDidMount() {
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
-
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
   }
 
@@ -82,36 +82,19 @@ class LoginScreen extends React.Component {
     ]).start();
   }
 
-  async _setToken(token) {
-    return SecureStore.setItemAsync('token', token, {
+  async _setJWToken(token) {
+    return SecureStore.setItemAsync('bookkeeper_jwtoken', token, {
       keychainAccessible: SecureStore.WHEN_UNLOCKED
     });
   }
 
   async _handleSubmit() {
-    const url = `${Environment.BASE_URL}/users/login`;
     const { username, password } = this.state;
-    try {
-      const loginResults = await axios.post(url, { username, password });
-      const { token, user, error } = loginResults.data;
-      if (!error && token) {
-        this._setToken(token).then(() => {
-          console.log('TOKEN SET');
-          if (user) {
-            this.props.screenProps.logUserIn(user);
-          } else {
-            console.log('NO USER SENT WITH TOKEN');
-            this.props.navigation.navigate('Login');
-          }
-        }).catch((setTokenError) => {
-          console.log('ERROR SETTING TOKEN', setTokenError);
-        });
-      } else {
-        console.log('ERROR LOGGING IN', error);
-      }
-    } catch (error) {
-      console.warn('ERROR LOGGING IN', error);
-    }
+    auth.logUserIn({ username, password }).then((user) => {
+      this.props.screenProps.logUserIn(user);
+    }).catch((loginError) => {
+      console.log('IN LOGIN SCREEN, ERROR LOGGING IN', loginError);
+    });
   }
 
   _handleChange(value, field) {

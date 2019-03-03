@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   list.associate = (models) => {
     // associations can be defined here
+    models.list.belongsToMany(models.book, { through: 'listsBooks' });
     models.list.belongsTo(models.user);
   };
   return list;

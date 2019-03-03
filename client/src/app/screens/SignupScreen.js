@@ -1,7 +1,9 @@
 import { SecureStore } from 'expo';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import AuthService from '../../core/services/AuthService';
 
+const auth = new AuthService();
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
