@@ -14,10 +14,10 @@ import BookSearchResult from '../components/BookSearchResult';
 const http = new HttpService();
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: appColors.blue,
-    alignItems: 'center',
-    justifyContent: 'center'
+  },
+  searchFormContainer: {
+    backgroundColor: 'pink'
   }
 });
 
@@ -35,7 +35,6 @@ class SearchScreen extends React.Component {
   }
 
   addBookToList(book, list) {
-    console.log('LISTTT', list);
     const httpData = {
       itemData: book,
       miscData: {
@@ -62,7 +61,6 @@ class SearchScreen extends React.Component {
     const { inputValues } = this.state;
     if (inputValues.searchTerm) {
       http.searchBooks(inputValues.searchTerm).then((results) => {
-        console.log('SEARCH RESULTS', results);
         if (results.books) {
           const books = [];
           results.books.forEach((book) => {
@@ -87,31 +85,30 @@ class SearchScreen extends React.Component {
       />
     )) : null;
     return (
-      <ScrollView
-        contentContainerStyle={styles.container}
-        pagingEnabled={true}
-        horizontal={true}
-      >
-        <View style={[appStyles.paddingLg, { backgroundColor: appColors.green }]}>
-          <TextInput
-            placeholder="Title, author or ISBN"
-            placeholderTextColor={appColors.offWhite}
-            returnKeyLabel="Search"
-            clearButtonMode="while-editing"
-            blurOnSubmit={true}
-            enablesReturnKeyAutomatically={true}
-            selectTextOnFocus={true}
-            onChangeText={(value) => { this._handleChange(value, 'searchTerm'); }}
-          />
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={[styles.searchFormContainer]}>
+          <View style={[appStyles.paddingLg, { backgroundColor: appColors.green }]}>
+            <TextInput
+              placeholder="Title, author or ISBN"
+              placeholderTextColor={appColors.offWhite}
+              returnKeyLabel="Search"
+              clearButtonMode="while-editing"
+              blurOnSubmit={true}
+              enablesReturnKeyAutomatically={true}
+              selectTextOnFocus={true}
+              onChangeText={(value) => { this._handleChange(value, 'searchTerm'); }}
+            />
+          </View>
+
+
+          <TouchableOpacity
+            style={[appStyles.paddingLg, { backgroundColor: appColors.red }]}
+            onPress={this._doSearch}
+          >
+            <Text>Search</Text>
+          </TouchableOpacity>
         </View>
 
-
-        <TouchableOpacity
-          style={[appStyles.paddingLg, { backgroundColor: appColors.red }]}
-          onPress={this._doSearch}
-        >
-          <Text>Search</Text>
-        </TouchableOpacity>
         {searchResultsMapped}
       </ScrollView>
 

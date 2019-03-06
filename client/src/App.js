@@ -6,7 +6,7 @@ import React from 'react';
 import { NativeModules } from 'react-native';
 import { connect } from 'react-redux';
 import Environment from '../environment';
-import createRootNavigator from './app/navigators/AppSwitchNavigator';
+import createRootNavigator from './app/navigators/AppSwitch.navigator';
 import { setUser } from './core/redux/actions/userActions';
 import { setStatusBarHeight } from './core/redux/actions/deviceInfoActions';
 

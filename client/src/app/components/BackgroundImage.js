@@ -3,19 +3,18 @@ import {
   ImageBackground,
 } from 'react-native';
 
-const styles = {
-  full: {
-    width: '100%',
-    height: '100%'
-  }
-};
-
 class BackgroundImage extends React.Component {
   render() {
+    const source = (typeof this.props.image === 'string')
+      ? { uri: this.props.image, cache: 'force-cache' } : this.props.image;
     return (
       <ImageBackground
-        source={this.props.image}
-        style={[styles.full]}
+        source={source}
+        resizeMode="cover"
+        style={[{
+          width: '100%',
+          height: '100%'
+        }]}
       >
         {this.props.children}
       </ImageBackground>

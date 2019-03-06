@@ -12,8 +12,6 @@ router.post('/', (req, res) => {
   });
   const { listId } = req.body.miscData;
 
-  console.log('LIST ID', req.body);
-
   db.book.create(bookData).then((book) => {
     db.list.findByPk(listId).then((list) => {
       list.addBook(book).then(() => {

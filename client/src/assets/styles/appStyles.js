@@ -20,7 +20,12 @@ export const appWidths = {
   eightyFive: SCREEN_WIDTH * 0.85,
   eighty: SCREEN_WIDTH * 0.8,
   seventyFive: SCREEN_WIDTH * 0.75,
-  fifty: SCREEN_WIDTH * 0.5
+  fifty: SCREEN_WIDTH * 0.5,
+  thirtyFive: SCREEN_WIDTH * 0.35,
+  thirty: SCREEN_WIDTH * 0.3,
+  twentyFive: SCREEN_WIDTH * 0.25,
+  twenty: SCREEN_WIDTH * 0.2,
+  fifteen: SCREEN_WIDTH * 0.15
 };
 
 export const appHeights = {
@@ -53,11 +58,21 @@ export const appColors = {
   green: '#1c4b44',
   aqua: '#71a7a9',
   offWhite: '#f1f3ee',
-  red: '#c13149'
+  red: '#c13149',
+  gray: '#4a4a4a'
 };
 
 export const appStyles = {
+  h1: {
+    fontSize: normalizeFont(40),
+    fontFamily: 'Merriweather',
+    color: appColors.green
+  },
   h2: {
+    fontSize: normalizeFont(24),
+    fontFamily: 'Merriweather'
+  },
+  h2i: {
     fontSize: normalizeFont(24),
     fontFamily: 'MerrItalic'
   },
@@ -65,8 +80,26 @@ export const appStyles = {
     fontSize: normalizeFont(20),
     fontFamily: 'Merriweather'
   },
+  h3i: {
+    fontSize: normalizeFont(20),
+    fontFamily: 'MerrItalic',
+    color: appColors.gray
+  },
+  p: {
+    fontSize: normalizeFont(18),
+    color: appColors.gray
+  },
+  label: {
+    fontSize: normalizeFont(14),
+    color: appColors.gray
+  },
+  buttonText: {
+    fontSize: normalizeFont(16),
+    fontFamily: 'Merriweather',
+    color: appColors.offWhite
+  },
   boxShadow: {
-    shadowColor: '#000',
+    shadowColor: appColors.gray,
     shadowOpacity: 0.2,
     shadowOffset: { width: 1, height: 2 },
     shadowRadius: 2,

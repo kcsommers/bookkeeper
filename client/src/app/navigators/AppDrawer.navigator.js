@@ -1,14 +1,14 @@
 import { createDrawerNavigator } from 'react-navigation';
-import HomeStack from './HomeStackNavigator';
-import EditProfileStack from './EditProfileStackNavigator';
-import SettingsStack from './SettingsStackNavigator';
+import HomeStack from './HomeStack.navigator';
+import EditProfileStack from './EditProfileStack.navigator';
+import SettingsStack from './SettingsStack.navigator';
 
 const AppDrawerNavigator = createDrawerNavigator(
   {
     HomeStack: {
       screen: HomeStack,
       navigationOptions: {
-        drawerLabel: () => null,
+        title: 'Home'
       }
     },
     EditProfileStack: {

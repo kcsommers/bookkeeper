@@ -4,11 +4,13 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createStackNavigator } from 'react-navigation';
-import HomeTabNavigator from './HomeTabNavigator';
+import HomeTabNavigator from './HomeTab.navigator';
+import NotepadScreen from '../screens/NotepadScreen';
 
 const HomeStack = createStackNavigator(
   {
-    HomeTab: { screen: HomeTabNavigator }
+    HomeTab: { screen: HomeTabNavigator },
+    Notepad: { screen: NotepadScreen }
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({

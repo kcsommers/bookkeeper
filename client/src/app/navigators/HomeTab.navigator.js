@@ -3,12 +3,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from 'react-navigation';
 import ListScreen from '../screens/ListScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import SearchStack from './SearchStackNavigator';
-import CurrentReadsScreen from '../screens/CurrentReadsScreen';
+import SearchStack from './SearchStack.navigator';
+import BookStack from './BookStack.navigator';
 
 const HomeTabNavigator = createBottomTabNavigator({
   CurrentReads: {
-    screen: CurrentReadsScreen,
+    screen: BookStack,
     navigationOptions: {
       tabBarLabel: 'Current Reads',
       tabBarIcon: () => <Ionicons name="md-book" size={30} />

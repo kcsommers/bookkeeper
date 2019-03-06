@@ -4,6 +4,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Dropdown } from 'react-native-material-dropdown';
+import Book from '../../core/classes/models/Book';
+import { appWidths, appColors } from '../../assets/styles/appStyles';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,18 +28,16 @@ class BookSearchResult extends React.Component {
 
   _parseBook() {
     const { book } = this.props;
-    const authors = book.authors.join(', ');
+    const authors = (book.authors) ? book.authors.join(', ') : '';
     const thumbnail = (book.imageLinks)
       ? book.imageLinks.thumbnail.replace(/zoom=1/gi, 'zoom=0')
       : 'https://res.cloudinary.com/kcsommers/image/upload/v1546384882/missingBookCover.jpg';
+    const title = (book.title) ? book.title : '';
+    const description = (book.description) ? book.description : '';
+    const newBook = new Book(title, authors, description, thumbnail, '', false, [], []);
 
     this.setState({
-      book: {
-        title: book.title,
-        description: book.description,
-        authors,
-        thumbnail
-      }
+      book: newBook
     });
   }
 
@@ -57,10 +57,10 @@ class BookSearchResult extends React.Component {
             style={[
               {
                 borderWidth: 2,
-                borderColor: '#fff',
+                borderColor: appColors.offWhite,
                 borderRadius: 5,
-                width: this.props.width,
-                height: this.props.height
+                width: appWidths.twentyFive,
+                height: appWidths.twentyFive * 1.54
               }]}
             source={book ? { uri: book.thumbnail, cache: 'force-cache' } : null}
             resizeMode="cover"
