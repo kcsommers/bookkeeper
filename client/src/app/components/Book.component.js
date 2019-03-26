@@ -11,9 +11,7 @@ import NotesContainer from './NotesContainer.component';
 
 class Book extends React.Component {
   render() {
-    const {
-      book, navigate
-    } = this.props;
+    const { book, navigate } = this.props;
     return (
       <BackgroundImage
         height="100%"

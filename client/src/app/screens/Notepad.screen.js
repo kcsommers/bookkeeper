@@ -10,11 +10,13 @@ import Icon from 'react-native-vector-icons/Entypo';
 import { appColors, appStyles, normalizeFont } from '../../assets/styles/appStyles.styles';
 import { HttpService } from '../../core/services/HttpService';
 import { ScreenService } from '../../core/services/ScreenService';
+import { AlertsService } from '../../core/services/AlertsService';
 import Note from '../../core/classes/models/Note';
 import Quote from '../../core/classes/models/Quote';
 
 const httpService = Object.create(HttpService);
 const screenService = Object.create(ScreenService);
+const alertsService = Object.create(AlertsService);
 const mapStateToProps = (state) => ({
   notes: state.notes,
   quotes: state.quotes
@@ -95,6 +97,7 @@ class NotepadScreen extends React.Component {
       newNote = new Quote(note.id, note.content, note.page, note.bookId, note.userId, note.createdAt);
     }
     newNote.addToStore(screenService.getStore());
+    alertsService.createAlert('Note Added', 'check');
     this.props.navigation.goBack();
   }
 

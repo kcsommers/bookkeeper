@@ -1,12 +1,15 @@
 import React from 'react';
 import {
-  View
+  View, Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import { ScreenService } from '../../core/services/ScreenService';
 import Book from '../components/Book.component';
 import BkModal from '../components/BkModal.component';
+import { AlertsService } from '../../core/services/AlertsService';
+import { bookScreenStyles } from '../../assets/styles/bookScreen.styles';
 
+const alertsService = Object.create(AlertsService);
 const screenService = Object.create(ScreenService);
 const mapStateToProps = (state) => ({
   books: state.books,
@@ -21,7 +24,8 @@ class BookScreen extends React.Component {
       currentBook: null,
       currentBookIndex: 0,
       modalVisible: false,
-      currentModalContent: null
+      currentModalContent: null,
+      alert: null
     };
     this._changeCurrentBook = this._changeCurrentBook.bind(this);
     this._onNavigation = this._onNavigation.bind(this);
@@ -41,6 +45,13 @@ class BookScreen extends React.Component {
   componentWillUnmount() {
     this.navSubscription$.remove();
     this.props.modalTrigger$.removeAllListeners();
+  }
+
+  _onNavigation() {
+    const alert = alertsService.checkForAlert();
+    const bookId = this.props.navigation.getParam('id');
+    const currentBook = this.props.books[bookId];
+    this.setState({ currentBook, alert });
   }
 
   navigate(routeData) {
@@ -67,12 +78,6 @@ class BookScreen extends React.Component {
     });
   }
 
-  _onNavigation() {
-    const bookId = this.props.navigation.getParam('id');
-    const currentBook = this.props.books[bookId];
-    this.setState({ currentBook });
-  }
-
   _changeCurrentBook(num) {
     const { currentReads, currentBookIndex } = this.state;
     let newIndex = currentBookIndex + num;
@@ -85,15 +90,18 @@ class BookScreen extends React.Component {
   }
 
   render() {
-    const { currentBook, modalVisible, currentModalContent } = this.state;
+    const {
+      currentBook, modalVisible, currentModalContent, alert
+    } = this.state;
     return (currentBook) ? (
-      <View>
+      <View style={[bookScreenStyles.container]}>
         <Book book={currentBook} navigate={this.navigate} />
-        {(modalVisible) ? (
+        {modalVisible && (
           <BkModal isVisible={modalVisible}>
             {currentModalContent && currentModalContent.template}
           </BkModal>
-        ) : null}
+        )}
+        {alert && alertsService.getAlertTemplate(alert)}
       </View>
     ) : null;
   }
