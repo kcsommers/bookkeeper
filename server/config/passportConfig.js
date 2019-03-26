@@ -14,13 +14,26 @@ passport.deserializeUser((id, cb) => {
 const localOptions = { usernameField: 'username', passwordField: 'password' };
 
 const localCallback = (username, password, done) => {
-  db.user.findOne({ where: { username } }).then((user) => {
+  db.user.findOne({
+    where: { username },
+    include: [{
+      model: db.list,
+      include: [{
+        model: db.book,
+        include: [db.note, db.quote]
+      }]
+    }],
+    order: [
+      [db.list, db.book, db.note, 'createdAt', 'DESC'],
+      [db.list, db.book, db.quote, 'createdAt', 'DESC']
+    ]
+  }).then((user) => {
     if (!user) {
       console.log('NO USER OR BAD PASSWORD');
       done(null, false);
     } else {
       bcrypt.compare(password, user.password).then((passwordValid) => {
-        console.log('PSWORD ALID', passwordValid);
+        console.log('PASSWORD VALID', passwordValid);
         return (passwordValid) ? done(null, user) : done(null, false);
       }).catch((error) => {
         console.log('ERROR WITH BCRYPT COMPARE', error);

@@ -2,7 +2,6 @@
 /* eslint-disable no-else-return */
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
 import {
   Font,
   Asset,
@@ -10,8 +9,7 @@ import {
   // SecureStore
 } from 'expo';
 import { Image, YellowBox } from 'react-native';
-import userReducer from './core/redux/reducers/userReducer';
-import deviceInfoReducer from './core/redux/reducers/deviceInfoReducer';
+import { store } from './core/redux/store';
 import App from './App';
 
 YellowBox.ignoreWarnings(['Require cycle:']);
@@ -19,13 +17,6 @@ YellowBox.ignoreWarnings(['Require cycle:']);
 const Merriweather = require('./assets/fonts/Merriweather-Regular.ttf');
 const MerrItalic = require('./assets/fonts/Merriweather-Italic.ttf');
 const Pacifico = require('./assets/fonts/Pacifico-Regular.ttf');
-
-
-const allReducers = combineReducers({
-  user: userReducer,
-  deviceInfo: deviceInfoReducer
-});
-const store = createStore(allReducers);
 
 const cacheImages = (images) => {
   return images.map((image) => {
@@ -78,7 +69,7 @@ class AppInit extends React.Component {
   }
 
   render() {
-    // SecureStore.deleteItemAsync('token');
+    // SecureStore.deleteItemAsync('bookkeeper_token');
     if (!this.state.isReady) {
       return (
         <AppLoading />

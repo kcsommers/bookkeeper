@@ -1,39 +1,33 @@
-/* eslint-disable global-require */
-/* eslint-disable no-else-return */
-import axios from 'axios';
-import { SecureStore } from 'expo';
 import React from 'react';
 import { NativeModules } from 'react-native';
 import { connect } from 'react-redux';
-import Environment from '../environment';
-import createRootNavigator from './app/navigators/AppSwitch.navigator';
-import { setUser } from './core/redux/actions/userActions';
-import { setStatusBarHeight } from './core/redux/actions/deviceInfoActions';
+import { NavigationActions } from 'react-navigation';
+import RootNavigator from './app/navigators/app/RootNavigator.navigator';
+import { setStatusBarHeight } from './core/redux/actions/deviceInfo.actions';
+import { initializeStore } from './core/redux/store';
+import { AuthService } from './core/services/AuthService';
 
+const auth = Object.create(AuthService);
 const { StatusBarManager } = NativeModules;
 const mapStateToProps = (state) => state;
-const mapActionsToProps = { setUser, setStatusBarHeight };
+const mapActionsToProps = { setStatusBarHeight };
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      loggedIn: false,
-    };
+    // this.state = {
+    //   loggedIn: false,
+    // };
   }
 
-  componentDidMount() {
-    SecureStore.getItemAsync('bookkeeper_token').then((token) => {
-      if (token) {
-        this.verifyToken(token).then((result) => {
-          if (result.isVerified) {
-            this.props.setUser(result.user);
-            this.setState({ loggedIn: true });
-          }
-        });
+  componentWillMount() {
+    auth.getVerifiedToken().then((result) => {
+      if (result.isVerified) {
+        initializeStore(result.user);
+        this.navigator.dispatch(NavigationActions.navigate({ routeName: 'App' }));
       }
     }).catch((error) => {
-      console.log('ERROR GETTING TOKEN', error);
+      console.error('ERROR VERIFYING TOKEN', error);
     });
 
     StatusBarManager.getHeight((statusBarHeight) => {
@@ -41,32 +35,18 @@ class App extends React.Component {
     });
   }
 
-  _logUserIn(user) {
-    this.props.setUser(user);
-    this.setState({ loggedIn: true });
-  }
-
-  async verifyToken(token) {
-    const url = `${Environment.BASE_URL}/users/verify`;
-    const verify = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    if (verify.data.verified) {
-      return { isVerified: true, user: verify.data.user };
-    } else {
-      return { isVerified: false, error: verify.data.error };
-    }
-  }
+  // _logUserIn(user) {
+  //   initializeStore(user);
+  //   this.setState({ loggedIn: true });
+  // }
 
   render() {
-    const RootNavigator = createRootNavigator(this.state.loggedIn);
     return (
-      <RootNavigator screenProps={{
-        logUserIn: (user) => { this._logUserIn(user); }
-      }}
+      <RootNavigator
+        ref={nav => { this.navigator = nav; }}
+      // screenProps={{
+      //   logUserIn: (user) => { this._logUserIn(user); }
+      // }}
       />
     );
   }
