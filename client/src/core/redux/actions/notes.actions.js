@@ -9,7 +9,7 @@ export const addNote = (note) => {
   };
 };
 
-export const deleteQuote = (noteId) => {
+export const deleteNote = (noteId) => {
   return {
     type: DELETE_NOTE,
     payload: { noteId }

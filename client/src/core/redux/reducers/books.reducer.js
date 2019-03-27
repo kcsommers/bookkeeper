@@ -39,45 +39,37 @@ const booksReducer = (state = null, { type, payload }) => {
     case ADD_NOTE: {
       const book = state[payload.bookId];
       const newIdsArr = [payload.noteId, ...book.noteIds];
+      book.noteIds = newIdsArr;
       return {
         ...state,
-        [book.id]: {
-          ...book,
-          noteIds: newIdsArr
-        }
+        [book.id]: book
       };
     }
     case ADD_QUOTE: {
       const book = state[payload.bookId];
       const newIdsArr = [payload.quoteId, ...book.quoteIds];
+      book.quoteIds = newIdsArr;
       return {
         ...state,
-        [book.id]: {
-          ...book,
-          quoteIds: newIdsArr
-        }
+        [book.id]: book
       };
     }
     case DELETE_NOTE: {
       const book = state[payload.bookId];
       const noteIdsFiltered = book.noteIds.filter(id => id !== payload.noteId);
+      book.noteIds = noteIdsFiltered;
       return {
         ...state,
-        [book.id]: {
-          ...book,
-          noteIds: noteIdsFiltered
-        }
+        [book.id]: book
       };
     }
     case DELETE_QUOTE: {
       const book = state[payload.bookId];
       const quoteIdsFiltered = book.quoteIds.filter(id => id !== payload.quoteId);
+      book.quoteIds = quoteIdsFiltered;
       return {
         ...state,
-        [book.id]: {
-          ...book,
-          quoteIds: quoteIdsFiltered
-        }
+        [book.id]: book
       };
     }
     default:

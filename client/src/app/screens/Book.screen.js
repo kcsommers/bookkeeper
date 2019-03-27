@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text
+  View
 } from 'react-native';
 import { connect } from 'react-redux';
 import { ScreenService } from '../../core/services/ScreenService';
@@ -13,7 +13,6 @@ const alertsService = Object.create(AlertsService);
 const screenService = Object.create(ScreenService);
 const mapStateToProps = (state) => ({
   books: state.books,
-  newItems: state.newItems,
   modalTrigger$: state.events.modalTrigger
 });
 
@@ -22,16 +21,15 @@ class BookScreen extends React.Component {
     super(props);
     this.state = {
       currentBook: null,
-      currentBookIndex: 0,
       modalVisible: false,
       currentModalContent: null,
       alert: null
     };
-    this._changeCurrentBook = this._changeCurrentBook.bind(this);
     this._onNavigation = this._onNavigation.bind(this);
     this._triggerModal = this._triggerModal.bind(this);
     this._closeModal = this._closeModal.bind(this);
     this.navigate = this.navigate.bind(this);
+    this.closeAlert = this.closeAlert.bind(this);
   }
 
   componentWillMount() {
@@ -72,21 +70,17 @@ class BookScreen extends React.Component {
   }
 
   _closeModal() {
+    const alert = alertsService.checkForAlert();
     this.setState({
       modalVisible: false,
-      currentModalContent: null
+      currentModalContent: null,
+      alert
     });
   }
 
-  _changeCurrentBook(num) {
-    const { currentReads, currentBookIndex } = this.state;
-    let newIndex = currentBookIndex + num;
-    if (newIndex < 0) {
-      newIndex = this.currentReads.length - 1;
-    } else if (newIndex === this.currentReads.length) {
-      newIndex = 0;
-    }
-    this.setState({ currentBook: currentReads[newIndex], currentBookIndex: newIndex });
+  closeAlert(alertId) {
+    alertsService.removeAlert(alertId);
+    this.setState({ alert: null });
   }
 
   render() {
@@ -101,7 +95,7 @@ class BookScreen extends React.Component {
             {currentModalContent && currentModalContent.template}
           </BkModal>
         )}
-        {alert && alertsService.getAlertTemplate(alert)}
+        {alert && alertsService.getAlertTemplate(alert, this.closeAlert)}
       </View>
     ) : null;
   }

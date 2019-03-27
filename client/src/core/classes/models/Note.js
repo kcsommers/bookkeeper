@@ -1,5 +1,5 @@
-import { addNote, updateNote } from '../../redux/actions/notes.actions';
-import { addNoteToBook } from '../../redux/actions/books.actions';
+import { addNote, updateNote, deleteNote } from '../../redux/actions/notes.actions';
+import { addNoteToBook, removeNoteFromBook } from '../../redux/actions/books.actions';
 
 export default class Note {
   constructor(
@@ -18,14 +18,23 @@ export default class Note {
 
   addToStore(store) {
     store.dispatch(addNote(this));
-    this.addToBook(store);
-  }
-
-  addToBook(store) {
-    store.dispatch(addNoteToBook(this.bookId, this.id));
+    this._addToBook(store);
   }
 
   update(store, payload) {
     store.dispatch(updateNote(payload.id, payload.newContent));
+  }
+
+  removeFromStore(store) {
+    store.dispatch(deleteNote(this.id));
+    this._removeFromBook(store);
+  }
+
+  _addToBook(store) {
+    store.dispatch(addNoteToBook(this.bookId, this.id));
+  }
+
+  _removeFromBook(store) {
+    store.dispatch(removeNoteFromBook(this.bookId, this.id));
   }
 }
