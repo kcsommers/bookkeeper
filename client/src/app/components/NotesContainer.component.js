@@ -35,24 +35,6 @@ class NotesContainer extends React.Component {
     this._switchNotes = this._switchNotes.bind(this);
   }
 
-  // componentWillMount() {
-  //   this._setNotes();
-  // }
-
-  // componentDidUpdate(prevProps) {
-  //   const { noteIds, quoteIds } = this.props;
-  //   if (prevProps.noteIds !== noteIds || prevProps.quoteIds !== quoteIds) {
-  //     this._setNotes();
-  //   }
-  // }
-
-  // _setNotes() {
-  //   const { noteIds, quoteIds } = this.props;
-  //   this.notes = this._getNotes('notes', noteIds);
-  //   this.quotes = this._getNotes('quotes', quoteIds);
-  //   this.setState({ notes, quotes });
-  // }
-
   _getNotes(type, ids) {
     const notes = [];
     const notesFromStore = this.props[type];
@@ -74,11 +56,11 @@ class NotesContainer extends React.Component {
     const quotes = this._getNotes('quotes', this.props.quoteIds);
     const { displayed } = this.state;
     const notesMapped = (notes.length) ? notes.map((note) => (
-      <NoteDisplay note={note} key={note.id} />
+      note ? <NoteDisplay note={note} key={note.id} /> : null
     )) : <Text>NO NOTES</Text>;
 
     const quotesMapped = (quotes.length) ? quotes.map((quote) => (
-      <QuoteDisplay quote={quote} key={quote.id} />
+      quote ? <QuoteDisplay quote={quote} key={quote.id} /> : null
     )) : <Text>NO QUOTES</Text>;
 
     const displayedNotes = (displayed === 'notes') ? notesMapped : quotesMapped;

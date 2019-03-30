@@ -3,8 +3,8 @@ import {
   DELETE_BOOK,
   ADD_NOTE,
   ADD_QUOTE,
-  DELETE_NOTE,
-  DELETE_QUOTE
+  REMOVE_NOTE,
+  REMOVE_QUOTE
 } from '../actions/books.actions';
 import Book from '../../classes/models/Book';
 
@@ -39,45 +39,37 @@ const booksReducer = (state = null, { type, payload }) => {
     case ADD_NOTE: {
       const book = state[payload.bookId];
       const newIdsArr = [payload.noteId, ...book.noteIds];
+      book.noteIds = newIdsArr;
       return {
         ...state,
-        [book.id]: {
-          ...book,
-          noteIds: newIdsArr
-        }
+        [book.id]: book
       };
     }
     case ADD_QUOTE: {
       const book = state[payload.bookId];
       const newIdsArr = [payload.quoteId, ...book.quoteIds];
+      book.quoteIds = newIdsArr;
       return {
         ...state,
-        [book.id]: {
-          ...book,
-          quoteIds: newIdsArr
-        }
+        [book.id]: book
       };
     }
-    case DELETE_NOTE: {
+    case REMOVE_NOTE: {
       const book = state[payload.bookId];
       const noteIdsFiltered = book.noteIds.filter(id => id !== payload.noteId);
+      book.noteIds = noteIdsFiltered;
       return {
         ...state,
-        [book.id]: {
-          ...book,
-          noteIds: noteIdsFiltered
-        }
+        [book.id]: book
       };
     }
-    case DELETE_QUOTE: {
+    case REMOVE_QUOTE: {
       const book = state[payload.bookId];
       const quoteIdsFiltered = book.quoteIds.filter(id => id !== payload.quoteId);
+      book.quoteIds = quoteIdsFiltered;
       return {
         ...state,
-        [book.id]: {
-          ...book,
-          quoteIds: quoteIdsFiltered
-        }
+        [book.id]: book
       };
     }
     default:

@@ -1,66 +1,56 @@
 import React from 'react';
 import {
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  View
+  ScrollView, TextInput, TouchableOpacity, Text, View
 } from 'react-native';
 import { appColors, appStyles } from '../../assets/styles/appStyles.styles';
+import { searchScreenStyles } from '../../assets/styles/searchScreen.styles';
 import { HttpService } from '../../core/services/HttpService';
+import { ScreenService } from '../../core/services/ScreenService';
 import BookSearchResult from '../components/BookSearchResult.component';
+import Book from '../../core/classes/models/Book';
 
 const httpService = Object.create(HttpService);
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: appColors.blue,
-  },
-  searchFormContainer: {
-    backgroundColor: 'pink'
-  }
-});
+const screenService = Object.create(ScreenService);
 
 class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValues: {
-        searchTerm: ''
-      },
+      searchTerm: '',
       searchResults: []
     };
     this._doSearch = this._doSearch.bind(this);
     this._handleChange = this._handleChange.bind(this);
+    this.addBookToList = this.addBookToList.bind(this);
   }
 
-  addBookToList(book, list) {
-    const httpData = {
-      itemData: book,
-      miscData: {
-        listId: list.id
-      }
-    };
-    httpService.create('books', httpData).then((result) => {
-      console.log('WE DID IT?', result);
+  addBookToList(itemData) {
+    httpService.create('books', itemData).then((createdBook) => {
+      const newBook = new Book(
+        createdBook.id,
+        createdBook.title,
+        createdBook.authors,
+        createdBook.description,
+        createdBook.thumbnail,
+        createdBook.banner,
+        createdBook.current,
+        [], []
+      );
+      newBook.addToStore(screenService.getStore(), itemData.modelData.listId);
+      this.props.navigation.navigate('List', { id: itemData.modelData.listId });
     }).catch((error) => {
-      console.warn('ERROR CREATING BOOK', error);
+      console.error('ERROR CREATING BOOK', error);
     });
   }
 
-  _handleChange(value, field) {
-    this.setState((prevState) => ({
-      inputValues: {
-        ...prevState.inputValues,
-        [field]: value
-      }
-    }));
+  _handleChange(value) {
+    this.setState({ searchTerm: value });
   }
 
   _doSearch() {
-    const { inputValues } = this.state;
-    if (inputValues.searchTerm) {
-      HttpService.searchBooks(inputValues.searchTerm).then((results) => {
+    const { searchTerm } = this.state;
+    if (searchTerm) {
+      httpService.searchBooks(searchTerm).then((results) => {
         if (results.books) {
           const books = [];
           results.books.forEach((book) => {
@@ -76,17 +66,17 @@ class SearchScreen extends React.Component {
 
   render() {
     const { searchResults } = this.state;
-    console.log('SEARCH RESLTS', searchResults[0]);
     const searchResultsMapped = (searchResults) ? searchResults.map((result) => (
       <BookSearchResult
         book={result}
-        addFunction={this.addBookToList}
+        lists={screenService.getStore().getState().lists}
+        addBook={this.addBookToList}
         key={result.previewLink}
       />
     )) : null;
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={[styles.searchFormContainer]}>
+      <ScrollView contentContainerStyle={searchScreenStyles.container}>
+        <View style={[searchScreenStyles.searchFormContainer]}>
           <View style={[appStyles.paddingLg, { backgroundColor: appColors.green }]}>
             <TextInput
               placeholder="Title, author or ISBN"
@@ -96,10 +86,9 @@ class SearchScreen extends React.Component {
               blurOnSubmit={true}
               enablesReturnKeyAutomatically={true}
               selectTextOnFocus={true}
-              onChangeText={(value) => { this._handleChange(value, 'searchTerm'); }}
+              onChangeText={this._handleChange}
             />
           </View>
-
 
           <TouchableOpacity
             style={[appStyles.paddingLg, { backgroundColor: appColors.red }]}

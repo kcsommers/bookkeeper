@@ -6,6 +6,7 @@ import notesReducer from './reducers/notes.reducer';
 import quotesReducer from './reducers/quotes.reducer';
 import newItemsReducer from './reducers/newItems.reducer';
 import eventsReducer from './reducers/events.reducer';
+import alertsReducer from './reducers/alerts.reducer';
 import deviceInfoReducer from './reducers/deviceInfo.reducer';
 import { setUser } from './actions/user.actions';
 import { addList } from './actions/lists.actions';
@@ -25,6 +26,7 @@ const allReducers = combineReducers({
   quotes: quotesReducer,
   newItems: newItemsReducer,
   events: eventsReducer,
+  alert: alertsReducer,
   deviceInfo: deviceInfoReducer
 });
 

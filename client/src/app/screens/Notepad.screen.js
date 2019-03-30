@@ -10,11 +10,13 @@ import Icon from 'react-native-vector-icons/Entypo';
 import { appColors, appStyles, normalizeFont } from '../../assets/styles/appStyles.styles';
 import { HttpService } from '../../core/services/HttpService';
 import { ScreenService } from '../../core/services/ScreenService';
+import { AlertsService } from '../../core/services/AlertsService';
 import Note from '../../core/classes/models/Note';
 import Quote from '../../core/classes/models/Quote';
 
 const httpService = Object.create(HttpService);
 const screenService = Object.create(ScreenService);
+const alertsService = Object.create(AlertsService);
 const mapStateToProps = (state) => ({
   notes: state.notes,
   quotes: state.quotes
@@ -81,20 +83,30 @@ class NotepadScreen extends React.Component {
   }
 
   _updateNote() {
+    const { itemData, noteType } = this.state;
     const { note } = this.props.navigation.getParam('content');
-    note.update(screenService.getStore(), { id: note.id, newContent: this.state.itemData.content });
+    note.update(screenService.getStore(), { id: note.id, newContent: itemData.content });
+    alertsService.createAlert(`${noteType === 'note' ? 'Note' : 'Quote'} Updated`, 'check');
     this.props.navigation.goBack();
   }
 
   _createNote(note) {
     const { noteType } = this.state;
     let newNote;
+    let alertText;
     if (noteType === 'note') {
-      newNote = new Note(note.id, note.content, note.bookId, note.userId, note.createdAt);
+      newNote = new Note(
+        note.id, note.content, note.bookId, note.userId, note.createdAt
+      );
+      alertText = 'Note Added';
     } else {
-      newNote = new Quote(note.id, note.content, note.page, note.bookId, note.userId, note.createdAt);
+      newNote = new Quote(
+        note.id, note.content, note.page, note.bookId, note.userId, note.createdAt
+      );
+      alertText = 'Quote Added';
     }
     newNote.addToStore(screenService.getStore());
+    alertsService.createAlert(alertText, 'check');
     this.props.navigation.goBack();
   }
 

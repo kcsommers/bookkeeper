@@ -7,8 +7,10 @@ import MomentDisplay from './MomentDisplay.component';
 import { store } from '../../core/redux/store';
 import { appStyles, appSpacing, appColors } from '../../assets/styles/appStyles.styles';
 import { HttpService } from '../../core/services/HttpService';
+import { AlertsService } from '../../core/services/AlertsService';
 
 const httpService = Object.create(HttpService);
+const alertsService = Object.create(AlertsService);
 
 class NoteDisplay extends React.Component {
   constructor() {
@@ -19,25 +21,8 @@ class NoteDisplay extends React.Component {
     this.triggerEdit = this.triggerEdit.bind(this);
   }
 
-  componentWillMount() {
-  }
-
   triggerModal(template, content, actions) {
     this.modalTrigger.emit('trigger-modal', { template, content, actions });
-  }
-
-  triggerDelete(template, content, actions) {
-    this.triggerModal(template, content, actions);
-  }
-
-  cancelDelete() {
-    this.triggerModal('note', { note: this.props.note }, {
-      triggerEdit: this.triggerEdit.bind(this),
-      triggerDelete: this.triggerDelete.bind(this, 'confirmDelete', { id: this.props.note.id }, {
-        delete: this.deleteNote.bind(this),
-        cancel: this.cancelDelete.bind(this)
-      })
-    });
   }
 
   triggerEdit() {
@@ -53,9 +38,27 @@ class NoteDisplay extends React.Component {
     });
   }
 
+  triggerDelete(template, content, actions) {
+    this.triggerModal(template, content, actions);
+  }
+
+  cancelDelete() {
+    const { note } = this.props;
+    this.triggerModal('note', { note }, {
+      triggerEdit: this.triggerEdit.bind(this),
+      triggerDelete: this.triggerDelete.bind(this, 'confirmDelete', { id: note.id }, {
+        delete: this.deleteNote.bind(this),
+        cancel: this.cancelDelete.bind(this)
+      })
+    });
+  }
+
   deleteNote() {
-    httpService.delete(`notes/${this.props.note.id}`, null).then((result) => {
+    const { note } = this.props;
+    httpService.delete(`notes/${note.id}`, null).then((result) => {
       if (result.success) {
+        note.removeFromStore(store);
+        alertsService.createAlert('Note Deleted', 'check');
         this.modalTrigger.emit('close-modal');
       }
     }).catch((error) => {
@@ -65,12 +68,12 @@ class NoteDisplay extends React.Component {
 
   render() {
     const { note } = this.props;
-    return (
+    return (note) ? (
       <TouchableOpacity
         onPress={() => {
           this.triggerModal('note', { note }, {
             triggerEdit: this.triggerEdit.bind(this),
-            triggerDelete: this.triggerDelete.bind(this, 'confirmDelete', { id: this.props.note.id }, {
+            triggerDelete: this.triggerDelete.bind(this, 'confirmDelete', { id: note.id }, {
               delete: this.deleteNote.bind(this),
               cancel: this.cancelDelete.bind(this)
             })
@@ -84,7 +87,7 @@ class NoteDisplay extends React.Component {
         <MomentDisplay time={note.createdAt} />
         <Text style={[appStyles.noteText]}>{note.content}</Text>
       </TouchableOpacity>
-    );
+    ) : null;
   }
 }
 

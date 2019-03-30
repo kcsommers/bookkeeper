@@ -6,11 +6,13 @@ import { connect } from 'react-redux';
 import { ScreenService } from '../../core/services/ScreenService';
 import Book from '../components/Book.component';
 import BkModal from '../components/BkModal.component';
+import { AlertsService } from '../../core/services/AlertsService';
+import { bookScreenStyles } from '../../assets/styles/bookScreen.styles';
 
+const alertsService = Object.create(AlertsService);
 const screenService = Object.create(ScreenService);
 const mapStateToProps = (state) => ({
   books: state.books,
-  newItems: state.newItems,
   modalTrigger$: state.events.modalTrigger
 });
 
@@ -19,21 +21,21 @@ class BookScreen extends React.Component {
     super(props);
     this.state = {
       currentBook: null,
-      currentBookIndex: 0,
       modalVisible: false,
-      currentModalContent: null
+      modalContent: null,
+      alert: null
     };
-    this._changeCurrentBook = this._changeCurrentBook.bind(this);
     this._onNavigation = this._onNavigation.bind(this);
     this._triggerModal = this._triggerModal.bind(this);
-    this._closeModal = this._closeModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
     this.navigate = this.navigate.bind(this);
+    this.closeAlert = this.closeAlert.bind(this);
   }
 
   componentWillMount() {
     const { navigation, modalTrigger$ } = this.props;
     modalTrigger$.addListener('trigger-modal', this._triggerModal);
-    modalTrigger$.addListener('close-modal', this._closeModal);
+    modalTrigger$.addListener('close-modal', this.closeModal);
     modalTrigger$.addListener('trigger-nav', this.navigate);
     this.navSubscription$ = navigation.addListener('willFocus', this._onNavigation);
   }
@@ -43,9 +45,16 @@ class BookScreen extends React.Component {
     this.props.modalTrigger$.removeAllListeners();
   }
 
+  _onNavigation() {
+    const alert = alertsService.checkForAlert();
+    const bookId = this.props.navigation.getParam('id');
+    const currentBook = this.props.books[bookId];
+    this.setState({ currentBook, alert });
+  }
+
   navigate(routeData) {
     if (this.state.modalVisible) {
-      this._closeModal();
+      this.closeModal();
     }
 
     const { path, params } = routeData;
@@ -53,47 +62,43 @@ class BookScreen extends React.Component {
   }
 
   _triggerModal(args) {
-    const currentModalContent = screenService.getModalContent(args.template, args.content, args.actions);
+    const modalContent = screenService.getModalContent(args.template, args.content, args.actions);
     this.setState({
       modalVisible: true,
-      currentModalContent
+      modalContent
     });
   }
 
-  _closeModal() {
+  closeModal() {
+    const alert = alertsService.checkForAlert();
     this.setState({
       modalVisible: false,
-      currentModalContent: null
+      modalContent: null,
+      alert
     });
   }
 
-  _onNavigation() {
-    const bookId = this.props.navigation.getParam('id');
-    const currentBook = this.props.books[bookId];
-    this.setState({ currentBook });
-  }
-
-  _changeCurrentBook(num) {
-    const { currentReads, currentBookIndex } = this.state;
-    let newIndex = currentBookIndex + num;
-    if (newIndex < 0) {
-      newIndex = this.currentReads.length - 1;
-    } else if (newIndex === this.currentReads.length) {
-      newIndex = 0;
-    }
-    this.setState({ currentBook: currentReads[newIndex], currentBookIndex: newIndex });
+  closeAlert(alertId) {
+    alertsService.removeAlert(alertId);
+    this.setState({ alert: null });
   }
 
   render() {
-    const { currentBook, modalVisible, currentModalContent } = this.state;
+    const {
+      currentBook, modalVisible, modalContent, alert
+    } = this.state;
     return (currentBook) ? (
-      <View>
+      <View style={[bookScreenStyles.container]}>
         <Book book={currentBook} navigate={this.navigate} />
-        {(modalVisible) ? (
-          <BkModal isVisible={modalVisible}>
-            {currentModalContent && currentModalContent.template}
+        {modalVisible && (
+          <BkModal
+            isVisible={modalVisible}
+            closeModal={this.closeModal}
+          >
+            {modalContent && modalContent.template}
           </BkModal>
-        ) : null}
+        )}
+        {alert && alertsService.getAlertTemplate(alert, this.closeAlert)}
       </View>
     ) : null;
   }

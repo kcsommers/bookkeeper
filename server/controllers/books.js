@@ -10,8 +10,8 @@ router.post('/', (req, res) => {
     current: false,
     banner: 'https://res.cloudinary.com/kcsommers/image/upload/v1530509212/lflbvvr8kjmgae9suzov.jpg'
   });
-  const { listId } = req.body.miscData;
-
+  const { listId } = req.body.modelData;
+  console.log('LIST ID:::: ', listId);
   db.book.create(bookData).then((book) => {
     db.list.findByPk(listId).then((list) => {
       list.addBook(book).then(() => {
