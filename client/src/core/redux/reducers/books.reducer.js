@@ -3,8 +3,8 @@ import {
   DELETE_BOOK,
   ADD_NOTE,
   ADD_QUOTE,
-  DELETE_NOTE,
-  DELETE_QUOTE
+  REMOVE_NOTE,
+  REMOVE_QUOTE
 } from '../actions/books.actions';
 import Book from '../../classes/models/Book';
 
@@ -54,7 +54,7 @@ const booksReducer = (state = null, { type, payload }) => {
         [book.id]: book
       };
     }
-    case DELETE_NOTE: {
+    case REMOVE_NOTE: {
       const book = state[payload.bookId];
       const noteIdsFiltered = book.noteIds.filter(id => id !== payload.noteId);
       book.noteIds = noteIdsFiltered;
@@ -63,7 +63,7 @@ const booksReducer = (state = null, { type, payload }) => {
         [book.id]: book
       };
     }
-    case DELETE_QUOTE: {
+    case REMOVE_QUOTE: {
       const book = state[payload.bookId];
       const quoteIdsFiltered = book.quoteIds.filter(id => id !== payload.quoteId);
       book.quoteIds = quoteIdsFiltered;

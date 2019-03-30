@@ -22,12 +22,12 @@ class BookScreen extends React.Component {
     this.state = {
       currentBook: null,
       modalVisible: false,
-      currentModalContent: null,
+      modalContent: null,
       alert: null
     };
     this._onNavigation = this._onNavigation.bind(this);
     this._triggerModal = this._triggerModal.bind(this);
-    this._closeModal = this._closeModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
     this.navigate = this.navigate.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
   }
@@ -35,7 +35,7 @@ class BookScreen extends React.Component {
   componentWillMount() {
     const { navigation, modalTrigger$ } = this.props;
     modalTrigger$.addListener('trigger-modal', this._triggerModal);
-    modalTrigger$.addListener('close-modal', this._closeModal);
+    modalTrigger$.addListener('close-modal', this.closeModal);
     modalTrigger$.addListener('trigger-nav', this.navigate);
     this.navSubscription$ = navigation.addListener('willFocus', this._onNavigation);
   }
@@ -54,7 +54,7 @@ class BookScreen extends React.Component {
 
   navigate(routeData) {
     if (this.state.modalVisible) {
-      this._closeModal();
+      this.closeModal();
     }
 
     const { path, params } = routeData;
@@ -62,18 +62,18 @@ class BookScreen extends React.Component {
   }
 
   _triggerModal(args) {
-    const currentModalContent = screenService.getModalContent(args.template, args.content, args.actions);
+    const modalContent = screenService.getModalContent(args.template, args.content, args.actions);
     this.setState({
       modalVisible: true,
-      currentModalContent
+      modalContent
     });
   }
 
-  _closeModal() {
+  closeModal() {
     const alert = alertsService.checkForAlert();
     this.setState({
       modalVisible: false,
-      currentModalContent: null,
+      modalContent: null,
       alert
     });
   }
@@ -85,14 +85,17 @@ class BookScreen extends React.Component {
 
   render() {
     const {
-      currentBook, modalVisible, currentModalContent, alert
+      currentBook, modalVisible, modalContent, alert
     } = this.state;
     return (currentBook) ? (
       <View style={[bookScreenStyles.container]}>
         <Book book={currentBook} navigate={this.navigate} />
         {modalVisible && (
-          <BkModal isVisible={modalVisible}>
-            {currentModalContent && currentModalContent.template}
+          <BkModal
+            isVisible={modalVisible}
+            closeModal={this.closeModal}
+          >
+            {modalContent && modalContent.template}
           </BkModal>
         )}
         {alert && alertsService.getAlertTemplate(alert, this.closeAlert)}

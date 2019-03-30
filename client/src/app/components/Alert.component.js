@@ -32,10 +32,6 @@ class AlertComponent extends React.Component {
     }, 3000);
   }
 
-  componentWillUnmount() {
-    console.log('ALERT COMPONENT UNMOUNTING');
-  }
-
   _animateOut() {
     const { alert, closeAlert } = this.props;
     closeAlert(alert.id);

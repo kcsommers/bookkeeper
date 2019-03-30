@@ -14,7 +14,7 @@ export const HttpService = {
           reject(new Error(error));
         }
       } catch (createError) {
-        console.warn('AXIOS ERROR CREATING ITEM', createError);
+        console.error('AXIOS ERROR CREATING ITEM', createError);
         reject(new Error(createError));
       }
     });

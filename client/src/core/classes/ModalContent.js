@@ -1,8 +1,9 @@
 /* eslint-disable react/no-this-in-sfc */
 import React from 'react';
 import {
-  Text, View, TouchableOpacity
+  Text, View, TouchableOpacity, TextInput
 } from 'react-native';
+import { appColors } from '../../assets/styles/appStyles.styles';
 
 const templates = {
   note: (content, actions) => (
@@ -27,6 +28,24 @@ const templates = {
       </TouchableOpacity>
       <TouchableOpacity onPress={() => { actions.cancel(content.id); }}>
         <Text>Cancel</Text>
+      </TouchableOpacity>
+    </View>
+  ),
+  newListForm: (content, actions) => (
+    <View>
+      <Text>Create New List</Text>
+      <TextInput
+        placeholder="List Name"
+        placeholderTextColor={appColors.offWhite}
+        returnKeyLabel="Submit"
+        clearButtonMode="while-editing"
+        blurOnSubmit={true}
+        enablesReturnKeyAutomatically={true}
+        selectTextOnFocus={true}
+        onChangeText={(value) => { actions.listInputChange(value); }}
+      />
+      <TouchableOpacity onPress={actions.createList}>
+        <Text>Add List</Text>
       </TouchableOpacity>
     </View>
   )
