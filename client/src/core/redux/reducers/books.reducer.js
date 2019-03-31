@@ -6,24 +6,14 @@ import {
   REMOVE_NOTE,
   REMOVE_QUOTE
 } from '../actions/books.actions';
-import Book from '../../classes/models/Book';
 
 const booksReducer = (state = null, { type, payload }) => {
   switch (type) {
     case ADD_BOOK: {
       const { book } = payload;
-      const noteIds = [];
-      const quoteIds = [];
-      if (book.notes) {
-        book.notes.forEach((note) => { noteIds.push(note.id); });
-      }
-      if (book.quotes) {
-        book.quotes.forEach((quote) => { quoteIds.push(quote.id); });
-      }
-      const newBook = new Book(book.id, book.title, book.authors, book.description, book.thumbnail, book.banner, book.current, noteIds, quoteIds);
       return {
         ...state,
-        [newBook.id]: newBook
+        [book.id]: book
       };
     }
     case DELETE_BOOK: {

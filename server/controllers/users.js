@@ -3,6 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const passport = require('../config/passportConfig');
 const { hashPassword, verifyToken } = require('../middleware/authMiddleware');
+const db = require('../models');
 
 const router = express.Router();
 
@@ -50,6 +51,19 @@ router.get('/verify', verifyToken, (req, res) => {
   } else {
     res.json({ verified: false, user: null, error: req.error });
   }
+});
+
+router.post('/update/:id', (req, res) => {
+  console.log('HIT UPDATE USER ROUTE');
+  const newData = req.body.itemData;
+  db.user.update(newData, {
+    where: { id: req.params.id }
+  }).then(() => {
+    res.json({ success: true, error: null });
+  }).catch(updateError => {
+    console.log('ERROR UPDATING USER IN DB', updateError);
+    res.json({ success: null, error: updateError });
+  });
 });
 
 module.exports = { router };

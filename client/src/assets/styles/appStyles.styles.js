@@ -21,6 +21,8 @@ export const appWidths = {
   eighty: SCREEN_WIDTH * 0.8,
   seventyFive: SCREEN_WIDTH * 0.75,
   fifty: SCREEN_WIDTH * 0.5,
+  fortyFive: SCREEN_WIDTH * 0.45,
+  forty: SCREEN_WIDTH * 0.4,
   thirtyFive: SCREEN_WIDTH * 0.35,
   thirty: SCREEN_WIDTH * 0.3,
   twentyFive: SCREEN_WIDTH * 0.25,
@@ -34,6 +36,8 @@ export const appHeights = {
   seventy: SCREEN_HEIGHT * 0.7,
   fifty: SCREEN_HEIGHT * 0.5,
   thirtyFive: SCREEN_HEIGHT * 0.35,
+  thirty: SCREEN_HEIGHT * 0.3,
+  twentyFive: SCREEN_HEIGHT * 0.25,
   ten: SCREEN_HEIGHT * 0.1,
   five: SCREEN_HEIGHT * 0.05
 };

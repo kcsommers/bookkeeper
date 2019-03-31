@@ -10,7 +10,7 @@ import {
   appHeights, appStyles, appSpacing, appColors
 } from '../../assets/styles/appStyles.styles';
 import { AuthService } from '../../core/services/AuthService';
-import { loginStyles } from '../../assets/styles/loginScreen.styles';
+import { loginStyles } from '../../assets/styles/screens/loginScreen.styles';
 import { initializeStore } from '../../core/redux/store';
 
 const auth = Object.create(AuthService);
