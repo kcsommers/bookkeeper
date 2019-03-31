@@ -3,7 +3,7 @@ import {
   ScrollView, TextInput, TouchableOpacity, Text, View
 } from 'react-native';
 import { appColors, appStyles } from '../../assets/styles/appStyles.styles';
-import { searchScreenStyles } from '../../assets/styles/searchScreen.styles';
+import { searchScreenStyles } from '../../assets/styles/screens/searchScreen.styles';
 import { HttpService } from '../../core/services/HttpService';
 import { ScreenService } from '../../core/services/ScreenService';
 import BookSearchResult from '../components/BookSearchResult.component';

@@ -2,7 +2,9 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Image,
+  ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 import BkModal from '../components/BkModal.component';
@@ -11,6 +13,9 @@ import { HttpService } from '../../core/services/HttpService';
 import List from '../../core/classes/models/List';
 import { addList } from '../../core/redux/actions/lists.actions';
 import { AlertsService } from '../../core/services/AlertsService';
+import { styles } from '../../assets/styles/screens/profileScreen.styles';
+import { appStyles } from '../../assets/styles/appStyles.styles';
+import ListDisplay from '../components/ListDisplay.component';
 
 const screenService = Object.create(ScreenService);
 const httpService = Object.create(HttpService);
@@ -27,12 +32,27 @@ class ProfileScreen extends React.Component {
       alert: null
     };
     this._triggerModal = this._triggerModal.bind(this);
+    this._onNavigation = this._onNavigation.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
+    this.navigate = this.navigate.bind(this);
+  }
+
+  componentWillMount() {
+    this.navSubscription$ = this.props.navigation.addListener('willFocus', this._onNavigation);
+  }
+
+  componentWillUnmount() {
+    this.navSubscription$.remove();
   }
 
   onListInputChange(value) {
     this.setState({ listInputValue: value });
+  }
+
+  _onNavigation() {
+    const alert = alertsService.checkForAlert();
+    this.setState({ alert });
   }
 
   createList() {
@@ -54,7 +74,7 @@ class ProfileScreen extends React.Component {
     }
   }
 
-  _navigate(listId) {
+  navigate(listId) {
     const { navigation } = this.props;
     navigation.navigate('List', { id: listId });
   }
@@ -88,19 +108,31 @@ class ProfileScreen extends React.Component {
 
   render() {
     const { modalVisible, modalContent, alert } = this.state;
-    const { lists } = this.props;
+    const { lists, user } = this.props;
     const listsMapped = Object.keys(lists).map((key) => (
-      <View key={lists[key].id}>
-        <TouchableOpacity onPress={() => { this._navigate(lists[key].id); }}>
-          <Text>
-            {lists[key].name}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      lists[key].id !== 0
+      && (
+        <ListDisplay
+          key={lists[key].id}
+          list={lists[key]}
+          onPress={this.navigate}
+        />
+      )
     ));
     return (
-      <View>
-        <Text>PROFILE SCREEN</Text>
+      <ScrollView>
+        <Image
+          style={[styles.banner]}
+          source={{ uri: user.banner, cache: 'force-cache' }}
+          resizeMode="cover"
+        />
+        <Image
+          style={[styles.profilePic]}
+          source={{ uri: user.image, cache: 'force-cache' }}
+          resizeMode="cover"
+        />
+        <Text style={[appStyles.h2]}>{user.username}</Text>
+        <Text style={[appStyles.h4i]}>{user.location}</Text>
         {listsMapped}
         <TouchableOpacity onPress={this._triggerModal}>
           <Text>New List</Text>
@@ -114,7 +146,7 @@ class ProfileScreen extends React.Component {
           </BkModal>
         )}
         {alert && alertsService.getAlertTemplate(alert, this.closeAlert)}
-      </View>
+      </ScrollView>
     );
   }
 }

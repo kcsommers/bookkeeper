@@ -7,7 +7,7 @@ import { ScreenService } from '../../core/services/ScreenService';
 import Book from '../components/Book.component';
 import BkModal from '../components/BkModal.component';
 import { AlertsService } from '../../core/services/AlertsService';
-import { bookScreenStyles } from '../../assets/styles/bookScreen.styles';
+import { bookScreenStyles } from '../../assets/styles/screens/bookScreen.styles';
 
 const alertsService = Object.create(AlertsService);
 const screenService = Object.create(ScreenService);

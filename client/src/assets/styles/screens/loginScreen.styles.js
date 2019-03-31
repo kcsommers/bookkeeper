@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { appColors, appSpacing, normalizeFont } from './appStyles.styles';
+import { appColors, appSpacing, normalizeFont } from '../appStyles.styles';
 
 export const loginStyles = StyleSheet.create({
   mainContainer: {
