@@ -6,9 +6,13 @@ import {
   StyleSheet,
   View
 } from 'react-native';
-import { Dropdown } from 'react-native-material-dropdown';
-import { appStyles, appSpacing, appColors, appWidths } from '../../assets/styles/appStyles.styles';
+import { appWidths } from '../../assets/styles/appStyles.styles';
+import { store } from '../../core/redux/store';
+import { HttpService } from '../../core/services/HttpService';
+import { AlertsService } from '../../core/services/AlertsService';
 
+const httpService = Object.create(HttpService);
+const alertsService = Object.create(AlertsService);
 const styles = StyleSheet.create({
   thumbnailBtn: {
     width: appWidths.thirtyFive,
@@ -30,11 +34,42 @@ class BookDisplay extends React.Component {
       { value: 'Change banner image' }
     ];
     this._onDropdownSelect = this._onDropdownSelect.bind(this);
+    this.deleteBook = this.deleteBook.bind(this);
+    this.cancelDelete = this.cancelDelete.bind(this);
+  }
+
+  deleteBook() {
+    const { book, listId, modalTrigger } = this.props;
+    httpService.delete(`books/${book.id}`).then(result => {
+      if (result.success) {
+        book.removeFromStore(store, listId);
+        alertsService.createAlert('Book Deleted', 'check');
+        modalTrigger.emit('close-modal');
+      }
+    }).catch(error => {
+      console.error('ERROR DELETING BOOK', error);
+    });
+  }
+
+  cancelDelete() {
+    console.log('CANCELING DELETE');
   }
 
   _onDropdownSelect(selection) {
+    const { modalTrigger, book } = this.props;
     switch (selection) {
       case 'Remove from list': {
+        modalTrigger.emit('trigger-modal', {
+          template: 'confirmDelete',
+          content: {
+            id: book.id,
+            text: 'Removing this book will also remove all of its notes. If you\'d like to save your notes, be sure to move this book to another list.'
+          },
+          actions: {
+            delete: this.deleteBook.bind(this),
+            cancel: this.cancelDelete.bind(this)
+          }
+        });
         break;
       }
       case 'Move to new list': {
@@ -67,11 +102,22 @@ class BookDisplay extends React.Component {
           />
         </TouchableOpacity>
         <Text>{book.description}</Text>
-        <Dropdown
-          data={this.dropdownOptions}
-          value="Options"
-          onChangeText={(selection) => { this._onDropdownSelect(selection); }}
-        />
+
+        <TouchableOpacity onPress={() => { this._onDropdownSelect('Remove from list'); }}>
+          <Text>Remove from list</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => { this._onDropdownSelect('Move to new list'); }}>
+          <Text>Move to new list</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => { this._onDropdownSelect('Edit description'); }}>
+          <Text>Edit description</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => { this._onDropdownSelect('Change banner image'); }}>
+          <Text>Change banner image</Text>
+        </TouchableOpacity>
       </View>
     );
   }

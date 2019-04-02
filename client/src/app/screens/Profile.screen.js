@@ -121,18 +121,22 @@ class ProfileScreen extends React.Component {
     ));
     return (
       <ScrollView>
-        <Image
-          style={[styles.banner]}
-          source={{ uri: user.banner, cache: 'force-cache' }}
-          resizeMode="cover"
-        />
-        <Image
-          style={[styles.profilePic]}
-          source={{ uri: user.image, cache: 'force-cache' }}
-          resizeMode="cover"
-        />
-        <Text style={[appStyles.h2]}>{user.username}</Text>
-        <Text style={[appStyles.h4i]}>{user.location}</Text>
+        <View style={[styles.bannerContainer]}>
+          <Image
+            style={[styles.banner]}
+            source={{ uri: user.banner, cache: 'force-cache' }}
+            resizeMode="cover"
+          />
+          <Image
+            style={[styles.profilePic]}
+            source={{ uri: user.image, cache: 'force-cache' }}
+            resizeMode="cover"
+          />
+        </View>
+        <View style={[styles.userInfo]}>
+          <Text style={[appStyles.h2, styles.centered]}>{user.username}</Text>
+          <Text style={[appStyles.h4i, styles.centered]}>{user.location}</Text>
+        </View>
         {listsMapped}
         <TouchableOpacity onPress={this._triggerModal}>
           <Text>New List</Text>

@@ -22,7 +22,7 @@ const templates = {
   confirmDelete: (content, actions) => (
     <View>
       <Text>Are You Sure?</Text>
-      <Text>This action cannot be undone.</Text>
+      <Text>{content.text}</Text>
       <TouchableOpacity onPress={() => { actions.delete(content.id); }}>
         <Text>Delete</Text>
       </TouchableOpacity>

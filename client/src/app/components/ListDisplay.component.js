@@ -3,13 +3,17 @@ import {
   TouchableOpacity,
   Text,
   Image,
-  StyleSheet
+  StyleSheet,
+  View
 } from 'react-native';
 import { appStyles, appSpacing, appColors, appWidths } from '../../assets/styles/appStyles.styles';
 import { ScreenService } from '../../core/services/ScreenService';
 
 const screenService = Object.create(ScreenService);
 const styles = StyleSheet.create({
+  thumbnailsWrapper: {
+    flexDirection: 'row'
+  },
   thumbnail: {
     width: appWidths.twenty,
     height: appWidths.twenty * 1.54
@@ -21,7 +25,9 @@ class ListDisplay extends React.Component {
     return books.map(book => (
       <Image
         key={book.id}
-        style={[styles.thumbnail]}
+        style={[styles.thumbnail, {
+          marginRight: books.length < 4 ? appSpacing.md.x : 0
+        }]}
         source={{ uri: book.thumbnail, cache: 'force-cache' }}
         resizeMode="cover"
       />
@@ -41,7 +47,12 @@ class ListDisplay extends React.Component {
         }]}
       >
         <Text>{list.name}</Text>
-        {booksMapped}
+        <View style={[styles.thumbnailsWrapper, {
+          justifyContent: books.length < 4 ? 'flex-start' : 'space-between'
+        }]}
+        >
+          {booksMapped}
+        </View>
       </TouchableOpacity>
     );
   }

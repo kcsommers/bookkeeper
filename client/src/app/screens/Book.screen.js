@@ -13,7 +13,7 @@ const alertsService = Object.create(AlertsService);
 const screenService = Object.create(ScreenService);
 const mapStateToProps = (state) => ({
   books: state.books,
-  modalTrigger$: state.events.modalTrigger
+  globalModalTrigger$: state.events.globalModalTrigger
 });
 
 class BookScreen extends React.Component {
@@ -33,16 +33,16 @@ class BookScreen extends React.Component {
   }
 
   componentWillMount() {
-    const { navigation, modalTrigger$ } = this.props;
-    modalTrigger$.addListener('trigger-modal', this._triggerModal);
-    modalTrigger$.addListener('close-modal', this.closeModal);
-    modalTrigger$.addListener('trigger-nav', this.navigate);
+    const { navigation, globalModalTrigger$ } = this.props;
+    globalModalTrigger$.addListener('trigger-modal', this._triggerModal);
+    globalModalTrigger$.addListener('close-modal', this.closeModal);
+    globalModalTrigger$.addListener('trigger-nav', this.navigate);
     this.navSubscription$ = navigation.addListener('willFocus', this._onNavigation);
   }
 
   componentWillUnmount() {
     this.navSubscription$.remove();
-    this.props.modalTrigger$.removeAllListeners();
+    this.props.globalModalTrigger$.removeAllListeners();
   }
 
   _onNavigation() {

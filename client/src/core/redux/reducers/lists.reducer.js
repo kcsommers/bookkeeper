@@ -32,7 +32,7 @@ const listsReducer = (state = null, { type, payload }) => {
     }
     case REMOVE_BOOK: {
       const list = state[payload.listId];
-      const bookIdsFiltered = list.bookIds.filter(id => id !== payload.noteId);
+      const bookIdsFiltered = list.bookIds.filter(id => id !== payload.bookId);
       list.bookIds = bookIdsFiltered;
       return {
         ...state,

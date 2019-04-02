@@ -15,19 +15,19 @@ const alertsService = Object.create(AlertsService);
 class NoteDisplay extends React.Component {
   constructor() {
     super();
-    this.modalTrigger = store.getState().events.modalTrigger;
+    this.globalModalTrigger = store.getState().events.globalModalTrigger;
     this.triggerModal = this.triggerModal.bind(this);
     this.triggerDelete = this.triggerDelete.bind(this);
     this.triggerEdit = this.triggerEdit.bind(this);
   }
 
   triggerModal(template, content, actions) {
-    this.modalTrigger.emit('trigger-modal', { template, content, actions });
+    this.globalModalTrigger.emit('trigger-modal', { template, content, actions });
   }
 
   triggerEdit() {
     const { note } = this.props;
-    this.modalTrigger.emit('trigger-nav', {
+    this.globalModalTrigger.emit('trigger-nav', {
       path: 'Notepad',
       params: {
         content: { note },
@@ -46,7 +46,7 @@ class NoteDisplay extends React.Component {
     const { note } = this.props;
     this.triggerModal('note', { note }, {
       triggerEdit: this.triggerEdit.bind(this),
-      triggerDelete: this.triggerDelete.bind(this, 'confirmDelete', { id: note.id }, {
+      triggerDelete: this.triggerDelete.bind(this, 'confirmDelete', { id: note.id, text: 'This action cannot be undone' }, {
         delete: this.deleteNote.bind(this),
         cancel: this.cancelDelete.bind(this)
       })
@@ -59,7 +59,7 @@ class NoteDisplay extends React.Component {
       if (result.success) {
         note.removeFromStore(store);
         alertsService.createAlert('Note Deleted', 'check');
-        this.modalTrigger.emit('close-modal');
+        this.globalModalTrigger.emit('close-modal');
       }
     }).catch((error) => {
       console.error('ERROR DELETING NOTE', error);
