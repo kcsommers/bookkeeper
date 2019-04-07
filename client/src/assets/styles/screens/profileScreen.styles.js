@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import {
-  appStyles, appWidths, appHeights, appColors, normalizeFont, appSpacing
+  appWidths, appHeights, appColors, appSpacing
 } from '../appStyles.styles';
 
 export const styles = StyleSheet.create({
@@ -31,5 +31,20 @@ export const styles = StyleSheet.create({
   },
   centered: {
     textAlign: 'center'
+  },
+  addListBtn: {
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: appColors.gray,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  addListBtnIconWrapper: {
+    backgroundColor: appColors.white,
+    width: appWidths.fifteen,
+    height: appWidths.fifteen,
+    borderRadius: appWidths.fifteen / 2,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

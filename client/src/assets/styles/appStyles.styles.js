@@ -100,6 +100,11 @@ export const appStyles = {
     fontFamily: 'MerrItalic',
     color: appColors.gray
   },
+  h5: {
+    fontSize: normalizeFont(14),
+    fontFamily: 'Merriweather',
+    color: appColors.green
+  },
   p: {
     fontSize: normalizeFont(16),
     color: appColors.gray

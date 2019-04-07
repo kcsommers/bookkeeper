@@ -15,4 +15,15 @@ router.post('/', (req, res) => {
   });
 });
 
+router.delete('/:id', (req, res) => {
+  console.log('HIT DELETE LIST ROUTE');
+  db.book.destroy({
+    where: { id: req.params.id }
+  }).then(() => {
+    res.json({ success: true, error: null });
+  }).catch((error) => {
+    res.json({ success: false, error });
+  });
+});
+
 module.exports = { router };

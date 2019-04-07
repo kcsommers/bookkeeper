@@ -1,17 +1,16 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-} from 'react-native';
 import { EventEmitter } from 'events';
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
-import { ScreenService } from '../../core/services/ScreenService';
 import { AlertsService } from '../../core/services/AlertsService';
+import { HttpService } from '../../core/services/HttpService';
+import { ScreenService } from '../../core/services/ScreenService';
 import BookDisplay from '../components/BookDisplay.component';
-import BkModal from '../components/BkModal.component';
+import SearchBar from '../components/SearchBar.component';
+import { screenWrapper } from './ScreenWrapper.hoc';
 
 const screenService = Object.create(ScreenService);
+const httpService = Object.create(HttpService);
 const alertsService = Object.create(AlertsService);
 const mapStateToProps = (state) => ({ lists: state.lists });
 
@@ -19,61 +18,47 @@ class ListScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: null,
-      modalVisible: false,
-      modalContent: null,
-      alert: null
+      list: null
     };
-    this._onNavigation = this._onNavigation.bind(this);
+    this.onNavigation = this.onNavigation.bind(this);
     this.navigate = this.navigate.bind(this);
-    this.modalTrigger$ = new EventEmitter();
-    this.triggerModal = this.triggerModal.bind(this);
-    this.closeAlert = this.closeAlert.bind(this);
-    this.closeModal = this.closeModal.bind(this);
     this._getBookDisplays = this._getBookDisplays.bind(this);
+    this._deleteList = this._deleteList.bind(this);
+    this.modalTrigger$ = new EventEmitter();
+    this.searchEvent = new EventEmitter();
   }
 
   componentWillMount() {
-    this.navSubscription$ = this.props.navigation.addListener('willFocus', this._onNavigation);
-    this.modalTrigger$.addListener('trigger-modal', this.triggerModal);
-    this.modalTrigger$.addListener('close-modal', this.closeModal);
+    this.modalTrigger$.addListener('trigger-modal', this.triggerModal.bind(this));
+    this.modalTrigger$.addListener('close-modal', this.closeModal.bind(this));
+    this.searchEvent.addListener('search-done', this.onSearch.bind(this));
   }
 
   componentWillUnmount() {
-    this.navSubscription$.remove();
     this.modalTrigger$.removeAllListeners();
+    this.searchEvent.removeAllListeners();
   }
 
-  _onNavigation() {
+  onSearch(results) {
+    this.props.navigation.navigate('Search', { results, targetList: this.state.list });
+  }
+
+  onNavigation() {
     const listId = this.props.navigation.getParam('id');
     const list = this.props.lists[listId];
     this.setState({ list });
   }
 
   navigate(path, params) {
-    this.props.navigation.navigate(path, params);
+    this.props.navigate(path, params);
   }
 
   triggerModal(args) {
-    const modalContent = screenService.getModalContent(args.template, args.content, args.actions);
-    this.setState({
-      modalVisible: true,
-      modalContent
-    });
+    this.props.triggerModal(args.template, args.content, args.actions);
   }
 
   closeModal() {
-    const alert = alertsService.checkForAlert();
-    this.setState({
-      modalVisible: false,
-      modalContent: null,
-      alert
-    });
-  }
-
-  closeAlert(alertId) {
-    alertsService.removeAlert(alertId);
-    this.setState({ alert: null });
+    this.props.closeModal();
   }
 
   _getBookDisplays(books) {
@@ -88,33 +73,35 @@ class ListScreen extends React.Component {
     ));
   }
 
+  _deleteList() {
+    const { list } = this.state;
+    httpService.delete(`lists/${list.id}`).then(result => {
+      if (result.success) {
+        alertsService.createAlert('List Deleted', 'check');
+        list.removeFromStore(screenService.getStore());
+        this.props.navigation.navigate('Profile');
+      }
+    }).catch(error => {
+      console.error('ERROR DELEING LIST', error);
+    });
+  }
+
   render() {
-    const { list, modalContent, modalVisible, alert } = this.state;
+    const { list } = this.state;
     const books = list && screenService.getItemsById('books', list.bookIds);
     const booksMapped = this._getBookDisplays(books);
     return (
       <View>
-        <ScrollView>
-          <View>
-            <Text>{list && list.name}</Text>
-          </View>
-          <View>
-            {list && booksMapped}
-          </View>
-        </ScrollView>
-        {modalVisible && (
-          <BkModal
-            isVisible={modalVisible}
-            closeModal={this.closeModal}
-          >
-            {modalContent && modalContent.template}
-          </BkModal>
-        )}
-        {alert && alertsService.getAlertTemplate(alert, this.closeAlert)}
+        <Text>{list && list.name}</Text>
+        <TouchableOpacity onPress={this._deleteList}>
+          <Text>Delete List</Text>
+        </TouchableOpacity>
+        <SearchBar searchEvent={this.searchEvent} />
+        {list && booksMapped}
       </View>
 
     );
   }
 }
 
-export default connect(mapStateToProps)(ListScreen);
+export default connect(mapStateToProps)(screenWrapper(ListScreen));

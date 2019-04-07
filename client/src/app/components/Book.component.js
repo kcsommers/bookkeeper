@@ -30,7 +30,7 @@ class Book extends React.Component {
               <TouchableOpacity
                 style={[appStyles.boxShadow, bookStyles.bookOptionsBtn]}
                 onPress={() => {
-                  navigate({ path: 'Notepad', params: { noteType: 'note', icon: 'pencil', bookId: book.id } });
+                  navigate('Notepad', { noteType: 'note', icon: 'pencil', bookId: book.id });
                 }}
               >
                 <Icon
@@ -44,7 +44,7 @@ class Book extends React.Component {
               <TouchableOpacity
                 style={[appStyles.boxShadow, bookStyles.bookOptionsBtn]}
                 onPress={() => {
-                  navigate({ path: 'Notepad', params: { noteType: 'quote', icon: 'quote', bookId: book.id } });
+                  navigate('Notepad', { noteType: 'quote', icon: 'quote', bookId: book.id });
                 }}
               >
                 <Icon

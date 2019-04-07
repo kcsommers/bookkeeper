@@ -23,7 +23,7 @@ class BookSearchResult extends React.Component {
     super(props);
     this.state = {
       userLists: [],
-      selectedList: null
+      targetList: null
     };
     this._addBook = this._addBook.bind(this);
     this._parseBook = this._parseBook.bind(this);
@@ -37,7 +37,7 @@ class BookSearchResult extends React.Component {
     });
     this.setState({
       userLists: listsArr,
-      selectedList: listsArr[0],
+      targetList: this.props.targetList || listsArr[0],
       parsedBook: this._parseBook()
     });
   }
@@ -54,8 +54,8 @@ class BookSearchResult extends React.Component {
   }
 
   _addBook() {
-    const { selectedList, parsedBook } = this.state;
-    if (selectedList) {
+    const { targetList, parsedBook } = this.state;
+    if (targetList) {
       const itemData = {
         title: parsedBook.title,
         authors: parsedBook.authors,
@@ -63,7 +63,7 @@ class BookSearchResult extends React.Component {
         thumbnail: parsedBook.thumbnail
       };
       const modelData = {
-        listId: selectedList.id
+        listId: targetList.id
       };
       this.props.addBook({ itemData, modelData });
     }
@@ -74,11 +74,11 @@ class BookSearchResult extends React.Component {
   }
 
   _onSelectList(listName) {
-    this.setState({ selectedList: this._getList(listName) });
+    this.setState({ targetList: this._getList(listName) });
   }
 
   render() {
-    const { selectedList, userLists, parsedBook } = this.state;
+    const { targetList, userLists, parsedBook } = this.state;
     const { authors, thumbnail, title, description } = parsedBook;
     return (
       <View style={styles.container}>
@@ -95,7 +95,7 @@ class BookSearchResult extends React.Component {
         <Dropdown
           label="Select List"
           data={userLists.map(list => ({ value: list.name }))}
-          value={selectedList.name || 'Select'}
+          value={targetList.name || 'Select'}
           onChangeText={(list) => { this._onSelectList(list); }}
         />
         <TouchableOpacity onPress={this._addBook}>
