@@ -1,9 +1,37 @@
 import React from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { appColors, appStyles } from '../../assets/styles/appStyles.styles';
+import { TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
+import { appColors, appStyles, normalizeFont, appHeights, appSpacing } from '../../assets/styles/appStyles.styles';
 import { HttpService } from '../../core/services/HttpService';
 
 const httpService = Object.create(HttpService);
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: appColors.offWhite,
+    height: appHeights.ten,
+    justifyContent: 'center',
+    paddingLeft: appSpacing.lg.x,
+    paddingRight: appSpacing.lg.x
+  },
+  inputWrapper: {
+    backgroundColor: appColors.white,
+    flexDirection: 'row',
+    borderRadius: 50
+  },
+  searchInput: {
+    fontSize: normalizeFont(18),
+    flex: 1,
+    color: appColors.gray,
+    paddingLeft: appSpacing.md.x,
+    paddingTop: appSpacing.sm.y,
+    paddingBottom: appSpacing.sm.y
+  },
+  iconBtn: {
+    backgroundColor: appColors.gray,
+    borderTopRightRadius: 50,
+    borderBottomRightRadius: 50,
+  }
+});
 
 class SearchBar extends React.Component {
   constructor(props) {
@@ -38,11 +66,12 @@ class SearchBar extends React.Component {
 
   render() {
     return (
-      <View>
-        <View style={[appStyles.paddingLg, { backgroundColor: appColors.green }]}>
+      <View style={[styles.container]}>
+        <View style={[styles.inputWrapper, appStyles.boxShadow]}>
           <TextInput
-            placeholder="Search Books"
-            placeholderTextColor={appColors.offWhite}
+            style={[styles.searchInput]}
+            placeholder=""
+            placeholderTextColor={appColors.gray}
             returnKeyLabel="Search"
             clearButtonMode="while-editing"
             blurOnSubmit={true}
@@ -50,13 +79,17 @@ class SearchBar extends React.Component {
             selectTextOnFocus={true}
             onChangeText={this._handleChange}
           />
+          <TouchableOpacity
+            style={[styles.iconBtn, appStyles.paddingSm]}
+            onPress={this._doSearch}
+          >
+            <Icon
+              name="magnifying-glass"
+              size={normalizeFont(22)}
+              color={appColors.offWhite}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={[appStyles.paddingLg, { backgroundColor: appColors.red }]}
-          onPress={this._doSearch}
-        >
-          <Text>Search</Text>
-        </TouchableOpacity>
       </View>
     );
   }

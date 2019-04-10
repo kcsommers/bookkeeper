@@ -3,26 +3,18 @@ import {
   TouchableOpacity,
   Text,
   Image,
-  StyleSheet,
   View
 } from 'react-native';
-import { appWidths } from '../../assets/styles/appStyles.styles';
+import Icon from 'react-native-vector-icons/Entypo';
+import { styles } from '../../assets/styles/components/bookDisplay.styles';
 import { store } from '../../core/redux/store';
 import { HttpService } from '../../core/services/HttpService';
 import { AlertsService } from '../../core/services/AlertsService';
+import { appStyles, normalizeFont, appColors } from '../../assets/styles/appStyles.styles';
 
 const httpService = Object.create(HttpService);
 const alertsService = Object.create(AlertsService);
-const styles = StyleSheet.create({
-  thumbnailBtn: {
-    width: appWidths.thirtyFive,
-    height: appWidths.thirtyFive * 1.54
-  },
-  thumbnail: {
-    width: '100%',
-    height: '100%'
-  }
-});
+
 
 class BookDisplay extends React.Component {
   constructor(props) {
@@ -91,33 +83,68 @@ class BookDisplay extends React.Component {
     const { book, navigate } = this.props;
     return (
       <View>
-        <TouchableOpacity
-          style={[styles.thumbnailBtn]}
-          onPress={() => { navigate('Book', { id: book.id }); }}
-        >
-          <Image
-            style={[styles.thumbnail]}
-            source={{ uri: book.thumbnail, cache: 'force-cache' }}
-            resizeMode="cover"
-          />
-        </TouchableOpacity>
-        <Text>{book.description}</Text>
+        <View style={[styles.bookBtnWrapper, appStyles.paddingSm]}>
+          <TouchableOpacity
+            style={[styles.bookBtn]}
+            onPress={() => { navigate('Book', { id: book.id }); }}
+          >
+            <View style={[styles.thumbnailWrapper]}>
+              <Image
+                style={[styles.thumbnail]}
+                source={{ uri: book.thumbnail, cache: 'force-cache' }}
+                resizeMode="cover"
+              />
+            </View>
+            <Text style={[styles.descrText]}>{book.description}</Text>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity onPress={() => { this._onDropdownSelect('Remove from list'); }}>
-          <Text>Remove from list</Text>
-        </TouchableOpacity>
+        <View style={[styles.optionsContainer, appStyles.paddingMd]}>
+          <TouchableOpacity
+            style={[styles.bookOption, appStyles.boxShadow]}
+            onPress={() => { this._onDropdownSelect('Move to new list'); }}
+          >
+            <Icon
+              name="swap"
+              size={normalizeFont(20)}
+              color={appColors.gray}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this._onDropdownSelect('Move to new list'); }}>
-          <Text>Move to new list</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.bookOption, appStyles.boxShadow]}
+            onPress={() => { this._onDropdownSelect('Edit description'); }}
+          >
+            <Icon
+              name="edit"
+              size={normalizeFont(20)}
+              color={appColors.gray}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this._onDropdownSelect('Edit description'); }}>
-          <Text>Edit description</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.bookOption, appStyles.boxShadow]}
+            onPress={() => { this._onDropdownSelect('Change banner image'); }}
+          >
+            <Icon
+              name="image"
+              size={normalizeFont(20)}
+              color={appColors.gray}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this._onDropdownSelect('Change banner image'); }}>
-          <Text>Change banner image</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.bookOption, appStyles.boxShadow]}
+            onPress={() => { this._onDropdownSelect('Remove from list'); }}
+          >
+            <Icon
+              name="circle-with-minus"
+              size={normalizeFont(20)}
+              color={appColors.gray}
+            />
+          </TouchableOpacity>
+        </View>
+
       </View>
     );
   }

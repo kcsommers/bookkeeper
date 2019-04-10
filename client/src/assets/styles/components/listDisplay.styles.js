@@ -8,11 +8,13 @@ export const styles = StyleSheet.create({
   },
   thumbnailsWrapper: {
     flexDirection: 'row',
-    marginTop: appSpacing.md.y
+    marginTop: appSpacing.md.y,
+
   },
   thumbnail: {
     width: appWidths.twenty,
-    height: appWidths.twenty * 1.54
+    height: appWidths.twenty * 1.54,
+    borderRadius: 3
   },
   addBtn: {
     borderWidth: 1,

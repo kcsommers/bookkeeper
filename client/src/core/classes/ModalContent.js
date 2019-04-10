@@ -3,19 +3,24 @@ import React from 'react';
 import {
   Text, View, TouchableOpacity, TextInput
 } from 'react-native';
-import { appColors } from '../../assets/styles/appStyles.styles';
+import { appColors, appStyles } from '../../assets/styles/appStyles.styles';
+import { styles, noteStyles } from '../../assets/styles/modalStyles.styles';
 
 const templates = {
   note: (content, actions) => (
     <View>
-      <View>
-        <Text>{content.note.content}</Text>
-      </View>
-      <TouchableOpacity onPress={actions.triggerEdit}>
-        <Text>Edit</Text>
+      <Text style={[noteStyles.noteText]}>{content.note.content}</Text>
+      <TouchableOpacity
+        style={[appStyles.buttonAqua]}
+        onPress={actions.triggerEdit}
+      >
+        <Text style={[appStyles.buttonText]}>Edit</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={actions.triggerDelete}>
-        <Text>Delete</Text>
+      <TouchableOpacity
+        style={[appStyles.buttonRed]}
+        onPress={actions.triggerDelete}
+      >
+        <Text style={[appStyles.buttonText]}>Delete</Text>
       </TouchableOpacity>
     </View>
   ),
@@ -32,11 +37,12 @@ const templates = {
     </View>
   ),
   newListForm: (content, actions) => (
-    <View>
-      <Text>Create New List</Text>
+    <View style={[styles.contentWrapper, appStyles.paddingMd]}>
+      <Text style={[appStyles.h5]}>Create New List</Text>
       <TextInput
+        style={[styles.modalInput, appStyles.boxShadow]}
         placeholder="List Name"
-        placeholderTextColor={appColors.offWhite}
+        placeholderTextColor={appColors.gray}
         returnKeyLabel="Submit"
         clearButtonMode="while-editing"
         blurOnSubmit={true}
@@ -44,8 +50,11 @@ const templates = {
         selectTextOnFocus={true}
         onChangeText={(value) => { actions.listInputChange(value); }}
       />
-      <TouchableOpacity onPress={actions.createList}>
-        <Text>Add List</Text>
+      <TouchableOpacity
+        style={[styles.addBtn]}
+        onPress={actions.createList}
+      >
+        <Text style={[appStyles.buttonText]}>Add List</Text>
       </TouchableOpacity>
     </View>
   )

@@ -15,7 +15,7 @@ import { AlertsService } from '../../core/services/AlertsService';
 import { styles } from '../../assets/styles/screens/profileScreen.styles';
 import { appStyles, normalizeFont, appColors } from '../../assets/styles/appStyles.styles';
 import ListDisplay from '../components/ListDisplay.component';
-import { screenWrapper } from './ScreenWrapper.hoc';
+import { screenWrapper } from '../wrappers/ScreenWrapper.hoc';
 
 const screenService = Object.create(ScreenService);
 const httpService = Object.create(HttpService);
@@ -61,7 +61,7 @@ class ProfileScreen extends React.Component {
         const newList = new List(createdList.id, createdList.name, createdList.userId, []);
         store.dispatch(addList(newList));
         alertsService.createAlert('List Added', 'check');
-        this.closeModal();
+        this.props.closeModal();
       }).catch(error => {
         console.error('ERROR CREATING LIST', error);
       });
@@ -81,7 +81,7 @@ class ProfileScreen extends React.Component {
       )
     ));
     return (
-      <View>
+      <View style={[styles.container]}>
         <View style={[styles.bannerContainer]}>
           <Image
             style={[styles.banner]}
@@ -89,7 +89,7 @@ class ProfileScreen extends React.Component {
             resizeMode="cover"
           />
           <Image
-            style={[styles.profilePic]}
+            style={[styles.profilePic, appStyles.boxShadow]}
             source={{ uri: user.image, cache: 'force-cache' }}
             resizeMode="cover"
           />
@@ -101,18 +101,20 @@ class ProfileScreen extends React.Component {
         <View style={[appStyles.paddingSm]}>
           {listsMapped}
         </View>
-        <TouchableOpacity
-          onPress={this._triggerModal}
-          style={[styles.addListBtn, appStyles.paddingMd]}
-        >
-          <View style={[styles.addListBtnIconWrapper, appStyles.boxShadow]}>
-            <Icon
-              name="plus"
-              size={normalizeFont(30)}
-              color={appColors.blue}
-            />
-          </View>
-        </TouchableOpacity>
+        <View style={[styles.addListBtnContainer]}>
+          <TouchableOpacity
+            onPress={this._triggerModal}
+            style={[styles.addListBtn, appStyles.paddingMd]}
+          >
+            <View style={[styles.addListBtnIconWrapper, appStyles.boxShadow]}>
+              <Icon
+                name="plus"
+                size={normalizeFont(30)}
+                color={appColors.blue}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

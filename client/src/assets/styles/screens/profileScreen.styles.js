@@ -4,6 +4,9 @@ import {
 } from '../appStyles.styles';
 
 export const styles = StyleSheet.create({
+  container: {
+    backgroundColor: appColors.offWhite
+  },
   bannerContainer: {
     position: 'relative'
   },
@@ -31,6 +34,11 @@ export const styles = StyleSheet.create({
   },
   centered: {
     textAlign: 'center'
+  },
+  addListBtnContainer: {
+    paddingLeft: appSpacing.sm.x,
+    paddingRight: appSpacing.sm.x,
+    marginBottom: appSpacing.lg.y
   },
   addListBtn: {
     borderWidth: 1,

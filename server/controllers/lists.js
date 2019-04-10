@@ -17,7 +17,7 @@ router.post('/', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   console.log('HIT DELETE LIST ROUTE');
-  db.book.destroy({
+  db.list.destroy({
     where: { id: req.params.id }
   }).then(() => {
     res.json({ success: true, error: null });

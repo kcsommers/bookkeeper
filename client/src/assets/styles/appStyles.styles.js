@@ -16,10 +16,14 @@ export const normalizeFont = (size) => {
 
 export const appWidths = {
   full: SCREEN_WIDTH,
+  ninetyFive: SCREEN_WIDTH * 0.95,
   ninety: SCREEN_WIDTH * 0.9,
   eightyFive: SCREEN_WIDTH * 0.85,
   eighty: SCREEN_WIDTH * 0.8,
   seventyFive: SCREEN_WIDTH * 0.75,
+  seventy: SCREEN_WIDTH * 0.7,
+  sixtyFive: SCREEN_WIDTH * 0.65,
+  sixty: SCREEN_WIDTH * 0.6,
   fifty: SCREEN_WIDTH * 0.5,
   fortyFive: SCREEN_WIDTH * 0.45,
   forty: SCREEN_WIDTH * 0.4,
@@ -39,6 +43,8 @@ export const appHeights = {
   thirtyFive: SCREEN_HEIGHT * 0.35,
   thirty: SCREEN_HEIGHT * 0.3,
   twentyFive: SCREEN_HEIGHT * 0.25,
+  twenty: SCREEN_HEIGHT * 0.2,
+  fifteen: SCREEN_HEIGHT * 0.15,
   ten: SCREEN_HEIGHT * 0.1,
   five: SCREEN_HEIGHT * 0.05
 };
@@ -63,7 +69,7 @@ export const appColors = {
   green: '#1c4b44',
   aqua: '#71a7a9',
   white: '#ffffff',
-  offWhite: '#f1f3ee',
+  offWhite: '#fbfbfb',
   red: '#c13149',
   gray: '#4a4a4a'
 };
@@ -76,7 +82,8 @@ export const appStyles = {
   },
   h2: {
     fontSize: normalizeFont(24),
-    fontFamily: 'Merriweather'
+    fontFamily: 'Merriweather',
+    color: appColors.green
   },
   h2i: {
     fontSize: normalizeFont(24),
@@ -84,7 +91,8 @@ export const appStyles = {
   },
   h3: {
     fontSize: normalizeFont(20),
-    fontFamily: 'Merriweather'
+    fontFamily: 'Merriweather',
+    color: appColors.green
   },
   h3i: {
     fontSize: normalizeFont(20),
@@ -104,6 +112,11 @@ export const appStyles = {
     fontSize: normalizeFont(14),
     fontFamily: 'Merriweather',
     color: appColors.green
+  },
+  h5i: {
+    fontSize: normalizeFont(14),
+    fontFamily: 'MerrItalic',
+    color: appColors.gray
   },
   p: {
     fontSize: normalizeFont(16),
@@ -150,5 +163,25 @@ export const appStyles = {
   screenBuffer: {
     height: appHeights.ten,
     backgroundColor: appColors.offWhite
+  },
+  buttonAqua: {
+    backgroundColor: appColors.aqua,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 3,
+    paddingTop: appSpacing.sm.y,
+    paddingBottom: appSpacing.sm.y,
+    marginTop: appSpacing.sm.y,
+    marginBottom: appSpacing.sm.y
+  },
+  buttonRed: {
+    backgroundColor: appColors.red,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 3,
+    paddingTop: appSpacing.sm.y,
+    paddingBottom: appSpacing.sm.y,
+    marginTop: appSpacing.sm.y,
+    marginBottom: appSpacing.sm.y
   }
 };

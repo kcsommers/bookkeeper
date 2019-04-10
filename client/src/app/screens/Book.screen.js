@@ -5,7 +5,7 @@ import {
 import { connect } from 'react-redux';
 import Book from '../components/Book.component';
 import { bookScreenStyles } from '../../assets/styles/screens/bookScreen.styles';
-import { screenWrapper } from './ScreenWrapper.hoc';
+import { screenWrapper } from '../wrappers/ScreenWrapper.hoc';
 
 const mapStateToProps = (state) => ({
   books: state.books,
