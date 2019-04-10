@@ -5,7 +5,7 @@ import {
 import Icon from 'react-native-vector-icons/Entypo';
 import whiteGradient from '../../assets/images/page_backgrounds/whiteGradient.png';
 import { appColors, appStyles, normalizeFont } from '../../assets/styles/appStyles.styles';
-import { bookStyles } from '../../assets/styles/bookComponent.styles';
+import { bookStyles } from '../../assets/styles/components/bookComponent.styles';
 import BackgroundImage from './BackgroundImage.component';
 import NotesContainer from './NotesContainer.component';
 
@@ -30,7 +30,7 @@ class Book extends React.Component {
               <TouchableOpacity
                 style={[appStyles.boxShadow, bookStyles.bookOptionsBtn]}
                 onPress={() => {
-                  navigate({ path: 'Notepad', params: { noteType: 'note', icon: 'pencil', bookId: book.id } });
+                  navigate('Notepad', { noteType: 'note', icon: 'pencil', bookId: book.id });
                 }}
               >
                 <Icon
@@ -44,7 +44,7 @@ class Book extends React.Component {
               <TouchableOpacity
                 style={[appStyles.boxShadow, bookStyles.bookOptionsBtn]}
                 onPress={() => {
-                  navigate({ path: 'Notepad', params: { noteType: 'quote', icon: 'quote', bookId: book.id } });
+                  navigate('Notepad', { noteType: 'quote', icon: 'quote', bookId: book.id });
                 }}
               >
                 <Icon

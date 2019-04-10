@@ -3,17 +3,13 @@ import {
   View
 } from 'react-native';
 import { connect } from 'react-redux';
-import { ScreenService } from '../../core/services/ScreenService';
 import Book from '../components/Book.component';
-import BkModal from '../components/BkModal.component';
-import { AlertsService } from '../../core/services/AlertsService';
 import { bookScreenStyles } from '../../assets/styles/screens/bookScreen.styles';
+import { screenWrapper } from '../wrappers/ScreenWrapper.hoc';
 
-const alertsService = Object.create(AlertsService);
-const screenService = Object.create(ScreenService);
 const mapStateToProps = (state) => ({
   books: state.books,
-  modalTrigger$: state.events.modalTrigger
+  globalModalTrigger$: state.events.globalModalTrigger
 });
 
 class BookScreen extends React.Component {
@@ -21,87 +17,48 @@ class BookScreen extends React.Component {
     super(props);
     this.state = {
       currentBook: null,
-      modalVisible: false,
-      modalContent: null,
-      alert: null
     };
-    this._onNavigation = this._onNavigation.bind(this);
-    this._triggerModal = this._triggerModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
+    this.onNavigation = this.onNavigation.bind(this);
     this.navigate = this.navigate.bind(this);
-    this.closeAlert = this.closeAlert.bind(this);
   }
 
   componentWillMount() {
-    const { navigation, modalTrigger$ } = this.props;
-    modalTrigger$.addListener('trigger-modal', this._triggerModal);
-    modalTrigger$.addListener('close-modal', this.closeModal);
-    modalTrigger$.addListener('trigger-nav', this.navigate);
-    this.navSubscription$ = navigation.addListener('willFocus', this._onNavigation);
+    const { globalModalTrigger$ } = this.props;
+    globalModalTrigger$.addListener('trigger-modal', this._triggerModal.bind(this));
+    globalModalTrigger$.addListener('close-modal', this._closeModal.bind(this));
+    globalModalTrigger$.addListener('trigger-nav', this.navigate);
   }
 
   componentWillUnmount() {
-    this.navSubscription$.remove();
-    this.props.modalTrigger$.removeAllListeners();
+    this.props.globalModalTrigger$.removeAllListeners();
   }
 
-  _onNavigation() {
-    const alert = alertsService.checkForAlert();
+  onNavigation() {
     const bookId = this.props.navigation.getParam('id');
     const currentBook = this.props.books[bookId];
-    this.setState({ currentBook, alert });
+    this.setState({ currentBook });
   }
 
-  navigate(routeData) {
-    if (this.state.modalVisible) {
-      this.closeModal();
-    }
-
-    const { path, params } = routeData;
-    this.props.navigation.navigate(path, params);
+  navigate(path, params) {
+    this.props.navigate(path, params);
   }
 
   _triggerModal(args) {
-    const modalContent = screenService.getModalContent(args.template, args.content, args.actions);
-    this.setState({
-      modalVisible: true,
-      modalContent
-    });
+    this.props.triggerModal(args.template, args.content, args.actions);
   }
 
-  closeModal() {
-    const alert = alertsService.checkForAlert();
-    this.setState({
-      modalVisible: false,
-      modalContent: null,
-      alert
-    });
-  }
-
-  closeAlert(alertId) {
-    alertsService.removeAlert(alertId);
-    this.setState({ alert: null });
+  _closeModal() {
+    this.props.closeModal();
   }
 
   render() {
-    const {
-      currentBook, modalVisible, modalContent, alert
-    } = this.state;
+    const { currentBook } = this.state;
     return (currentBook) ? (
       <View style={[bookScreenStyles.container]}>
         <Book book={currentBook} navigate={this.navigate} />
-        {modalVisible && (
-          <BkModal
-            isVisible={modalVisible}
-            closeModal={this.closeModal}
-          >
-            {modalContent && modalContent.template}
-          </BkModal>
-        )}
-        {alert && alertsService.getAlertTemplate(alert, this.closeAlert)}
       </View>
     ) : null;
   }
 }
 
-export default connect(mapStateToProps)(BookScreen);
+export default connect(mapStateToProps)(screenWrapper(BookScreen));

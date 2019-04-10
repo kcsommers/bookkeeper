@@ -4,7 +4,7 @@ import {
 } from '../actions/events.actions';
 
 const globalEvents = {
-  modalTrigger: new EventEmitter()
+  globalModalTrigger: new EventEmitter()
 };
 
 const eventsReducer = (state = globalEvents, { type, payload }) => {

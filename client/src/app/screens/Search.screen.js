@@ -1,13 +1,12 @@
+import { EventEmitter } from 'events';
 import React from 'react';
-import {
-  ScrollView, TextInput, TouchableOpacity, Text, View
-} from 'react-native';
-import { appColors, appStyles } from '../../assets/styles/appStyles.styles';
+import { ScrollView, View } from 'react-native';
 import { searchScreenStyles } from '../../assets/styles/screens/searchScreen.styles';
+import Book from '../../core/classes/models/Book';
 import { HttpService } from '../../core/services/HttpService';
 import { ScreenService } from '../../core/services/ScreenService';
 import BookSearchResult from '../components/BookSearchResult.component';
-import Book from '../../core/classes/models/Book';
+import SearchBar from '../components/SearchBar.component';
 
 const httpService = Object.create(HttpService);
 const screenService = Object.create(ScreenService);
@@ -16,12 +15,41 @@ class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      searchResults: [],
       searchTerm: '',
-      searchResults: []
+      targetList: ''
     };
-    this._doSearch = this._doSearch.bind(this);
-    this._handleChange = this._handleChange.bind(this);
     this.addBookToList = this.addBookToList.bind(this);
+    this._onNavigation = this._onNavigation.bind(this);
+    this.searchEvent = new EventEmitter();
+  }
+
+  componentWillMount() {
+    this.navSubscription$ = this.props.navigation.addListener('willFocus', this._onNavigation);
+    this.searchEvent.addListener('search-done', this.onSearch.bind(this));
+  }
+
+  componentWillUnmount() {
+    this.navSubscription$.remove();
+    this.searchEvent.removeAllListeners();
+  }
+
+  onSearch(results) {
+    this.setState((prevState) => ({
+      ...prevState,
+      searchResults: results.items,
+      searchTerm: results.searchTerm
+    }));
+  }
+
+  _onNavigation() {
+    const targetList = this.props.navigation.getParam('targetList', '');
+    const results = this.props.navigation.getParam('results', null);
+    this.setState({
+      targetList,
+      searchResults: results ? results.items : null,
+      searchTerm: results ? results.searchTerm : ''
+    });
   }
 
   addBookToList(itemData) {
@@ -43,33 +71,13 @@ class SearchScreen extends React.Component {
     });
   }
 
-  _handleChange(value) {
-    this.setState({ searchTerm: value });
-  }
-
-  _doSearch() {
-    const { searchTerm } = this.state;
-    if (searchTerm) {
-      httpService.searchBooks(searchTerm).then((results) => {
-        if (results.books) {
-          const books = [];
-          results.books.forEach((book) => {
-            books.push(book.volumeInfo);
-          });
-          this.setState({ searchResults: books });
-        } else {
-          console.error('ERROR SEARCHING BOOKS');
-        }
-      });
-    }
-  }
-
   render() {
-    const { searchResults } = this.state;
+    const { searchResults, targetList } = this.state;
     const searchResultsMapped = (searchResults) ? searchResults.map((result) => (
       <BookSearchResult
         book={result}
         lists={screenService.getStore().getState().lists}
+        targetList={targetList}
         addBook={this.addBookToList}
         key={result.previewLink}
       />
@@ -77,25 +85,7 @@ class SearchScreen extends React.Component {
     return (
       <ScrollView contentContainerStyle={searchScreenStyles.container}>
         <View style={[searchScreenStyles.searchFormContainer]}>
-          <View style={[appStyles.paddingLg, { backgroundColor: appColors.green }]}>
-            <TextInput
-              placeholder="Title, author or ISBN"
-              placeholderTextColor={appColors.offWhite}
-              returnKeyLabel="Search"
-              clearButtonMode="while-editing"
-              blurOnSubmit={true}
-              enablesReturnKeyAutomatically={true}
-              selectTextOnFocus={true}
-              onChangeText={this._handleChange}
-            />
-          </View>
-
-          <TouchableOpacity
-            style={[appStyles.paddingLg, { backgroundColor: appColors.red }]}
-            onPress={this._doSearch}
-          >
-            <Text>Search</Text>
-          </TouchableOpacity>
+          <SearchBar searchEvent={this.searchEvent} />
         </View>
 
         {searchResultsMapped}

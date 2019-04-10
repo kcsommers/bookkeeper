@@ -57,11 +57,11 @@ class NotesContainer extends React.Component {
     const { displayed } = this.state;
     const notesMapped = (notes.length) ? notes.map((note) => (
       note ? <NoteDisplay note={note} key={note.id} /> : null
-    )) : <Text>NO NOTES</Text>;
+    )) : <Text style={[appStyles.h5i, appStyles.paddingLg]}>You don&apos;t have any notes yet.</Text>;
 
     const quotesMapped = (quotes.length) ? quotes.map((quote) => (
       quote ? <QuoteDisplay quote={quote} key={quote.id} /> : null
-    )) : <Text>NO QUOTES</Text>;
+    )) : <Text style={[appStyles.h5i, appStyles.paddingLg]}>You don&apos;t have any quotes yet.</Text>;
 
     const displayedNotes = (displayed === 'notes') ? notesMapped : quotesMapped;
     return (

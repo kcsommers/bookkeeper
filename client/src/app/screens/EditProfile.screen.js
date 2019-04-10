@@ -1,14 +1,12 @@
 import React from 'react';
-import {
-  View, Text, Image, TextInput, TouchableOpacity
-} from 'react-native';
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
+import { appColors, appStyles, normalizeFont } from '../../assets/styles/appStyles.styles';
+import { styles } from '../../assets/styles/screens/editProfile.styles';
+import { AlertsService } from '../../core/services/AlertsService';
 import { HttpService } from '../../core/services/HttpService';
 import { ScreenService } from '../../core/services/ScreenService';
-import { AlertsService } from '../../core/services/AlertsService';
-import { styles } from '../../assets/styles/screens/editProfile.styles';
-import { appStyles, normalizeFont, appColors } from '../../assets/styles/appStyles.styles';
 
 const httpService = Object.create(HttpService);
 const screenService = Object.create(ScreenService);
@@ -77,73 +75,84 @@ class EditProfileScreen extends React.Component {
     const { formValid, inputs } = this.state;
     const { image, username, location, banner } = inputs;
     return (
-      <View style={[styles.container]}>
-        <Text style={[appStyles.h2]}>Edit Profile</Text>
+      <ScrollView contentContainerStyle={[styles.container]}>
         <View style={[styles.formItem]}>
-          <Text style={[appStyles.label]}>Username</Text>
-          <TextInput
-            value={username}
-            placeholder="Username"
-            placeholderTextColor={appColors.offWhite}
-            textContentType="username"
-            returnKeyLabel="Submit"
-            clearButtonMode="while-editing"
-            blurOnSubmit={true}
-            enablesReturnKeyAutomatically={true}
-            selectTextOnFocus={true}
-            onChangeText={(value) => { this._handleChange(value, 'username'); }}
-          />
-        </View>
-        <View style={[styles.formItem]}>
-          <Text style={[appStyles.label]}>Location</Text>
-          <TextInput
-            value={location}
-            placeholder="Location"
-            placeholderTextColor={appColors.offWhite}
-            returnKeyLabel="Submit"
-            clearButtonMode="while-editing"
-            blurOnSubmit={true}
-            enablesReturnKeyAutomatically={true}
-            selectTextOnFocus={true}
-            onChangeText={(value) => { this._handleChange(value, 'location'); }}
-          />
-        </View>
-        <View style={[styles.formItem]}>
-          <Text style={[appStyles.label]}>Profile Photo</Text>
-          <Image
-            style={[styles.userImage]}
-            source={{ uri: image, cache: 'force-cache' }}
-            resizeMode="cover"
-          />
-          <TouchableOpacity>
-            <Icon
-              name="edit"
-              size={normalizeFont(15)}
-              color={appColors.blue}
+          <View style={[styles.imageWrapper]}>
+            <Image
+              style={[styles.userImage]}
+              source={{ uri: image, cache: 'force-cache' }}
+              resizeMode="cover"
             />
-          </TouchableOpacity>
+            <TouchableOpacity style={[styles.editBtn, styles.userImgEditBtn, appStyles.boxShadow]}>
+              <Icon
+                name="edit"
+                size={normalizeFont(15)}
+                color={appColors.blue}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={[styles.formItem]}>
-          <Text style={[appStyles.label]}>Banner Image</Text>
-          <Image
-            style={[styles.banner]}
-            source={{ uri: banner, cache: 'force-cache' }}
-            resizeMode="cover"
-          />
-          <TouchableOpacity>
-            <Icon
-              name="edit"
-              size={normalizeFont(15)}
-              color={appColors.blue}
+          <Text style={[appStyles.label, styles.formLabel]}>Username</Text>
+          <View style={[styles.inputWrapper]}>
+            <TextInput
+              style={[appStyles.p]}
+              value={username}
+              placeholder="Username"
+              placeholderTextColor={appColors.offWhite}
+              textContentType="username"
+              returnKeyLabel="Submit"
+              clearButtonMode="while-editing"
+              blurOnSubmit={true}
+              enablesReturnKeyAutomatically={true}
+              selectTextOnFocus={true}
+              onChangeText={(value) => { this._handleChange(value, 'username'); }}
             />
-          </TouchableOpacity>
+          </View>
+        </View>
+        <View style={[styles.formItem]}>
+          <Text style={[appStyles.label, styles.formLabel]}>Location</Text>
+          <View style={[styles.inputWrapper]}>
+            <TextInput
+              style={[appStyles.p]}
+              value={location}
+              placeholder="Location"
+              placeholderTextColor={appColors.offWhite}
+              returnKeyLabel="Submit"
+              clearButtonMode="while-editing"
+              blurOnSubmit={true}
+              enablesReturnKeyAutomatically={true}
+              selectTextOnFocus={true}
+              onChangeText={(value) => { this._handleChange(value, 'location'); }}
+            />
+          </View>
         </View>
 
-        <TouchableOpacity onPress={() => { if (formValid) this._updateProfile(); }}>
-          <Text>Save Changes</Text>
+        <View style={[styles.formItem]}>
+          <Text style={[appStyles.label, styles.formLabel]}>Banner Image</Text>
+          <View style={[styles.imageWrapper]}>
+            <Image
+              style={[styles.banner]}
+              source={{ uri: banner, cache: 'force-cache' }}
+              resizeMode="cover"
+            />
+            <TouchableOpacity style={[styles.editBtn, appStyles.boxShadow]}>
+              <Icon
+                name="edit"
+                size={normalizeFont(15)}
+                color={appColors.blue}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.saveBtn]}
+          onPress={() => { if (formValid) this._updateProfile(); }}
+        >
+          <Text style={[appStyles.buttonText]}>Save Changes</Text>
         </TouchableOpacity>
-
-      </View>
+      </ScrollView>
     );
   }
 }

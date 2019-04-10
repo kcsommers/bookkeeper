@@ -164,12 +164,7 @@ class NotepadScreen extends React.Component {
         </View>
         <TouchableOpacity
           onPress={this._handleSubmit}
-          style={[appStyles.paddingMd, appStyles.noteText, {
-            backgroundColor: appColors.aqua,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 3
-          }]}
+          style={[appStyles.paddingMd, appStyles.noteText, appStyles.buttonAqua]}
         >
           <Text
             style={[appStyles.buttonText]}
