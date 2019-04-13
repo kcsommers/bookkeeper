@@ -1,8 +1,7 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
-  Text
+  View
 } from 'react-native';
 import ImagePickerComponent from '../components/ImagePicker.component';
 
@@ -19,7 +18,6 @@ class SettingsScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ImagePickerComponent />
-        <Text>Settings Screen</Text>
       </View>
     );
   }

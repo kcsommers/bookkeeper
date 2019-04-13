@@ -1,9 +1,9 @@
 require('dotenv').config();
+const db = require('../models');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const passport = require('../config/passportConfig');
 const { hashPassword, verifyToken } = require('../middleware/authMiddleware');
-const db = require('../models');
 
 const router = express.Router();
 
@@ -54,7 +54,6 @@ router.get('/verify', verifyToken, (req, res) => {
 });
 
 router.post('/update/:id', (req, res) => {
-  console.log('HIT UPDATE USER ROUTE');
   const newData = req.body.itemData;
   db.user.update(newData, {
     where: { id: req.params.id }

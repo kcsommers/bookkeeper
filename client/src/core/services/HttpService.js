@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import axios from 'axios';
 import Environment from '../../../environment';
 
@@ -54,6 +55,21 @@ export const HttpService = {
         reject(new Error(deleteError));
       }
     });
+  },
+
+  async upload(uploads) {
+    const url = `${Environment.BASE_URL}/uploads`;
+    const formData = new FormData();
+    uploads.forEach(file => {
+      const fileSplit = file.value.uri.split('/');
+      const fileName = fileSplit[fileSplit.length - 1];
+      formData.append(file.name, {
+        uri: file.value.uri,
+        name: fileName,
+        type: `image/${fileName.split('.')[1]}`
+      });
+    });
+    return axios.post(url, formData);
   },
 
   async searchBooks(searchTerm) {

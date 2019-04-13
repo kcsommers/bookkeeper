@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Button, Image } from 'react-native';
-import { ImagePicker } from 'expo';
+import { TouchableOpacity } from 'react-native';
+import { ImagePicker, Permissions } from 'expo';
 
 export default class ImagePickerComponent extends React.Component {
   constructor(props) {
@@ -8,32 +8,32 @@ export default class ImagePickerComponent extends React.Component {
     this.state = {
       image: null
     };
+    this._pickImage = this._pickImage.bind(this);
   }
 
   async _pickImage() {
+    await Permissions.askAsync(Permissions.CAMERA_ROLL);
     const result = await ImagePicker.launchImageLibraryAsync({
+      base64: true,
       allowsEditing: true,
       aspect: [4, 3],
     });
 
-    console.log('FUCKING PICK IMAGE RESULT', result);
-
     if (!result.cancelled) {
-      this.setState({ image: result.uri });
+      this.setState({ image: result });
+      this.props.onUpload(this.state.image);
     }
   }
 
   render() {
-    const { image } = this.state;
+    const { children, buttonStyles } = this.props;
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button
-          title="Pick an image from camera roll"
-          onPress={this._pickImage}
-        />
-        {image
-          && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-      </View>
+      <TouchableOpacity
+        onPress={this._pickImage}
+        style={buttonStyles}
+      >
+        {children}
+      </TouchableOpacity>
     );
   }
 }

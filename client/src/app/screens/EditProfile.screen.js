@@ -7,6 +7,7 @@ import { styles } from '../../assets/styles/screens/editProfile.styles';
 import { AlertsService } from '../../core/services/AlertsService';
 import { HttpService } from '../../core/services/HttpService';
 import { ScreenService } from '../../core/services/ScreenService';
+import ImagePicker from '../components/ImagePicker.component';
 
 const httpService = Object.create(HttpService);
 const screenService = Object.create(ScreenService);
@@ -30,7 +31,7 @@ class EditProfileScreen extends React.Component {
     this._updateProfile = this._updateProfile.bind(this);
   }
 
-  _handleChange(value, field) {
+  _handleChange(field, value) {
     const { inputs } = this.state;
     const newInputs = {
       ...inputs,
@@ -51,23 +52,46 @@ class EditProfileScreen extends React.Component {
     this.setState({ inputs, formValid });
   }
 
-  _updateProfile() {
+  _prepNewData() {
     const { inputs } = this.state;
     const { user } = this.props;
     const itemData = {};
+    const uploads = [];
     Object.keys(inputs).forEach(field => {
       if (inputs[field] !== user[field]) {
-        itemData[field] = inputs[field];
+        if (field === 'image' || field === 'banner') {
+          uploads.push({ name: field, value: inputs[field] });
+        } else {
+          itemData[field] = inputs[field];
+        }
       }
     });
-    httpService.update(`users/update/${user.id}`, { itemData }).then(success => {
+
+    if (uploads.length) {
+      httpService.upload(uploads).then(response => {
+        response.data.forEach(file => {
+          itemData[file.name] = file.value;
+        });
+        this._updateProfile(itemData);
+      }).catch(error => {
+        console.error('EDIT PROFILE ERROR UPLOADING', error);
+      });
+    } else {
+      this._updateProfile(itemData);
+    }
+  }
+
+  _updateProfile(itemData) {
+    const { user } = this.props;
+    const endpoint = `users/update/${user.id}`;
+    httpService.update(endpoint, { itemData }).then(success => {
       if (success) {
         user.update(screenService.getStore(), itemData);
         alertsService.createAlert('Profile Updated', 'check');
         this.props.navigation.navigate('Profile');
       }
     }).catch(error => {
-      console.error('ERROR UPDATING USER', error);
+      console.error('ERROR UPDATING PROFILE', error);
     });
   }
 
@@ -80,16 +104,19 @@ class EditProfileScreen extends React.Component {
           <View style={[styles.imageWrapper]}>
             <Image
               style={[styles.userImage]}
-              source={{ uri: image, cache: 'force-cache' }}
+              source={{ uri: image.uri || image, cache: 'force-cache' }}
               resizeMode="cover"
             />
-            <TouchableOpacity style={[styles.editBtn, styles.userImgEditBtn, appStyles.boxShadow]}>
+            <ImagePicker
+              onUpload={(uri) => { this._handleChange('image', uri); }}
+              buttonStyles={[styles.editBtn, styles.userImgEditBtn, appStyles.boxShadow]}
+            >
               <Icon
                 name="edit"
                 size={normalizeFont(15)}
                 color={appColors.blue}
               />
-            </TouchableOpacity>
+            </ImagePicker>
           </View>
         </View>
         <View style={[styles.formItem]}>
@@ -106,7 +133,7 @@ class EditProfileScreen extends React.Component {
               blurOnSubmit={true}
               enablesReturnKeyAutomatically={true}
               selectTextOnFocus={true}
-              onChangeText={(value) => { this._handleChange(value, 'username'); }}
+              onChangeText={(value) => { this._handleChange('username', value); }}
             />
           </View>
         </View>
@@ -123,7 +150,7 @@ class EditProfileScreen extends React.Component {
               blurOnSubmit={true}
               enablesReturnKeyAutomatically={true}
               selectTextOnFocus={true}
-              onChangeText={(value) => { this._handleChange(value, 'location'); }}
+              onChangeText={(value) => { this._handleChange('location', value); }}
             />
           </View>
         </View>
@@ -133,22 +160,25 @@ class EditProfileScreen extends React.Component {
           <View style={[styles.imageWrapper]}>
             <Image
               style={[styles.banner]}
-              source={{ uri: banner, cache: 'force-cache' }}
+              source={{ uri: banner.uri || banner, cache: 'force-cache' }}
               resizeMode="cover"
             />
-            <TouchableOpacity style={[styles.editBtn, appStyles.boxShadow]}>
+            <ImagePicker
+              onUpload={(uri) => { this._handleChange('banner', uri); }}
+              buttonStyles={[styles.editBtn, appStyles.boxShadow]}
+            >
               <Icon
                 name="edit"
                 size={normalizeFont(15)}
                 color={appColors.blue}
               />
-            </TouchableOpacity>
+            </ImagePicker>
           </View>
         </View>
 
         <TouchableOpacity
           style={[styles.saveBtn]}
-          onPress={() => { if (formValid) this._updateProfile(); }}
+          onPress={() => { if (formValid) this._prepNewData(); }}
         >
           <Text style={[appStyles.buttonText]}>Save Changes</Text>
         </TouchableOpacity>
