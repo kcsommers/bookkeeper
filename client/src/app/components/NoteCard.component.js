@@ -12,7 +12,7 @@ import { AlertsService } from '../../core/services/AlertsService';
 const httpService = Object.create(HttpService);
 const alertsService = Object.create(AlertsService);
 
-class NoteDisplay extends React.Component {
+class NoteCard extends React.Component {
   constructor() {
     super();
     this.globalModalTrigger = store.getState().events.globalModalTrigger;
@@ -85,10 +85,10 @@ class NoteDisplay extends React.Component {
         }]}
       >
         <MomentDisplay time={note.createdAt} />
-        <Text style={[appStyles.noteText]}>{note.content}</Text>
+        <Text style={[appStyles.p]}>{note.content}</Text>
       </TouchableOpacity>
     ) : null;
   }
 }
 
-export default NoteDisplay;
+export default NoteCard;

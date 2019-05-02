@@ -21,7 +21,7 @@ export const loginStyles = StyleSheet.create({
     color: appColors.offWhite
   },
   loginBtn: {
-    backgroundColor: appColors.blue,
+    backgroundColor: appColors.teal,
     borderRadius: 100
   },
   loginBtnText: {

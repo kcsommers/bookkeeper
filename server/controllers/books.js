@@ -11,7 +11,6 @@ router.post('/', (req, res) => {
     banner: 'https://res.cloudinary.com/kcsommers/image/upload/v1530509212/lflbvvr8kjmgae9suzov.jpg'
   });
   const { listId } = req.body.modelData;
-  console.log('LIST ID:::: ', listId);
   db.book.create(bookData).then((book) => {
     db.list.findByPk(listId).then((list) => {
       list.addBook(book).then(() => {
@@ -24,6 +23,18 @@ router.post('/', (req, res) => {
   }).catch((createBookError) => {
     console.log('ERROR CREATING BOOK', createBookError);
     res.json({ createdItem: null, error: createBookError });
+  });
+});
+
+router.post('/update/:id', (req, res) => {
+  console.log('HIT UPDATE BOOK ROUTE');
+  db.book.update(req.body, {
+    where: { id: req.params.id }
+  }).then(() => {
+    res.json({ success: true, error: null });
+  }).catch(error => {
+    console.error('ERROR UPDATING BOOK IN DB', error);
+    res.json({ success: false, error });
   });
 });
 

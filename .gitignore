@@ -12,3 +12,4 @@ client/environment.js
 
 server/node_modules
 server/.env
+server/uploads

@@ -1,10 +1,11 @@
 /* eslint-disable react/no-this-in-sfc */
 import React from 'react';
-import {
-  Text, View, TouchableOpacity, TextInput
-} from 'react-native';
-import { appColors, appStyles } from '../../assets/styles/appStyles.styles';
-import { styles, noteStyles } from '../../assets/styles/modalStyles.styles';
+import { Text, TouchableOpacity, View } from 'react-native';
+import AddListComponent from '../../app/components/modal-content/AddList.component';
+import ConfirmBox from '../../app/components/modal-content/ConfirmBox.component';
+import { appStyles } from '../../assets/styles/appStyles.styles';
+import { noteStyles } from '../../assets/styles/modalStyles.styles';
+import CurrentReadToggle from '../../app/components/modal-content/CurrentReadToggle.component';
 
 const templates = {
   note: (content, actions) => (
@@ -25,38 +26,22 @@ const templates = {
     </View>
   ),
   confirmDelete: (content, actions) => (
-    <View>
-      <Text>Are You Sure?</Text>
-      <Text>{content.text}</Text>
-      <TouchableOpacity onPress={() => { actions.delete(content.id); }}>
-        <Text>Delete</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => { actions.cancel(content.id); }}>
-        <Text>Cancel</Text>
-      </TouchableOpacity>
-    </View>
+    <ConfirmBox
+      content={content}
+      actions={actions}
+    />
   ),
   newListForm: (content, actions) => (
-    <View style={[styles.contentWrapper, appStyles.paddingMd]}>
-      <Text style={[appStyles.h5]}>Create New List</Text>
-      <TextInput
-        style={[styles.modalInput, appStyles.boxShadow]}
-        placeholder="List Name"
-        placeholderTextColor={appColors.gray}
-        returnKeyLabel="Submit"
-        clearButtonMode="while-editing"
-        blurOnSubmit={true}
-        enablesReturnKeyAutomatically={true}
-        selectTextOnFocus={true}
-        onChangeText={(value) => { actions.listInputChange(value); }}
-      />
-      <TouchableOpacity
-        style={[styles.addBtn]}
-        onPress={actions.createList}
-      >
-        <Text style={[appStyles.buttonText]}>Add List</Text>
-      </TouchableOpacity>
-    </View>
+    <AddListComponent
+      content={content}
+      actions={actions}
+    />
+  ),
+  currentReadToggle: (content, actions) => (
+    <CurrentReadToggle
+      content={content}
+      actions={actions}
+    />
   )
 };
 
@@ -64,7 +49,7 @@ export default class ModalContent {
   constructor(
     templateName,
     content,
-    actions
+    actions,
   ) {
     this.templateName = templateName;
     this.content = content;

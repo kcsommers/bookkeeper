@@ -1,5 +1,6 @@
 import { createStackNavigator } from 'react-navigation';
 import SearchScreen from '../../../screens/Search.screen';
+import { appColors } from '../../../../assets/styles/appStyles.styles';
 
 // In HomeTab
 const SearchStack = createStackNavigator(
@@ -8,7 +9,9 @@ const SearchStack = createStackNavigator(
   },
   {
     defaultNavigationOptions: {
-      header: null
+      headerStyle: {
+        backgroundColor: appColors.teal,
+      },
     }
   }
 );

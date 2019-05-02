@@ -24,10 +24,7 @@ const AuthStack = createStackNavigator(
             size={35}
             color="#fefefe"
           />
-        </TouchableOpacity>),
-      headerStyle: {
-        backgroundColor: '#1c4b44'
-      }
+        </TouchableOpacity>)
     })
   }
 );

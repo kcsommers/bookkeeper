@@ -3,8 +3,8 @@ import {
   appColors, appHeights, appSpacing, appWidths
 } from '../appStyles.styles';
 
-export const bookScreenStyles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
-    position: 'relative'
+    flex: 1
   }
 });

@@ -6,11 +6,11 @@ import { appColors, appStyles, normalizeFont } from '../../assets/styles/appStyl
 import { styles } from '../../assets/styles/screens/editProfile.styles';
 import { AlertsService } from '../../core/services/AlertsService';
 import { HttpService } from '../../core/services/HttpService';
-import { ScreenService } from '../../core/services/ScreenService';
 import ImagePicker from '../components/ImagePicker.component';
+import { GlobalService } from '../../core/services/GlobalService';
 
 const httpService = Object.create(HttpService);
-const screenService = Object.create(ScreenService);
+const globalService = Object.create(GlobalService);
 const alertsService = Object.create(AlertsService);
 const mapStateToProps = (state) => ({ user: state.user });
 
@@ -86,7 +86,7 @@ class EditProfileScreen extends React.Component {
     const endpoint = `users/update/${user.id}`;
     httpService.update(endpoint, { itemData }).then(success => {
       if (success) {
-        user.update(screenService.getStore(), itemData);
+        user.update(globalService.getStore(), itemData);
         alertsService.createAlert('Profile Updated', 'check');
         this.props.navigation.navigate('Profile');
       }

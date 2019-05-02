@@ -6,7 +6,6 @@ import { createAlert, removeAlert } from '../redux/actions/alerts.actions';
 
 export const AlertsService = {
   createAlert(content, icon) {
-    console.log('CREATING ALERT');
     this.newAlert = new Alert(content, icon, Math.floor(Math.random() * 10000));
     store.dispatch(createAlert(this.newAlert));
   },

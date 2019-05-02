@@ -1,13 +1,15 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { AlertsService } from '../../core/services/AlertsService';
 import { ScreenService } from '../../core/services/ScreenService';
 import BkModal from '../components/BkModal.component';
+import { appHeights } from '../../assets/styles/appStyles.styles';
+import BackgroundImage from '../components/BackgroundImage.component';
 
 const alertsService = Object.create(AlertsService);
 const screenService = Object.create(ScreenService);
 
-export const screenWrapper = (WrappedComponent) => (
+export const screenWrapper = (WrappedComponent, backgroundImage) => (
   class extends React.Component {
     constructor(props) {
       super(props);
@@ -21,6 +23,7 @@ export const screenWrapper = (WrappedComponent) => (
       this.closeModal = this.closeModal.bind(this);
       this.closeAlert = this.closeAlert.bind(this);
       this.navigate = this.navigate.bind(this);
+      this.scrollToTop = this.scrollToTop.bind(this);
     }
 
     componentWillMount() {
@@ -37,6 +40,10 @@ export const screenWrapper = (WrappedComponent) => (
       this.wrappedScreen.onNavigation();
     }
 
+    scrollToTop() {
+      this.scrollView.scrollTo({ x: 0, y: 0, animated: true });
+    }
+
     navigate(path, params) {
       if (this.state.modalVisible) {
         this.closeModal();
@@ -45,7 +52,7 @@ export const screenWrapper = (WrappedComponent) => (
     }
 
     triggerModal(template, content, actions) {
-      const modalContent = screenService.getModalContent(template, content, actions);
+      const modalContent = screenService.getModalContent(template, content, actions, this.wrappedScreen);
       this.setState({
         modalVisible: true,
         modalContent
@@ -68,15 +75,9 @@ export const screenWrapper = (WrappedComponent) => (
 
     render() {
       const { alert, modalVisible, modalContent } = this.state;
+      const background = (backgroundImage) ? <BackgroundImage image={backgroundImage} /> : null;
       return (
-        <ScrollView>
-          <WrappedComponent
-            ref={e => { this.wrappedScreen = e; }}
-            triggerModal={this.triggerModal}
-            closeModal={this.closeModal}
-            navigate={this.navigate}
-            {...this.props}
-          />
+        <View style={[{ position: 'relative' }]}>
           {modalVisible && (
             <BkModal
               isVisible={modalVisible}
@@ -86,7 +87,18 @@ export const screenWrapper = (WrappedComponent) => (
             </BkModal>
           )}
           {alert && alertsService.getAlertTemplate(alert, this.closeAlert)}
-        </ScrollView>
+          {background}
+          <ScrollView contentContainerStyle={{ minHeight: appHeights.full }} ref={(e) => { this.scrollView = e; }}>
+            <WrappedComponent
+              ref={e => { this.wrappedScreen = e; }}
+              triggerModal={this.triggerModal}
+              closeModal={this.closeModal}
+              navigate={this.navigate}
+              scrollToTop={this.scrollToTop}
+              {...this.props}
+            />
+          </ScrollView>
+        </View>
       );
     }
   }

@@ -1,24 +1,19 @@
+import { EventEmitter } from 'events';
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image
-} from 'react-native';
-import { connect } from 'react-redux';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import { ScreenService } from '../../core/services/ScreenService';
-import { HttpService } from '../../core/services/HttpService';
-import List from '../../core/classes/models/List';
+import { connect } from 'react-redux';
+import { appColors, appStyles, normalizeFont } from '../../assets/styles/appStyles.styles';
+import { styles } from '../../assets/styles/screens/profileScreen.styles';
 import { addList } from '../../core/redux/actions/lists.actions';
 import { AlertsService } from '../../core/services/AlertsService';
-import { styles } from '../../assets/styles/screens/profileScreen.styles';
-import { appStyles, normalizeFont, appColors } from '../../assets/styles/appStyles.styles';
-import ListDisplay from '../components/ListDisplay.component';
+import { GlobalService } from '../../core/services/GlobalService';
+import ListPreview from '../components/lists/ListPreview.component';
+import SearchBar from '../components/SearchBar.component';
+import SlideInFromTop from '../components/wrappers/SlideInFromTop.component';
 import { screenWrapper } from '../wrappers/ScreenWrapper.hoc';
 
-const screenService = Object.create(ScreenService);
-const httpService = Object.create(HttpService);
+const globalService = Object.create(GlobalService);
 const alertsService = Object.create(AlertsService);
 const mapStateToProps = (state) => ({ user: state.user, lists: state.lists });
 
@@ -26,62 +21,79 @@ class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listInputValue: '',
+      searchBarVisible: false,
+      targetList: null
     };
     this._triggerModal = this._triggerModal.bind(this);
     this.onNavigation = this.onNavigation.bind(this);
+    this.showSearchBar = this.showSearchBar.bind(this);
+    this.hideSearchbar = this.hideSearchbar.bind(this);
+    this.searchEvent = new EventEmitter();
+  }
+
+  componentWillMount() {
+    this.searchEvent.addListener('search-done', this.onSearch.bind(this));
+  }
+
+  componentWillUnmount() {
+    this.searchEvent.removeAllListeners();
   }
 
   onNavigation() {
     console.log('NAVIGATED TO PROFILE');
   }
 
-  onListInputChange(value) {
-    this.setState({ listInputValue: value });
+  onSearch(results) {
+    const { targetList } = this.state;
+    this.props.navigation.navigate('Search', { results, targetList });
+  }
+
+  onCreateList(newList) {
+    const store = globalService.getStore();
+    store.dispatch(addList(newList));
+    alertsService.createAlert('List Added', 'check');
+    this.props.closeModal();
   }
 
   _triggerModal() {
     const template = 'newListForm';
     const actions = {
-      createList: this.createList.bind(this),
-      listInputChange: this.onListInputChange.bind(this)
+      onCreateList: this.onCreateList.bind(this)
     };
     this.props.triggerModal(template, null, actions);
   }
 
-  createList() {
-    const { listInputValue } = this.state;
-    const itemData = {
-      name: listInputValue,
-      userId: this.props.user.id
-    };
-    if (listInputValue) {
-      httpService.create('lists', { itemData }).then(createdList => {
-        const store = screenService.getStore();
-        const newList = new List(createdList.id, createdList.name, createdList.userId, []);
-        store.dispatch(addList(newList));
-        alertsService.createAlert('List Added', 'check');
-        this.props.closeModal();
-      }).catch(error => {
-        console.error('ERROR CREATING LIST', error);
-      });
-    }
+  showSearchBar(targetList) {
+    this.props.scrollToTop();
+    this.searchBar.input.focus();
+    this.setState({ searchBarVisible: true, targetList });
+  }
+
+  hideSearchbar() {
+    this.setState({ searchBarVisible: false });
   }
 
   render() {
     const { lists, user } = this.props;
+    const { searchBarVisible } = this.state;
     const listsMapped = Object.keys(lists).map((key) => (
-      lists[key].id !== 0
-      && (
-        <ListDisplay
-          key={lists[key].id}
-          list={lists[key]}
-          navigate={this.props.navigate}
-        />
-      )
+      <ListPreview
+        key={lists[key].id}
+        list={lists[key]}
+        navigate={this.props.navigate}
+        showSearchBar={this.showSearchBar}
+      />
     ));
     return (
       <View style={[styles.container]}>
+        <SlideInFromTop isVisible={searchBarVisible}>
+          <SearchBar
+            searchEvent={this.searchEvent}
+            onBlur={this.hideSearchbar}
+            ref={e => { this.searchBar = e; }}
+          />
+        </SlideInFromTop>
+
         <View style={[styles.bannerContainer]}>
           <Image
             style={[styles.banner]}
@@ -94,13 +106,16 @@ class ProfileScreen extends React.Component {
             resizeMode="cover"
           />
         </View>
+
         <View style={[styles.userInfo]}>
           <Text style={[appStyles.h2, styles.centered]}>{user.username}</Text>
           <Text style={[appStyles.h4i, styles.centered]}>{user.location}</Text>
         </View>
+
         <View style={[appStyles.paddingSm]}>
           {listsMapped}
         </View>
+
         <View style={[styles.addListBtnContainer]}>
           <TouchableOpacity
             onPress={this._triggerModal}

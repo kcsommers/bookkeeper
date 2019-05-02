@@ -23,6 +23,7 @@ export const HttpService = {
 
   async update(endpoint, newData) {
     const url = `${Environment.BASE_URL}/${endpoint}`;
+    console.log('URL:::: ', url);
     return new Promise(async (resolve, reject) => {
       try {
         const updateResults = await axios.post(url, newData);

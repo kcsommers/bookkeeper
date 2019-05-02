@@ -9,7 +9,6 @@ const router = express.Router();
 const promiseWrapper = (image) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(image.path, (result, error) => {
-      console.log('UPLOAD REULT:::: ', image, result);
       if (error) {
         reject(new Error(error));
       } else {
@@ -35,7 +34,6 @@ router.post('', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'banner',
     }
 
     uploadToCloudinary(images).then(urls => {
-      console.log('GOT THEM URLS:::: ', urls);
       res.json(urls);
     }).catch(error => {
       console.error('ERROR UPLOADING TO CLOUDINARY', error);

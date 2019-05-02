@@ -3,19 +3,22 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Text
+  Text,
+  Keyboard
 } from 'react-native';
+import { Header } from 'react-navigation';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
-import { appColors, appStyles, normalizeFont } from '../../assets/styles/appStyles.styles';
+import { appColors, appStyles, normalizeFont, appHeights } from '../../assets/styles/appStyles.styles';
 import { HttpService } from '../../core/services/HttpService';
-import { ScreenService } from '../../core/services/ScreenService';
+import { GlobalService } from '../../core/services/GlobalService';
 import { AlertsService } from '../../core/services/AlertsService';
 import Note from '../../core/classes/models/Note';
 import Quote from '../../core/classes/models/Quote';
+import { styles } from '../../assets/styles/screens/notepadScreen.styles';
 
 const httpService = Object.create(HttpService);
-const screenService = Object.create(ScreenService);
+const globalService = Object.create(GlobalService);
 const alertsService = Object.create(AlertsService);
 const mapStateToProps = (state) => ({
   notes: state.notes,
@@ -23,33 +26,43 @@ const mapStateToProps = (state) => ({
 });
 
 class NotepadScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => ({
+    headerRight: (
+      <TouchableOpacity
+        style={[styles.saveBtn]}
+        onPress={navigation.getParam('submitNote')}>
+        <Text style={styles.saveBtnText}>Save</Text>
+      </TouchableOpacity >
+    )
+  })
+
   constructor(props) {
     super(props);
     this.state = {
       itemData: null,
       screenData: null,
       noteType: '',
-      isUpdate: false
+      isUpdate: false,
     };
     this._setScreenData = this._setScreenData.bind(this);
     this._updateInputContent = this._updateInputContent.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
     this._updateNote = this._updateNote.bind(this);
     this._createNote = this._createNote.bind(this);
+
   }
 
   componentWillMount() {
+    this.props.navigation.setParams({ submitNote: this._handleSubmit });
     this._setScreenData();
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.notepadInput.focus();
-    }, 500);
+    this.notepadInput.focus();
   }
 
   _setScreenData() {
-    const store = screenService.getStore();
+    const store = globalService.getStore();
     const content = this.props.navigation.getParam('content');
     const isUpdate = !!(content);
     const bookId = this.props.navigation.getParam('bookId');
@@ -85,7 +98,7 @@ class NotepadScreen extends React.Component {
   _updateNote() {
     const { itemData, noteType } = this.state;
     const { note } = this.props.navigation.getParam('content');
-    note.update(screenService.getStore(), { id: note.id, newContent: itemData.content });
+    note.update(globalService.getStore(), { id: note.id, newContent: itemData.content });
     alertsService.createAlert(`${noteType === 'note' ? 'Note' : 'Quote'} Updated`, 'check');
     this.props.navigation.goBack();
   }
@@ -105,7 +118,7 @@ class NotepadScreen extends React.Component {
       );
       alertText = 'Quote Added';
     }
-    newNote.addToStore(screenService.getStore());
+    newNote.addToStore(globalService.getStore());
     alertsService.createAlert(alertText, 'check');
     this.props.navigation.goBack();
   }
@@ -131,12 +144,7 @@ class NotepadScreen extends React.Component {
     const icon = this.props.navigation.getParam('icon');
     const { screenData, itemData } = this.state;
     return (
-      <View style={[appStyles.paddingMd, {
-        backgroundColor: appColors.offWhite,
-        flex: 1,
-        position: 'relative',
-      }]}
-      >
+      <View style={[styles.container]}>
         <TextInput
           autoFocus={true}
           enablesReturnKeyAutomatically={true}
@@ -144,34 +152,17 @@ class NotepadScreen extends React.Component {
           multiline={true}
           onChangeText={this._updateInputContent}
           placeholder={screenData.placeholder}
-          placeholderTextColor={appColors.gray}
+          placeholderTextColor={appColors.transGray}
           returnKeyLabel="Submit"
           ref={el => { this.notepadInput = el; }}
-          style={[appStyles.p, {
-
-          }]}
+          style={[appStyles.paddingMd, styles.input]}
         />
-        <View style={[appStyles.paddingSm, {
-          opacity: 0.2,
-          position: 'absolute'
-        }]}
-        >
-          <Icon
-            name={icon}
-            size={normalizeFont(70)}
-            color={appColors.gray}
-          />
-        </View>
-        <TouchableOpacity
-          onPress={this._handleSubmit}
-          style={[appStyles.paddingMd, appStyles.noteText, appStyles.buttonAqua]}
-        >
-          <Text
-            style={[appStyles.buttonText]}
-          >
-            {screenData.buttonText}
-          </Text>
-        </TouchableOpacity>
+        <Icon
+          style={[styles.backgroundIcon]}
+          name={icon}
+          size={normalizeFont(70)}
+          color={appColors.gray}
+        />
       </View>
     );
   }

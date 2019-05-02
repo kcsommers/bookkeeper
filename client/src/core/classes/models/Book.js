@@ -1,4 +1,4 @@
-import { addBook, deleteBook } from '../../redux/actions/books.actions';
+import { addBook, updateBook, deleteBook } from '../../redux/actions/books.actions';
 import { addBookToList, removeBookFromList } from '../../redux/actions/lists.actions';
 
 export default class Book {
@@ -29,12 +29,23 @@ export default class Book {
     this._addToList(store, listId);
   }
 
-  update() {
+  update(store, newData) {
+    store.dispatch(updateBook(this.id, newData));
   }
 
   removeFromStore(store, listId) {
     store.dispatch(deleteBook(this.id));
     this._removeFromList(store, listId);
+  }
+
+  markAsCurrent(store) {
+    this.update(store, { current: true });
+    this._addToList(store, 0);
+  }
+
+  markAsFinished(store) {
+    this.update(store, { current: false });
+    this._removeFromList(store, 0);
   }
 
   _addToList(store, listId) {

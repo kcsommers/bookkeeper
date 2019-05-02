@@ -14,9 +14,11 @@ import App from './App';
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 
-const Merriweather = require('./assets/fonts/Merriweather-Regular.ttf');
-const MerrItalic = require('./assets/fonts/Merriweather-Italic.ttf');
-const Pacifico = require('./assets/fonts/Pacifico-Regular.ttf');
+const Merriweather = require('./assets/fonts/Merriweather/Merriweather-Regular.ttf');
+const MerrItalic = require('./assets/fonts/Merriweather/Merriweather-Italic.ttf');
+const Pacifico = require('./assets/fonts/Pacifico/Pacifico-Regular.ttf');
+const Lato = require('./assets/fonts/Lato/Lato-Regular.ttf');
+const LatoItalic = require('./assets/fonts/Lato/Lato-Italic.ttf');
 
 const cacheImages = (images) => {
   return images.map((image) => {
@@ -55,7 +57,7 @@ class AppInit extends React.Component {
         'http://books.google.com/books/content?id=XV8XAAAAYAAJ&printsec=frontcover&img=1&zoom=0&edge=curl&source=gbs_api'
       ]),
       Font.loadAsync({
-        Merriweather, MerrItalic, Pacifico
+        Merriweather, MerrItalic, Pacifico, Lato, LatoItalic
       })
     ]);
   }

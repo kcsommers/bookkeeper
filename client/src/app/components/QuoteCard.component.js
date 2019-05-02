@@ -6,7 +6,7 @@ import {
 import MomentDisplay from './MomentDisplay.component';
 import { appStyles, appSpacing, appColors } from '../../assets/styles/appStyles.styles';
 
-class QuoteDisplay extends React.Component {
+class QuoteCard extends React.Component {
   render() {
     const { quote } = this.props;
     return (
@@ -16,10 +16,10 @@ class QuoteDisplay extends React.Component {
       }]}
       >
         <MomentDisplay time={quote.createdAt} />
-        <Text style={[appStyles.noteText]}>{quote.content}</Text>
+        <Text style={[appStyles.p]}>{quote.content}</Text>
       </TouchableOpacity>
     );
   }
 }
 
-export default QuoteDisplay;
+export default QuoteCard;

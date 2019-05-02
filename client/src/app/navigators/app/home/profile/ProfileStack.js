@@ -1,3 +1,5 @@
+/* eslint-disable import/no-named-as-default */
+/* eslint-disable import/no-named-as-default-member */
 import React from 'react';
 import {
   View
@@ -8,6 +10,7 @@ import NotepadScreen from '../../../../screens/Notepad.screen';
 import ListScreen from '../../../../screens/List.screen';
 import BookScreen from '../../../../screens/Book.screen';
 import ProfileScreen from '../../../../screens/Profile.screen';
+import { appColors } from '../../../../../assets/styles/appStyles.styles';
 
 // In HomeTab
 const ProfileStack = createStackNavigator(
@@ -21,6 +24,7 @@ const ProfileStack = createStackNavigator(
               <Ionicons
                 name="md-menu"
                 size={30}
+                color={appColors.offWhite}
                 onPress={() => { navigation.toggleDrawer(); }}
               />
             </View>
@@ -31,6 +35,14 @@ const ProfileStack = createStackNavigator(
     List: { screen: ListScreen },
     Book: { screen: BookScreen },
     Notepad: { screen: NotepadScreen }
+  },
+  {
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: appColors.teal,
+      },
+      headerTintColor: appColors.offWhite
+    }
   }
 );
 

@@ -1,15 +1,27 @@
 import { StyleSheet } from 'react-native';
 import {
-  appColors, appHeights, appSpacing, appWidths
+  appColors, appHeights, appSpacing, appWidths, appStyles
 } from '../appStyles.styles';
 
-export const bookStyles = StyleSheet.create({
+export const styles = StyleSheet.create({
   whiteGradientBg: {
     width: appWidths.full,
     height: appHeights.seventy
   },
+  thumbnailContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: appSpacing.lg.y * 2,
+    paddingBottom: appSpacing.lg.y
+  },
+  thumbnail: {
+    width: appWidths.fiftyFive,
+    height: appWidths.fiftyFive * 1.5,
+    borderWidth: 2,
+    borderRadius: 3,
+    borderColor: appColors.offWhite
+  },
   bookInfoContainer: {
-    marginTop: appHeights.thirtyFive,
     alignItems: 'center'
   },
   bookOptionsContainer: {
@@ -19,13 +31,12 @@ export const bookStyles = StyleSheet.create({
     paddingBottom: appSpacing.lg.y
   },
   bookOptionsBtn: {
-    width: appWidths.thirty,
-    height: appWidths.thirty,
-    borderRadius: appWidths.thirty / 2,
-    borderWidth: 1,
-    borderColor: appColors.offWhite,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: appColors.offWhite,
+    borderRadius: 3,
+    paddingTop: appSpacing.md.y,
+    paddingBottom: appSpacing.md.y,
   },
   notesContainer: {
     backgroundColor: appColors.offWhite

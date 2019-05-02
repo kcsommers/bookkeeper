@@ -1,4 +1,5 @@
 export const ADD_BOOK = 'books:addBook';
+export const UPDATE_BOOK = 'books:updateBook';
 export const DELETE_BOOK = 'books:deleteBook';
 export const ADD_NOTE = 'books:addNoteToBook';
 export const ADD_QUOTE = 'books:addQuoteToBook';
@@ -9,6 +10,13 @@ export const addBook = (book) => {
   return {
     type: ADD_BOOK,
     payload: { book }
+  };
+};
+
+export const updateBook = (bookId, newData) => {
+  return {
+    type: UPDATE_BOOK,
+    payload: { bookId, newData }
   };
 };
 

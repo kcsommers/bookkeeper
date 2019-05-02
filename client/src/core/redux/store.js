@@ -78,7 +78,7 @@ const createList = (list) => {
   return new List(list.id, list.name, list.userId, bookIds);
 };
 
-const createCurrentReadsList = (bookIds, userId) => {
+export const createCurrentReadsList = (bookIds, userId) => {
   const newList = new List(0, 'Current Reads', userId, bookIds);
   addItemToStore(newList, addList);
 };

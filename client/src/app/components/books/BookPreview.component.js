@@ -6,17 +6,16 @@ import {
   View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import { styles } from '../../assets/styles/components/bookDisplay.styles';
-import { store } from '../../core/redux/store';
-import { HttpService } from '../../core/services/HttpService';
-import { AlertsService } from '../../core/services/AlertsService';
-import { appStyles, normalizeFont, appColors } from '../../assets/styles/appStyles.styles';
+import { styles } from '../../../assets/styles/components/bookDisplay.styles';
+import { store } from '../../../core/redux/store';
+import { HttpService } from '../../../core/services/HttpService';
+import { AlertsService } from '../../../core/services/AlertsService';
+import { appStyles, normalizeFont, appColors } from '../../../assets/styles/appStyles.styles';
 
 const httpService = Object.create(HttpService);
 const alertsService = Object.create(AlertsService);
 
-
-class BookDisplay extends React.Component {
+export default class BookPreview extends React.Component {
   constructor(props) {
     super(props);
     this.dropdownOptions = [
@@ -144,10 +143,7 @@ class BookDisplay extends React.Component {
             />
           </TouchableOpacity>
         </View>
-
       </View>
     );
   }
 }
-
-export default BookDisplay;

@@ -1,5 +1,6 @@
 import {
   ADD_BOOK,
+  UPDATE_BOOK,
   DELETE_BOOK,
   ADD_NOTE,
   ADD_QUOTE,
@@ -14,6 +15,16 @@ const booksReducer = (state = null, { type, payload }) => {
       return {
         ...state,
         [book.id]: book
+      };
+    }
+    case UPDATE_BOOK: {
+      const { bookId, newData } = payload;
+      return {
+        ...state,
+        [bookId]: {
+          ...state[bookId],
+          ...newData
+        }
       };
     }
     case DELETE_BOOK: {

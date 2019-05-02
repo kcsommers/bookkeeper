@@ -1,48 +1,67 @@
 import { StyleSheet } from 'react-native';
-import { appSpacing, appColors, normalizeFont, appWidths } from '../appStyles.styles';
+import { appColors, appSpacing, normalizeFont, appHeights } from '../appStyles.styles';
 
 export const styles = StyleSheet.create({
-  listName: {
-    textAlign: 'center',
-    marginTop: appSpacing.lg.y,
-    marginBottom: appSpacing.lg.y
-  },
-  bookWrapper: {
-    position: 'relative',
-    marginBottom: appSpacing.lg.y
-  },
-  bookOptionsContainer: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
+  header: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: appSpacing.lg.y,
+    backgroundColor: appColors.offWhite
   },
-  bookOption: {
-    backgroundColor: appColors.offWhite,
-    width: appWidths.fifteen,
-    height: appWidths.fifteen,
-    borderRadius: appWidths.fifteen / 2,
+  displayOptionsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  displayOptionBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: appSpacing.md.x
+  },
+  listNameContainer: {
+    marginBottom: appSpacing.md.y
+  },
+  listName: {
+    textAlign: 'center'
+  },
+  booksContainerCol: {
     justifyContent: 'center',
     alignItems: 'center'
   },
-  thumbnailBtn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
+  booksContainerRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
+  },
+  bookWrapper: {
+    marginTop: appSpacing.md.y,
+    marginBottom: appSpacing.md.y,
+    position: 'relative',
   },
   thumbnail: {
-    height: appWidths.sixtyFive * 1.54,
-    width: appWidths.sixtyFive,
     borderRadius: 3,
+    width: '100%',
+    height: '100%'
+  },
+  dropdownContainer: {
+    position: 'absolute',
+    left: appSpacing.sm.x,
+    right: appSpacing.sm.x,
+    bottom: appSpacing.md.y
   },
   deleteBtn: {
     alignItems: 'center',
-    marginTop: appSpacing.md.y,
-    marginBottom: appSpacing.md.y
+    marginTop: appSpacing.sm.y,
+    marginBottom: appSpacing.md.y,
+    marginHorizontal: appSpacing.md.x,
+    paddingVertical: appSpacing.md.y,
+    backgroundColor: appColors.red,
+    borderRadius: 3
   },
   deleteBtnText: {
     fontSize: normalizeFont(16),
-    fontFamily: 'Merriweather',
-    color: appColors.red
+    fontFamily: 'Lato',
+    color: appColors.offWhite
   }
 });

@@ -1,22 +1,8 @@
 import React from 'react';
-import {
-  StyleSheet, View, Text, Image, TouchableOpacity
-} from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
-import { appWidths, appColors } from '../../assets/styles/appStyles.styles';
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'pink',
-  },
-  thumbnail: {
-    borderWidth: 2,
-    borderColor: appColors.offWhite,
-    borderRadius: 5,
-    width: appWidths.twentyFive,
-    height: appWidths.twentyFive * 1.54
-  }
-});
+import { styles } from '../../../assets/styles/components/bookSearchResult.styles';
+import { appStyles } from '../../../assets/styles/appStyles.styles';
 
 class BookSearchResult extends React.Component {
   constructor(props) {
@@ -80,27 +66,33 @@ class BookSearchResult extends React.Component {
   render() {
     const { targetList, userLists, parsedBook } = this.state;
     const { authors, thumbnail, title, description } = parsedBook;
+    const titleSize = title.length > 15 ? appStyles.h4 : appStyles.h3;
     return (
-      <View style={styles.container}>
-        <View>
+      <View style={[styles.container]}>
+        <View style={[appStyles.paddingSm, styles.topWrapper]}>
           <Image
             style={[styles.thumbnail]}
             source={{ uri: thumbnail, cache: 'force-cache' }}
             resizeMode="cover"
           />
-          <Text>{title}</Text>
-          <Text>{authors}</Text>
-          <Text>{description}</Text>
+          <View style={[styles.detailsContainer, appStyles.paddingSm]}>
+            <Text style={[titleSize]}>{title}</Text>
+            <Text style={[appStyles.h5i]}>{authors}</Text>
+            <Dropdown
+              label="Select List"
+              data={userLists.map(list => ({ value: list.name }))}
+              value={targetList.name || 'Select'}
+              onChangeText={(list) => { this._onSelectList(list); }}
+            />
+            <TouchableOpacity
+              style={[appStyles.buttonAqua]}
+              onPress={this._addBook}
+            >
+              <Text style={[appStyles.buttonTextSm]}>Add to List</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <Dropdown
-          label="Select List"
-          data={userLists.map(list => ({ value: list.name }))}
-          value={targetList.name || 'Select'}
-          onChangeText={(list) => { this._onSelectList(list); }}
-        />
-        <TouchableOpacity onPress={this._addBook}>
-          <Text>Add to List</Text>
-        </TouchableOpacity>
+        <Text style={[appStyles.p, appStyles.paddingSm]}>{description}</Text>
       </View>
     );
   }

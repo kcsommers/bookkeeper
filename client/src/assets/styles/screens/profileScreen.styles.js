@@ -5,7 +5,8 @@ import {
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: appColors.offWhite
+    backgroundColor: appColors.offWhite,
+    position: 'relative'
   },
   bannerContainer: {
     position: 'relative'
