@@ -3,10 +3,8 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Text,
-  Keyboard
+  Text
 } from 'react-native';
-import { Header } from 'react-navigation';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import { appColors, appStyles, normalizeFont, appHeights } from '../../assets/styles/appStyles.styles';
@@ -14,7 +12,6 @@ import { HttpService } from '../../core/services/HttpService';
 import { GlobalService } from '../../core/services/GlobalService';
 import { AlertsService } from '../../core/services/AlertsService';
 import Note from '../../core/classes/models/Note';
-import Quote from '../../core/classes/models/Quote';
 import { styles } from '../../assets/styles/screens/notepadScreen.styles';
 
 const httpService = Object.create(HttpService);
@@ -39,9 +36,9 @@ class NotepadScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemData: null,
-      screenData: null,
-      noteType: '',
+      type: 'note',
+      noteData: null,
+      placeholder: '',
       isUpdate: false,
     };
     this._setScreenData = this._setScreenData.bind(this);
@@ -64,76 +61,54 @@ class NotepadScreen extends React.Component {
   _setScreenData() {
     const store = globalService.getStore();
     const content = this.props.navigation.getParam('content');
-    const isUpdate = !!(content);
     const bookId = this.props.navigation.getParam('bookId');
-    const noteType = this.props.navigation.getParam('noteType');
-    const screenData = {};
-    const itemData = {
+    const isUpdate = !!(content);
+    const noteData = {
+      type: 'note',
+      content: (content) ? content.note.content : '',
       userId: store.getState().user.id,
-      bookId,
-      content: (content) ? content.note.content : ''
+      page: null,
+      bookId
     };
-
-    if (noteType === 'note') {
-      screenData.endpoint = (isUpdate) ? `notes/${content.note.id}` : 'notes';
-      screenData.placeholder = (isUpdate) ? 'Edit Note' : 'New Note';
-      screenData.buttonText = 'Save Note';
-    } else if (noteType === 'quote') {
-      screenData.endpoint = (isUpdate) ? `quotes/${content.quote.id}` : 'quotes';
-      screenData.placeholder = (isUpdate) ? 'Edit Quote' : 'New Quote';
-      screenData.buttonText = 'Save Quote';
-      itemData.page = 0;
-    }
-    this.setState({
-      itemData, screenData, noteType, isUpdate
-    });
+    const placeholder = (isUpdate) ? 'Edit Note' : 'New Note';
+    this.setState({ noteData, placeholder, isUpdate });
   }
 
   _updateInputContent(content) {
     this.setState((prevState) => ({
-      itemData: { ...prevState.itemData, content }
+      noteData: { ...prevState.noteData, content }
     }));
   }
 
   _updateNote() {
-    const { itemData, noteType } = this.state;
+    const { noteData, type } = this.state;
     const { note } = this.props.navigation.getParam('content');
-    note.update(globalService.getStore(), { id: note.id, newContent: itemData.content });
-    alertsService.createAlert(`${noteType === 'note' ? 'Note' : 'Quote'} Updated`, 'check');
+    note.update(globalService.getStore(), { id: note.id, newContent: noteData.content });
+    alertsService.createAlert(`${type === 'note' ? 'Note' : 'Quote'} Updated`, 'check');
     this.props.navigation.goBack();
   }
 
   _createNote(note) {
-    const { noteType } = this.state;
-    let newNote;
-    let alertText;
-    if (noteType === 'note') {
-      newNote = new Note(
-        note.id, note.content, note.bookId, note.userId, note.createdAt
-      );
-      alertText = 'Note Added';
-    } else {
-      newNote = new Quote(
-        note.id, note.content, note.page, note.bookId, note.userId, note.createdAt
-      );
-      alertText = 'Quote Added';
-    }
+    const { type } = this.state;
+    const newNote = new Note(note.id, type, note.content, note.page, note.bookId, note.userId, note.createdAt);
+    const alertText = type === 'note' ? 'Note Added' : 'Quote Added';
     newNote.addToStore(globalService.getStore());
     alertsService.createAlert(alertText, 'check');
     this.props.navigation.goBack();
   }
 
   _handleSubmit() {
-    const { itemData, screenData, isUpdate } = this.state;
-    if (itemData.content) {
+    const { noteData, isUpdate } = this.state;
+    if (noteData.content) {
       if (isUpdate) {
-        httpService.update(screenData.endpoint, { itemData }).then((result) => {
+        httpService.update(`notes/${content.note.id}`, { noteData }).then((result) => {
           this._updateNote(result);
         }).catch((error) => {
           console.error('ERROR UPDATING NOTE', error);
         });
       } else {
-        httpService.create(screenData.endpoint, { itemData }).then((result) => {
+        console.log('NOTEDATA:::: ', noteData)
+        httpService.create('notes', { noteData }).then((result) => {
           this._createNote(result);
         });
       }
@@ -141,17 +116,16 @@ class NotepadScreen extends React.Component {
   }
 
   render() {
-    const icon = this.props.navigation.getParam('icon');
-    const { screenData, itemData } = this.state;
+    const { placeholder, noteData } = this.state;
     return (
       <View style={[styles.container]}>
         <TextInput
           autoFocus={true}
           enablesReturnKeyAutomatically={true}
-          value={itemData.content}
+          value={noteData.content}
           multiline={true}
           onChangeText={this._updateInputContent}
-          placeholder={screenData.placeholder}
+          placeholder={placeholder}
           placeholderTextColor={appColors.transGray}
           returnKeyLabel="Submit"
           ref={el => { this.notepadInput = el; }}
@@ -159,7 +133,7 @@ class NotepadScreen extends React.Component {
         />
         <Icon
           style={[styles.backgroundIcon]}
-          name={icon}
+          name="pencil"
           size={normalizeFont(70)}
           color={appColors.gray}
         />

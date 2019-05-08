@@ -6,7 +6,7 @@ import {
   View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import { styles } from '../../../assets/styles/components/bookDisplay.styles';
+import { previewStyles } from '../../../assets/styles/books/bookStyles.styles';
 import { store } from '../../../core/redux/store';
 import { HttpService } from '../../../core/services/HttpService';
 import { AlertsService } from '../../../core/services/AlertsService';
@@ -82,25 +82,25 @@ export default class BookPreview extends React.Component {
     const { book, navigate } = this.props;
     return (
       <View>
-        <View style={[styles.bookBtnWrapper, appStyles.paddingSm]}>
+        <View style={[previewStyles.bookBtnWrapper, appStyles.paddingSm]}>
           <TouchableOpacity
-            style={[styles.bookBtn]}
+            style={[previewStyles.bookBtn]}
             onPress={() => { navigate('Book', { id: book.id }); }}
           >
-            <View style={[styles.thumbnailWrapper]}>
+            <View style={[previewStyles.thumbnailWrapper]}>
               <Image
-                style={[styles.thumbnail]}
+                style={[previewStyles.thumbnail]}
                 source={{ uri: book.thumbnail, cache: 'force-cache' }}
                 resizeMode="cover"
               />
             </View>
-            <Text style={[styles.descrText]}>{book.description}</Text>
+            <Text style={[previewStyles.descrText]}>{book.description}</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.optionsContainer, appStyles.paddingMd]}>
+        <View style={[previewStyles.optionsContainer, appStyles.paddingMd]}>
           <TouchableOpacity
-            style={[styles.bookOption, appStyles.boxShadow]}
+            style={[previewStyles.bookOption, appStyles.boxShadow]}
             onPress={() => { this._onDropdownSelect('Move to new list'); }}
           >
             <Icon
@@ -111,7 +111,7 @@ export default class BookPreview extends React.Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.bookOption, appStyles.boxShadow]}
+            style={[previewStyles.bookOption, appStyles.boxShadow]}
             onPress={() => { this._onDropdownSelect('Edit description'); }}
           >
             <Icon
@@ -122,7 +122,7 @@ export default class BookPreview extends React.Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.bookOption, appStyles.boxShadow]}
+            style={[previewStyles.bookOption, appStyles.boxShadow]}
             onPress={() => { this._onDropdownSelect('Change banner image'); }}
           >
             <Icon
@@ -133,7 +133,7 @@ export default class BookPreview extends React.Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.bookOption, appStyles.boxShadow]}
+            style={[previewStyles.bookOption, appStyles.boxShadow]}
             onPress={() => { this._onDropdownSelect('Remove from list'); }}
           >
             <Icon

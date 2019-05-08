@@ -194,6 +194,7 @@ export default class ListComponent extends React.Component {
               ]}
               icon="dots-horizontal"
               onSelect={this.onDropdownSelect}
+              explicitWidth={appWidths.forty}
             />
           </TouchableOpacity>
         </View>
@@ -207,19 +208,22 @@ export default class ListComponent extends React.Component {
     const booksMapped = books && this._getBookDisplays(books, booksDisplay);
     const booksContainerStyles = this._getBooksContainerStyles();
     return (
-      <View>
+      <View style={componentStyles.container}>
         <View style={[componentStyles.listNameContainer]}>
           <Text style={[appStyles.h2, componentStyles.listName]}>{list && list.name}</Text>
         </View>
         <Animated.View style={{
+          flex: 1,
           opacity: this.fadeInAnim.interpolate({
             inputRange: [0, 0.5, 1],
             outputRange: [0, 0, 1]
           })
         }}
         >
-          <View style={[booksContainerStyles]}>
-            {list && booksMapped}
+          <View style={[booksContainerStyles, { marginBottom: appSpacing.md.y }]}>
+            {list && books.length ? booksMapped : (
+              <Text style={[appStyles.h3i, appStyles.paddingMd, { alignSelf: 'stretch' }]}>No books yet!</Text>
+            )}
           </View>
           {(list && list.id > 0) && (
             <TouchableOpacity

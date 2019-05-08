@@ -1,13 +1,10 @@
 import React from 'react';
-import {
-  Text,
-  TouchableOpacity
-} from 'react-native';
-import MomentDisplay from './MomentDisplay.component';
+import { Text, TouchableOpacity } from 'react-native';
+import { appColors, appStyles } from '../../assets/styles/appStyles.styles';
 import { store } from '../../core/redux/store';
-import { appStyles, appSpacing, appColors } from '../../assets/styles/appStyles.styles';
-import { HttpService } from '../../core/services/HttpService';
 import { AlertsService } from '../../core/services/AlertsService';
+import { HttpService } from '../../core/services/HttpService';
+import MomentDisplay from './MomentDisplay.component';
 
 const httpService = Object.create(HttpService);
 const alertsService = Object.create(AlertsService);
@@ -79,10 +76,7 @@ class NoteCard extends React.Component {
             })
           });
         }}
-        style={[appStyles.boxShadow, appStyles.paddingMd, {
-          marginBottom: appSpacing.lg.y,
-          backgroundColor: appColors.white
-        }]}
+        style={[appStyles.boxShadow, appStyles.paddingMd, { backgroundColor: appColors.white }]}
       >
         <MomentDisplay time={note.createdAt} />
         <Text style={[appStyles.p]}>{note.content}</Text>

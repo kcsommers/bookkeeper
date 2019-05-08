@@ -99,7 +99,7 @@ export const appZindex = {
 
 export const appStyles = {
   h1: {
-    fontSize: normalizeFont(40),
+    fontSize: normalizeFont(30),
     fontFamily: 'Lato',
     color: appColors.green
   },

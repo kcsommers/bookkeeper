@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
-import { styles } from '../../../assets/styles/components/bookSearchResult.styles';
+import { searchResultStyles } from '../../../assets/styles/books/bookStyles.styles';
 import { appStyles } from '../../../assets/styles/appStyles.styles';
 
 class BookSearchResult extends React.Component {
@@ -68,14 +68,14 @@ class BookSearchResult extends React.Component {
     const { authors, thumbnail, title, description } = parsedBook;
     const titleSize = title.length > 15 ? appStyles.h4 : appStyles.h3;
     return (
-      <View style={[styles.container]}>
-        <View style={[appStyles.paddingSm, styles.topWrapper]}>
+      <View style={[searchResultStyles.container]}>
+        <View style={[appStyles.paddingSm, searchResultStyles.topWrapper]}>
           <Image
-            style={[styles.thumbnail]}
+            style={[searchResultStyles.thumbnail]}
             source={{ uri: thumbnail, cache: 'force-cache' }}
             resizeMode="cover"
           />
-          <View style={[styles.detailsContainer, appStyles.paddingSm]}>
+          <View style={[searchResultStyles.detailsContainer, appStyles.paddingSm]}>
             <Text style={[titleSize]}>{title}</Text>
             <Text style={[appStyles.h5i]}>{authors}</Text>
             <Dropdown

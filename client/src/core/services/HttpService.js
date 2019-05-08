@@ -4,6 +4,7 @@ import Environment from '../../../environment';
 
 export const HttpService = {
   async create(endpoint, itemData) {
+    console.log('SERVICE ITEM DATA:::: ', itemData);
     const url = `${Environment.BASE_URL}/${endpoint}`;
     return new Promise(async (resolve, reject) => {
       try {

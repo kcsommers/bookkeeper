@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import offWhiteGradient from '../../assets/images/page_backgrounds/offWhiteGradient.png';
-import { styles } from '../../assets/styles/screens/bookScreen.styles';
+import { screenStyles } from '../../assets/styles/books/bookStyles.styles';
 import BackgroundImage from '../components/BackgroundImage.component';
 import Book from '../components/books/Book.component';
 import { screenWrapper } from '../wrappers/ScreenWrapper.hoc';
@@ -63,7 +63,7 @@ class BookScreen extends React.Component {
   render() {
     const { currentBook } = this.state;
     return (currentBook) ? (
-      <View style={styles.container}>
+      <View style={screenStyles.container}>
         <BackgroundImage image={currentBook.thumbnail} />
         <BackgroundImage image={offWhiteGradient} />
         <Book
@@ -73,10 +73,8 @@ class BookScreen extends React.Component {
           navigate={this.navigate}
         />
       </View>
-
-
     ) : null;
   }
 }
 
-export default connect(mapStateToProps)(screenWrapper(BookScreen));
+export default connect(mapStateToProps)(screenWrapper(BookScreen, null));

@@ -15,6 +15,7 @@ export default class ListScreenHeader extends React.Component {
   }
 
   _changeDisplay(display) {
+    // :::: TODO :::: (set in local storage)
     if (display !== this.state.currentDisplay) {
       if (display === 'titles') {
         Animated.parallel([

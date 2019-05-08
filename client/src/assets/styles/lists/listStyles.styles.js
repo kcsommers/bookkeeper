@@ -2,7 +2,9 @@ import { StyleSheet } from 'react-native';
 import { appColors, appSpacing, normalizeFont, appWidths } from '../appStyles.styles';
 
 export const screenStyles = StyleSheet.create({
-
+  container: {
+    flex: 1
+  }
 });
 
 export const headerStyles = StyleSheet.create({
@@ -25,6 +27,9 @@ export const headerStyles = StyleSheet.create({
 });
 
 export const componentStyles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   booksContainerCol: {
     justifyContent: 'center',
     alignItems: 'center'
@@ -62,7 +67,7 @@ export const componentStyles = StyleSheet.create({
     alignSelf: 'stretch',
     backgroundColor: appColors.red,
     paddingVertical: appSpacing.md.y,
-    marginTop: appSpacing.md.y,
+    marginTop: 'auto',
     borderRadius: 3
   },
   deleteBtnText: {

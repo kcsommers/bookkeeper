@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
   console.log('HIT CREATE NOTE ROUTE');
-  const noteData = req.body.itemData;
+  const { noteData } = req.body;
   db.note.create(noteData).then((newNote) => {
     res.json({ createdItem: newNote.dataValues, error: null });
   }).catch((error) => {

@@ -3,7 +3,6 @@ import {
   ImageBackground
 } from 'react-native';
 
-
 class BackgroundImage extends React.Component {
   render() {
     const source = (typeof this.props.image === 'string')

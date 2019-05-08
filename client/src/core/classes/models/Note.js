@@ -4,13 +4,17 @@ import { addNoteToBook, removeNoteFromBook } from '../../redux/actions/books.act
 export default class Note {
   constructor(
     id,
+    type,
     content,
+    page,
     bookId,
     userId,
     createdAt
   ) {
     this.id = id;
+    this.type = type;
     this.content = content;
+    this.page = page;
     this.bookId = bookId;
     this.userId = userId;
     this.createdAt = createdAt;

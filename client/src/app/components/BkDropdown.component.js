@@ -89,7 +89,7 @@ export default class BkDropdown extends React.Component {
   }
 
   render() {
-    const { data, onSelect } = this.props;
+    const { data, onSelect, explicitWidth } = this.props;
     const { modal, top, left, width } = this.state;
     const trigger = this._getTrigger();
     return (
@@ -104,7 +104,11 @@ export default class BkDropdown extends React.Component {
           <TouchableWithoutFeedback onPress={this._close}>
             <View style={{ width: appWidths.full, height: appHeights.device }}>
               <View
-                style={[styles.contentContainer, appStyles.boxShadow, { width, top, left }]}
+                style={[styles.contentContainer, appStyles.boxShadow, {
+                  width: explicitWidth || width,
+                  left: explicitWidth ? left - explicitWidth : left,
+                  top
+                }]}
               >
                 {data && data.length && data.map(datum => (
                   <TouchableOpacity

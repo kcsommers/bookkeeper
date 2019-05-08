@@ -75,7 +75,6 @@ export const screenWrapper = (WrappedComponent, backgroundImage) => (
 
     render() {
       const { alert, modalVisible, modalContent } = this.state;
-      const background = (backgroundImage) ? <BackgroundImage image={backgroundImage} /> : null;
       return (
         <View style={[{ position: 'relative' }]}>
           {modalVisible && (
@@ -87,7 +86,7 @@ export const screenWrapper = (WrappedComponent, backgroundImage) => (
             </BkModal>
           )}
           {alert && alertsService.getAlertTemplate(alert, this.closeAlert)}
-          {background}
+          {backgroundImage && <BackgroundImage image={backgroundImage} />}
           <ScrollView contentContainerStyle={{ minHeight: appHeights.full }} ref={(e) => { this.scrollView = e; }}>
             <WrappedComponent
               ref={e => { this.wrappedScreen = e; }}
