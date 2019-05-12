@@ -34,6 +34,7 @@ class ListScreen extends React.Component {
 
   componentWillMount() {
     this.searchEvent.addListener('search-done', this.onSearch.bind(this));
+    this.props.setFixedBackground([tealWhiteGradient]);
   }
 
   componentWillUnmount() {
@@ -108,4 +109,4 @@ class ListScreen extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(screenWrapper(ListScreen, tealWhiteGradient));
+export default connect(mapStateToProps)(screenWrapper(ListScreen));

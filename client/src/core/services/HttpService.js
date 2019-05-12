@@ -4,7 +4,6 @@ import Environment from '../../../environment';
 
 export const HttpService = {
   async create(endpoint, itemData) {
-    console.log('SERVICE ITEM DATA:::: ', itemData);
     const url = `${Environment.BASE_URL}/${endpoint}`;
     return new Promise(async (resolve, reject) => {
       try {
@@ -24,7 +23,6 @@ export const HttpService = {
 
   async update(endpoint, newData) {
     const url = `${Environment.BASE_URL}/${endpoint}`;
-    console.log('URL:::: ', url);
     return new Promise(async (resolve, reject) => {
       try {
         const updateResults = await axios.post(url, newData);
@@ -35,7 +33,6 @@ export const HttpService = {
           reject(new Error(error));
         }
       } catch (updateError) {
-        console.warn('AXIOS ERROR UPDATING ITEM', updateError);
         reject(new Error(updateError));
       }
     });

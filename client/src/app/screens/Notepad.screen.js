@@ -1,18 +1,13 @@
 import React from 'react';
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text
-} from 'react-native';
+import { Animated, Keyboard, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/Entypo';
-import { appColors, appStyles, normalizeFont, appHeights } from '../../assets/styles/appStyles.styles';
-import { HttpService } from '../../core/services/HttpService';
-import { GlobalService } from '../../core/services/GlobalService';
-import { AlertsService } from '../../core/services/AlertsService';
+import { appColors, appHeights, appStyles, normalizeFont } from '../../assets/styles/appStyles.styles';
+import { screenStyles } from '../../assets/styles/notes/noteStyles.styles';
 import Note from '../../core/classes/models/Note';
-import { styles } from '../../assets/styles/screens/notepadScreen.styles';
+import { AlertsService } from '../../core/services/AlertsService';
+import { GlobalService } from '../../core/services/GlobalService';
+import { HttpService } from '../../core/services/HttpService';
 
 const httpService = Object.create(HttpService);
 const globalService = Object.create(GlobalService);
@@ -26,31 +21,35 @@ class NotepadScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     headerRight: (
       <TouchableOpacity
-        style={[styles.saveBtn]}
+        style={[screenStyles.saveBtn]}
         onPress={navigation.getParam('submitNote')}>
-        <Text style={styles.saveBtnText}>Save</Text>
-      </TouchableOpacity >
+        <Text style={screenStyles.saveBtnText}>Save</Text>
+      </TouchableOpacity>
     )
   })
 
   constructor(props) {
     super(props);
     this.state = {
-      type: 'note',
+      type: '',
       noteData: null,
-      placeholder: '',
       isUpdate: false,
+      keyboardHeight: 0
     };
     this._setScreenData = this._setScreenData.bind(this);
-    this._updateInputContent = this._updateInputContent.bind(this);
+    this._updateContentInput = this._updateContentInput.bind(this);
+    this._updatePageInput = this._updatePageInput.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
     this._updateNote = this._updateNote.bind(this);
     this._createNote = this._createNote.bind(this);
-
+    this._switchType = this._switchType.bind(this);
+    this.screenAnim = new Animated.Value(1);
   }
 
   componentWillMount() {
     this.props.navigation.setParams({ submitNote: this._handleSubmit });
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
     this._setScreenData();
   }
 
@@ -58,31 +57,50 @@ class NotepadScreen extends React.Component {
     this.notepadInput.focus();
   }
 
-  _setScreenData() {
-    const store = globalService.getStore();
-    const content = this.props.navigation.getParam('content');
-    const bookId = this.props.navigation.getParam('bookId');
-    const isUpdate = !!(content);
-    const noteData = {
-      type: 'note',
-      content: (content) ? content.note.content : '',
-      userId: store.getState().user.id,
-      page: null,
-      bookId
-    };
-    const placeholder = (isUpdate) ? 'Edit Note' : 'New Note';
-    this.setState({ noteData, placeholder, isUpdate });
+  componentWillUnmount() {
+    this.keyboardWillShowListener.remove();
+    this.keyboardWillHideListener.remove();
   }
 
-  _updateInputContent(content) {
+  _keyboardWillShow(e) {
+    this.setState({ keyboardHeight: e.endCoordinates.height })
+  }
+
+  _keyboardWillHide() {
+    this.setState({ keyboardHeight: 0 })
+  }
+
+  _setScreenData() {
+    const store = globalService.getStore();
+    const incomingNote = this.props.navigation.getParam('note');
+    const bookId = this.props.navigation.getParam('bookId');
+    const type = this.props.navigation.getParam('type');
+    const isUpdate = !!(incomingNote);
+    const noteData = (incomingNote) ? { ...incomingNote } : {
+      type,
+      bookId,
+      content: '',
+      userId: store.getState().user.id,
+      page: null,
+    };
+    this.setState({ noteData, isUpdate, type });
+  }
+
+  _updateContentInput(content) {
     this.setState((prevState) => ({
       noteData: { ...prevState.noteData, content }
     }));
   }
 
+  _updatePageInput(page) {
+    this.setState((prevState) => ({
+      noteData: { ...prevState.noteData, page: parseInt(page, 10) || '' }
+    }));
+  }
+
   _updateNote() {
     const { noteData, type } = this.state;
-    const { note } = this.props.navigation.getParam('content');
+    const note = this.props.navigation.getParam('note');
     note.update(globalService.getStore(), { id: note.id, newContent: noteData.content });
     alertsService.createAlert(`${type === 'note' ? 'Note' : 'Quote'} Updated`, 'check');
     this.props.navigation.goBack();
@@ -101,13 +119,17 @@ class NotepadScreen extends React.Component {
     const { noteData, isUpdate } = this.state;
     if (noteData.content) {
       if (isUpdate) {
-        httpService.update(`notes/${content.note.id}`, { noteData }).then((result) => {
+        httpService.update(`notes/${noteData.id}`, {
+          itemData: {
+            content: noteData.content,
+            page: noteData.page
+          }
+        }).then((result) => {
           this._updateNote(result);
         }).catch((error) => {
           console.error('ERROR UPDATING NOTE', error);
         });
       } else {
-        console.log('NOTEDATA:::: ', noteData)
         httpService.create('notes', { noteData }).then((result) => {
           this._createNote(result);
         });
@@ -115,29 +137,94 @@ class NotepadScreen extends React.Component {
     }
   }
 
+  _switchType() {
+    const { type } = this.state;
+    this.screenAnim.setValue(0);
+    Animated.timing(this.screenAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true
+    }).start();
+    this.setState({ type: type === 'note' ? 'quote' : 'note' });
+  }
+
   render() {
-    const { placeholder, noteData } = this.state;
+    const { noteData, keyboardHeight, type, isUpdate } = this.state;
+    const newOrEdit = (isUpdate) ? 'Edit' : 'New';
+    const activeText = (type === 'note') ? `${newOrEdit} Note` : `${newOrEdit} Quote`;
+    const inactiveText = (type === 'note') ? 'New Quote' : 'New Note';
+    const activeIcon = (type === 'note') ? 'lead-pencil' : 'format-quote-open';
+    const inactiveIcon = (type === 'note') ? 'format-quote-close' : 'lead-pencil';
     return (
-      <View style={[styles.container]}>
-        <TextInput
-          autoFocus={true}
-          enablesReturnKeyAutomatically={true}
-          value={noteData.content}
-          multiline={true}
-          onChangeText={this._updateInputContent}
-          placeholder={placeholder}
-          placeholderTextColor={appColors.transGray}
-          returnKeyLabel="Submit"
-          ref={el => { this.notepadInput = el; }}
-          style={[appStyles.paddingMd, styles.input]}
-        />
-        <Icon
-          style={[styles.backgroundIcon]}
-          name="pencil"
-          size={normalizeFont(70)}
-          color={appColors.gray}
-        />
-      </View>
+      <View style={[screenStyles.container]}>
+        <Animated.View style={[screenStyles.mainInputContainer, {
+          opacity: this.screenAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1]
+          })
+        }]}>
+          <TextInput
+            autoFocus={true}
+            enablesReturnKeyAutomatically={true}
+            value={noteData.content}
+            multiline={true}
+            onChangeText={this._updateContentInput}
+            placeholder={activeText}
+            placeholderTextColor={appColors.transGray}
+            returnKeyLabel="Submit"
+            ref={el => { this.notepadInput = el; }}
+            style={[appStyles.paddingMd, screenStyles.input]}
+          />
+          <Icon
+            style={[screenStyles.activeIcon]}
+            name={activeIcon}
+            size={normalizeFont(70)}
+            color={appColors.gray}
+          />
+        </Animated.View>
+
+        <View style={[screenStyles.footer, { marginBottom: keyboardHeight - appHeights.ten }]}>
+          {!isUpdate && (
+            <View style={[screenStyles.inactiveTypeContainer]}>
+              <Icon
+                style={[screenStyles.inactiveIcon]}
+                name={inactiveIcon}
+                size={normalizeFont(40)}
+                color={appColors.gray}
+              />
+              <Animated.View style={[{
+                opacity: this.screenAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 1]
+                })
+              }]}>
+                <TouchableOpacity
+                  onPress={this._switchType}
+                  style={[screenStyles.inactiveBtn]}>
+                  <Icon
+                    name="swap-vertical-variant"
+                    size={normalizeFont(20)}
+                    color={appColors.offWhite}
+                  />
+                  <Text style={[screenStyles.inactiveText]}>{inactiveText}</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
+          )}
+          <View style={[screenStyles.pageRefInputContainer]}>
+            <Text style={[screenStyles.pageRefLabel]}>Page Reference:</Text>
+            <TextInput
+              enablesReturnKeyAutomatically={true}
+              value={noteData.page}
+              onChangeText={this._updatePageInput}
+              clearButtonMode="while-editing"
+              returnKeyLabel="Submit"
+              keyboardType="number-pad"
+              style={[screenStyles.pageRefInput]}
+            ></TextInput>
+          </View>
+        </View>
+      </View >
     );
   }
 }

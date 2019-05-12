@@ -3,7 +3,6 @@ import userReducer from './reducers/user.reducer';
 import listsReducer from './reducers/lists.reducer';
 import booksReducer from './reducers/books.reducer';
 import notesReducer from './reducers/notes.reducer';
-import quotesReducer from './reducers/quotes.reducer';
 import newItemsReducer from './reducers/newItems.reducer';
 import eventsReducer from './reducers/events.reducer';
 import alertsReducer from './reducers/alerts.reducer';
@@ -12,11 +11,9 @@ import { setUser } from './actions/user.actions';
 import { addList } from './actions/lists.actions';
 import { addBook } from './actions/books.actions';
 import { addNote } from './actions/notes.actions';
-import { addQuote } from './actions/quotes.actions';
 import User from '../classes/models/User';
 import Book from '../classes/models/Book';
 import Note from '../classes/models/Note';
-import Quote from '../classes/models/Quote';
 import List from '../classes/models/List';
 
 
@@ -25,7 +22,6 @@ const allReducers = combineReducers({
   lists: listsReducer,
   books: booksReducer,
   notes: notesReducer,
-  quotes: quotesReducer,
   newItems: newItemsReducer,
   events: eventsReducer,
   alert: alertsReducer,
@@ -49,23 +45,15 @@ const createUser = (user) => {
 };
 
 const createNote = (note) => {
-  return new Note(note.id, note.content, note.bookId, note.userId, note.createdAt);
-};
-
-const createQuote = (quote) => {
-  return new Quote(quote.id, quote.content, quote.page, quote.bookId, quote.userId, quote.createdAt);
+  return new Note(note.id, note.type, note.content, note.page, note.bookId, note.userId, note.createdAt);
 };
 
 const createBook = (book) => {
   const noteIds = [];
-  const quoteIds = [];
   if (book.notes) {
     book.notes.forEach((note) => { noteIds.push(note.id); });
   }
-  if (book.quotes) {
-    book.quotes.forEach((quote) => { quoteIds.push(quote.id); });
-  }
-  return new Book(book.id, book.title, book.authors, book.description, book.thumbnail, book.banner, book.current, noteIds, quoteIds);
+  return new Book(book.id, book.title, book.authors, book.description, book.thumbnail, book.banner, book.current, noteIds);
 };
 
 const createList = (list) => {
@@ -96,11 +84,6 @@ export const initializeStore = (user) => {
           if (book.notes) {
             book.notes.forEach((note) => {
               addItemToStore(createNote(note), addNote);
-            });
-          }
-          if (book.quotes) {
-            book.quotes.forEach((quote) => {
-              addItemToStore(createQuote(quote), addQuote);
             });
           }
         });

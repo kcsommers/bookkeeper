@@ -13,7 +13,7 @@ class BackgroundImage extends React.Component {
         source={source}
         resizeMode="cover"
         style={[{
-          maxHeight: '100%',
+          maxHeight: this.props.height || '100%',
           width: '100%',
           flex: 1,
           position,

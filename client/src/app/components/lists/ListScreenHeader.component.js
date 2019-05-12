@@ -3,6 +3,7 @@ import { Animated, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { appColors, appStyles, normalizeFont } from '../../../assets/styles/appStyles.styles';
 import { headerStyles } from '../../../assets/styles/lists/listStyles.styles';
+import BkDivider from '../BkDivider.component';
 
 export default class ListScreenHeader extends React.Component {
   constructor(props) {
@@ -79,8 +80,9 @@ export default class ListScreenHeader extends React.Component {
   render() {
     return (
       <View style={[headerStyles.header, appStyles.paddingMd]}>
-        <View style={[headerStyles.displayOptionsContainer]}>
+        <View style={[headerStyles.displayOptionsContainer, appStyles.boxShadow]}>
           <Animated.View style={[{
+            position: 'relative',
             opacity: this.fullDisplayAnim.interpolate({
               inputRange: [0, 1],
               outputRange: [0.5, 1]
@@ -100,9 +102,10 @@ export default class ListScreenHeader extends React.Component {
               <Icon
                 name="book"
                 size={normalizeFont(25)}
-                color={appColors.purple}
+                color={appColors.gray}
               />
             </TouchableOpacity>
+
           </Animated.View>
 
           <Animated.View style={[{
@@ -125,7 +128,7 @@ export default class ListScreenHeader extends React.Component {
               <Icon
                 name="view-grid"
                 size={normalizeFont(26)}
-                color={appColors.purple}
+                color={appColors.gray}
               />
             </TouchableOpacity>
           </Animated.View>
@@ -153,7 +156,7 @@ export default class ListScreenHeader extends React.Component {
               <Icon
                 name="view-list"
                 size={normalizeFont(30)}
-                color={appColors.purple}
+                color={appColors.gray}
               />
             </TouchableOpacity>
           </Animated.View>

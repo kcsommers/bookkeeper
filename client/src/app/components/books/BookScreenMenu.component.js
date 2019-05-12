@@ -33,12 +33,16 @@ export default class BookScreenMenu extends React.Component {
           <TouchableOpacity
             style={[appStyles.boxShadow, menuStyles.addNoteBtn, menuStyles.menuBtn]}
             onPress={() => {
-              navigate('Notepad', { bookId: book.id });
+              navigate('Notepad', {
+                bookId: book.id,
+                type: (displayedNotes === 'notes') ? 'note' : 'quote',
+                note: null
+              });
             }}
           >
-            <Text style={[menuStyles.menuBtnText]}>Add Note</Text>
+            <Text style={[menuStyles.menuBtnText]}>{(displayedNotes === 'notes') ? 'Add Note' : 'Add Quote'}</Text>
             <Icon
-              name="lead-pencil"
+              name={(displayedNotes === 'notes') ? 'lead-pencil' : 'format-quote-close'}
               size={normalizeFont(22)}
               color={appColors.teal}
             />

@@ -5,7 +5,8 @@ import {
 
 export const screenStyles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    position: 'relative'
   }
 });
 
@@ -33,12 +34,14 @@ export const componentStyles = StyleSheet.create({
   },
   notesContainer: {
     backgroundColor: appColors.offWhite,
-    paddingHorizontal: appSpacing.sm.x
+    paddingHorizontal: appSpacing.sm.x,
+    paddingBottom: appSpacing.lg.y
   }
 });
 
 export const menuStyles = StyleSheet.create({
   menuContainer: {
+    backgroundColor: appColors.offWhite
   },
   mainBtnsContainer: {
     flexDirection: 'row'

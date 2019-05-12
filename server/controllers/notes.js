@@ -17,8 +17,8 @@ router.post('/', (req, res) => {
 
 router.post('/:id', (req, res) => {
   console.log('HIT UPDATE NOTE ROUTE');
-  const newContent = req.body.itemData.content;
-  db.note.update({ content: newContent }, {
+  const newContent = req.body.itemData;
+  db.note.update(newContent, {
     where: { id: req.params.id }
   }).then(() => {
     res.json({ success: true, error: null });

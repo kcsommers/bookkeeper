@@ -1,29 +1,13 @@
 /* eslint-disable react/no-this-in-sfc */
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
 import AddListComponent from '../../app/components/modal-content/AddList.component';
 import ConfirmBox from '../../app/components/modal-content/ConfirmBox.component';
-import { appStyles } from '../../assets/styles/appStyles.styles';
-import { noteStyles } from '../../assets/styles/modalStyles.styles';
 import CurrentReadToggle from '../../app/components/modal-content/CurrentReadToggle.component';
+import NoteCard from '../../app/components/notes/NoteCard.component';
 
 const templates = {
-  note: (content, actions) => (
-    <View>
-      <Text style={[noteStyles.noteText]}>{content.note.content}</Text>
-      <TouchableOpacity
-        style={[appStyles.buttonAqua]}
-        onPress={actions.triggerEdit}
-      >
-        <Text style={[appStyles.buttonText]}>Edit</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[appStyles.buttonRed]}
-        onPress={actions.triggerDelete}
-      >
-        <Text style={[appStyles.buttonText]}>Delete</Text>
-      </TouchableOpacity>
-    </View>
+  note: (content) => (
+    <NoteCard note={content.note} />
   ),
   confirmDelete: (content, actions) => (
     <ConfirmBox

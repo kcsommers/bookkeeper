@@ -130,8 +130,8 @@ export default class ListComponent extends React.Component {
   _getBookDisplays(books, display) {
     let widthRange, heightRange;
     if (display === 'full') {
-      widthRange = [appWidths.sixtyFive, appWidths.seventyFive];
-      heightRange = [appWidths.sixtyFive * 1.54, appWidths.seventyFive * 1.54];
+      widthRange = [appWidths.sixty, appWidths.seventy];
+      heightRange = [appWidths.sixty * 1.54, appWidths.seventy * 1.54];
     } else if (display === 'grid') {
       widthRange = [appWidths.thirty, appWidths.fortyFive];
       heightRange = [appWidths.thirtyFive * 1.54, appWidths.fortyFive * 1.54];

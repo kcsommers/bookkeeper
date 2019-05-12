@@ -2,8 +2,7 @@ import React from 'react';
 import { Image, Text, View } from 'react-native';
 import { appStyles } from '../../../assets/styles/appStyles.styles';
 import { componentStyles } from '../../../assets/styles/books/bookStyles.styles';
-import NoteCard from '../NoteCard.component';
-import QuoteCard from '../QuoteCard.component';
+import NoteCard from '../notes/NoteCard.component';
 import BookScreenMenu from './BookScreenMenu.component';
 import { GlobalService } from '../../../core/services/GlobalService';
 
@@ -53,13 +52,23 @@ export default class Book extends React.Component {
 
   _updateNotes() {
     const { book } = this.props;
-    this.notes = this._getNotes('notes', book.noteIds);
-    this.quotes = this._getNotes('quotes', book.quoteIds);
+    const allNotes = this._getNotes(book.noteIds);
+    const notes = [];
+    const quotes = [];
+    allNotes.forEach(note => {
+      if (note.type === 'note') {
+        notes.push(note);
+      } else if (note.type === 'quote') {
+        quotes.push(note);
+      }
+    });
+    this.notes = notes;
+    this.quotes = quotes;
   }
 
-  _getNotes(type, ids) {
+  _getNotes(ids) {
     const notes = [];
-    const notesFromStore = globalService.getStore().getState()[type];
+    const notesFromStore = globalService.getStore().getState().notes;
     ids.forEach((id) => { notes.push(notesFromStore[id]); });
     return notes;
   }
@@ -77,14 +86,26 @@ export default class Book extends React.Component {
   render() {
     const { displayedNotes } = this.state;
     const { book, navigate } = this.props;
-    const notesMapped = (this.notes.length) ? this.notes.map((note) => (
-      note ? <NoteCard note={note} key={note.id} /> : null
-    )) : <Text style={[appStyles.h5i, appStyles.paddingLg]}>You don&apos;t have any notes yet.</Text>;
+    const notesMapped = (this.notes.length)
+      ? this.notes.map((note) => (
+        note ? (
+          <NoteCard
+            note={note}
+            key={note.id}
+            clickEnabled={true}
+          />
+        ) : null
+      )) : <Text style={[appStyles.h5i, appStyles.paddingLg]}>You don&apos;t have any notes yet.</Text>;
 
-    const quotesMapped = (this.quotes.length) ? this.quotes.map((quote) => (
-      quote ? <QuoteCard quote={quote} key={quote.id} /> : null
-    )) : <Text style={[appStyles.h5i, appStyles.paddingLg]}>You don&apos;t have any quotes yet.</Text>;
-
+    const quotesMapped = (this.quotes.length)
+      ? this.quotes.map((quote) => (
+        quote ? (
+          <NoteCard
+            note={quote}
+            key={quote.id}
+            clickEnabled={true}
+          />) : null
+      )) : <Text style={[appStyles.h5i, appStyles.paddingLg]}>You don&apos;t have any quotes yet.</Text>;
 
     return book ? (
       <View style={[componentStyles.mainContainer]}>

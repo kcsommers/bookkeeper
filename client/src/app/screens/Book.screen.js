@@ -2,10 +2,12 @@ import React from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import offWhiteGradient from '../../assets/images/page_backgrounds/offWhiteGradient.png';
+import { appHeights } from '../../assets/styles/appStyles.styles';
 import { screenStyles } from '../../assets/styles/books/bookStyles.styles';
 import BackgroundImage from '../components/BackgroundImage.component';
 import Book from '../components/books/Book.component';
 import { screenWrapper } from '../wrappers/ScreenWrapper.hoc';
+
 
 const mapStateToProps = (state) => ({
   books: state.books,
@@ -46,7 +48,7 @@ class BookScreen extends React.Component {
   }
 
   triggerModal(args) {
-    this.props.triggerModal(args.template, args.content, args.actions);
+    this.props.triggerModal(args.template, args.content, args.actions, args.animations);
   }
 
   closeModal() {
@@ -57,6 +59,7 @@ class BookScreen extends React.Component {
   _getBookFromStore() {
     const bookId = this.props.navigation.getParam('id');
     const currentBook = this.props.books[bookId];
+    this.props.setFixedBackground([currentBook.thumbnail]);
     this.setState({ currentBook });
   }
 
@@ -64,8 +67,7 @@ class BookScreen extends React.Component {
     const { currentBook } = this.state;
     return (currentBook) ? (
       <View style={screenStyles.container}>
-        <BackgroundImage image={currentBook.thumbnail} />
-        <BackgroundImage image={offWhiteGradient} />
+        <BackgroundImage image={offWhiteGradient} height={appHeights.full} />
         <Book
           book={currentBook}
           triggerModal={this.triggerModal}
@@ -77,4 +79,4 @@ class BookScreen extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(screenWrapper(BookScreen, null));
+export default connect(mapStateToProps)(screenWrapper(BookScreen));

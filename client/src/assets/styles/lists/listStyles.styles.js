@@ -12,17 +12,21 @@ export const headerStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: appSpacing.lg.y,
-    backgroundColor: appColors.offWhite
+    backgroundColor: appColors.white
   },
   displayOptionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-around',
+    width: appWidths.fortyFive,
+    paddingVertical: appSpacing.sm.y,
+    borderRadius: 3,
+    backgroundColor: appColors.white,
+    position: 'relative'
   },
   displayOptionBtn: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: appSpacing.md.x
   },
 });
 
@@ -48,7 +52,9 @@ export const componentStyles = StyleSheet.create({
   thumbnail: {
     borderRadius: 3,
     width: '100%',
-    height: '100%'
+    height: '100%',
+    borderColor: appColors.offWhite,
+    borderWidth: 2
   },
   dropdownContainer: {
     position: 'absolute',
@@ -64,8 +70,7 @@ export const componentStyles = StyleSheet.create({
   },
   deleteBtn: {
     alignItems: 'center',
-    alignSelf: 'stretch',
-    backgroundColor: appColors.red,
+    alignSelf: 'center',
     paddingVertical: appSpacing.md.y,
     marginTop: 'auto',
     borderRadius: 3
@@ -73,7 +78,7 @@ export const componentStyles = StyleSheet.create({
   deleteBtnText: {
     fontSize: normalizeFont(16),
     fontFamily: 'Lato',
-    color: appColors.offWhite
+    color: appColors.red
   }
 });
 
